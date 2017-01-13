@@ -7,15 +7,18 @@ import org.arquillian.reporter.api.model.SectionReport;
  */
 public class DeploymentReportTestSuiteConfiguration extends ContainerReportEventTestSuiteConfiguration {
 
-    public DeploymentReportTestSuiteConfiguration(SectionReport sectionReport) {
-        super(sectionReport);
+    public DeploymentReportTestSuiteConfiguration(String identifier) {
+        super(identifier);
     }
 
-    public DeploymentReportTestSuiteConfiguration(String identifierSuffix) {
-        super(identifierSuffix);
+    public DeploymentReportTestSuiteConfiguration(String identifier, String containerIdentifier) {
+        super(identifier);
+        setParentEvent(new ContainerReportEventTestSuiteConfiguration(containerIdentifier));
     }
 
-    public DeploymentReportTestSuiteConfiguration(SectionReport sectionReport, String identifierSuffix) {
-        super(sectionReport, identifierSuffix);
+    public DeploymentReportTestSuiteConfiguration(SectionReport sectionReport, String identifier,
+        String containerIdentifier) {
+        super(sectionReport, identifier);
+        setParentEvent(new ContainerReportEventTestSuiteConfiguration(containerIdentifier));
     }
 }

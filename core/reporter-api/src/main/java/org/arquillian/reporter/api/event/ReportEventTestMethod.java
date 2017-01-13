@@ -7,7 +7,7 @@ import org.arquillian.reporter.api.model.TestMethodReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportEventTestMethod extends ReportEvent{
+public class ReportEventTestMethod extends ReportEvent {
 
     public ReportEventTestMethod(Method method) {
         super(getIdentifier(method));
@@ -19,8 +19,8 @@ public class ReportEventTestMethod extends ReportEvent{
         setParentEvent(new ReportEventTestClass(method.getDeclaringClass()));
     }
 
-    private static String getIdentifier(Method method){
-        return String.format("%s#%s",method.getDeclaringClass(),method.getName());
+    private static String getIdentifier(Method method) {
+        return String.format("%s#%s", method.getDeclaringClass(), method.getName());
     }
 
 }

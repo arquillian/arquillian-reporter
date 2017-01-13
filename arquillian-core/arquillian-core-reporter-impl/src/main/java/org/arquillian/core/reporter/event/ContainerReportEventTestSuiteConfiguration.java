@@ -8,15 +8,13 @@ import org.arquillian.reporter.api.model.SectionReport;
  */
 public class ContainerReportEventTestSuiteConfiguration extends ReportEventTestSuiteConfiguration {
 
-    public ContainerReportEventTestSuiteConfiguration(SectionReport sectionReport) {
-        super(sectionReport);
+    public ContainerReportEventTestSuiteConfiguration(String identifier) {
+        super(identifier);
     }
 
-    public ContainerReportEventTestSuiteConfiguration(String identifierSuffix) {
-        super(identifierSuffix);
+    public ContainerReportEventTestSuiteConfiguration(SectionReport sectionReport, String identifier) {
+        super(sectionReport, identifier);
     }
 
-    public ContainerReportEventTestSuiteConfiguration(SectionReport sectionReport, String identifierSuffix) {
-        super(sectionReport, identifierSuffix);
-    }
+    // todo support multiple test suites
 }

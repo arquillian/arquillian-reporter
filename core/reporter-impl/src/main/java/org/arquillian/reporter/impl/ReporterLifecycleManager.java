@@ -36,19 +36,11 @@ public class ReporterLifecycleManager {
         return report.get();
     }
 
-    public void observeFirstEvent(@Observes ManagerStarted arquillianDescriptor) {
+    public void observeFirstEvent(@Observes ManagerStarted event) {
         if (report() == null) {
             ExecutionReport executionReport = new ExecutionReport();
             report.set(executionReport);
         }
-    }
-
-    private TestSuiteReport getLastTestSuiteReport() {
-        List<TestSuiteReport> testSuiteReports = report().getTestSuiteReports();
-        if (testSuiteReports.size() > 0) {
-            return testSuiteReports.get(testSuiteReports.size() - 1);
-        }
-        return null;
     }
 
     public void observeTestSuiteReports(@Observes ReportEventTestSuite event) {
@@ -75,11 +67,8 @@ public class ReporterLifecycleManager {
         }
     }
 
-    private <T extends SectionReport> void processEvent(
-        Class<? extends ReportEvent> parentEventClass,
-        ReportEvent event,
-        T parentSectionReport,
-        String methodNameToGetList) {
+    private void processEvent(Class<? extends ReportEvent> parentEventClass, ReportEvent event,
+        SectionReport parentSectionReport, String methodNameToGetList) {
 
         if (!event.getClass().isAssignableFrom(parentEventClass)) {
             processSubclassEvent(parentEventClass, event, parentSectionReport, methodNameToGetList);
@@ -89,21 +78,21 @@ public class ReporterLifecycleManager {
             if (alreadyExisting != null) {
                 SectionModifier.merge(alreadyExisting, event.getSectionReport());
             } else if (parentSectionReport != null) {
-                getSectionList(parentSectionReport, methodNameToGetList).add((T) event.getSectionReport());
+                getSectionList(parentSectionReport, methodNameToGetList).add(event.getSectionReport());
                 //                report().getTestSuiteReports().getTestClassReports().add(event.getSectionReport());
             } else if (event.getParentEvent() != null) {
                 processParentEventIsSet(event, methodNameToGetList);
+            } else {
+                // todo
             }
-            //            SectionModifier.merge(rootSectionReport, event.getSectionReport());
+
         }
 
         report().register(event);
     }
 
-    private <T extends SectionReport> void processSubclassEvent(
-        Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
-        T parentSectionReport,
-        String methodNameToGetList) {
+    private void processSubclassEvent(Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
+        SectionReport parentSectionReport, String methodNameToGetList) {
 
         SectionReport alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
         if (alreadyExisting != null) {
@@ -116,7 +105,7 @@ public class ReporterLifecycleManager {
         } else {
             Class<?> superclass = actualEvent.getClass().getSuperclass();
             if (!superclass.isAssignableFrom(expectedReportEventClass)) {
-                getSectionList(parentSectionReport, methodNameToGetList).add((T) actualEvent.getSectionReport());
+                getSectionList(parentSectionReport, methodNameToGetList).add(actualEvent.getSectionReport());
             }
         }
     }
@@ -139,7 +128,7 @@ public class ReporterLifecycleManager {
         }
     }
 
-    private <T extends SectionReport> List<SectionReport> getSectionList(T parentSectionReport,
+    private List<SectionReport> getSectionList(SectionReport parentSectionReport,
         String methodNameToGetList) {
         try {
             return (List<SectionReport>) parentSectionReport.getClass().getMethod(methodNameToGetList)
@@ -150,12 +139,21 @@ public class ReporterLifecycleManager {
         }
     }
 
-    public void afterSuite(@Observes ManagerStopping stopping) throws IOException {
+    public void afterSuite(@Observes ManagerStopping event) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(report().getTestSuiteReports());
         FileUtils.writeStringToFile(new File("target/report.json"), json);
         System.out.println(json);
 
+    }
+
+    // todo support multiple test suites within one execution
+    private TestSuiteReport getLastTestSuiteReport() {
+        List<TestSuiteReport> testSuiteReports = report().getTestSuiteReports();
+        if (testSuiteReports.size() > 0) {
+            return testSuiteReports.get(testSuiteReports.size() - 1);
+        }
+        return null;
     }
 
 }

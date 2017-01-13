@@ -5,15 +5,20 @@ import org.arquillian.reporter.api.model.SectionReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class Report {
+public class Reporter {
 
-    public static Section section(String name){
-        return new SectionImpl(name);
+    public static SectionBuilder section(String name){
+        return new SectionBuilderImpl(name);
     }
 
-    public static Section modifySection(SectionReport sectionReport){
-        return new SectionImpl(sectionReport);
+    public static SectionBuilder section(SectionReport sectionReport){
+        return new SectionBuilderImpl(sectionReport);
     }
+
+    public static FireSection fireSection(SectionReport sectionReport){
+        return new FireSectionImpl(sectionReport);
+    }
+
 
 //    public static Section attachToSection(String identifier, Section section){
 //        return attachToSection(identifier, section.build());

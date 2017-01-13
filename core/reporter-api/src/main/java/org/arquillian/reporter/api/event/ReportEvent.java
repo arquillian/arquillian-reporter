@@ -44,7 +44,8 @@ public class ReportEvent {
         return parentEvent;
     }
 
-    public void setParentEvent(ReportEvent parentEvent) {
+    public ReportEvent setParentEvent(ReportEvent parentEvent) {
         this.parentEvent = parentEvent;
+        return this;
     }
 }

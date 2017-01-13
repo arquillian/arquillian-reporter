@@ -8,13 +8,13 @@ import org.arquillian.reporter.api.model.entry.Entry;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SectionReport<T extends SectionReport> {
+public class SectionReport implements Section {
 
     private String name;
 
     private List<Entry> entries = new ArrayList<>();
 
-    private List<T> sectionReports = new ArrayList<>();
+    private List<SectionReport> sectionReports = new ArrayList<>();
 
     private String identifier;
 
@@ -38,11 +38,11 @@ public class SectionReport<T extends SectionReport> {
         this.entries = entries;
     }
 
-    public List<T> getSectionReports() {
+    public List<SectionReport> getSectionReports() {
         return sectionReports;
     }
 
-    public void setSectionReports(List<T> sectionReports) {
+    public void setSectionReports(List<SectionReport> sectionReports) {
         this.sectionReports = sectionReports;
     }
 

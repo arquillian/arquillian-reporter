@@ -11,11 +11,11 @@ public class ReportEventTestSuiteConfiguration extends ReportEvent {
         super(sectionReport);
     }
 
-    public ReportEventTestSuiteConfiguration(String identifierSuffix) {
-        super(identifierSuffix);
+    public ReportEventTestSuiteConfiguration(String identifier) {
+        super(identifier);
     }
 
-    public ReportEventTestSuiteConfiguration(SectionReport sectionReport, String identifierSuffix) {
-        super(sectionReport, identifierSuffix);
+    public ReportEventTestSuiteConfiguration(SectionReport sectionReport, String identifier) {
+        super(sectionReport, identifier);
     }
 }
