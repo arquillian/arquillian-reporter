@@ -5,16 +5,16 @@ import org.arquillian.reporter.api.model.TestSuiteReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportTestSuiteEvent extends ReportEvent<TestSuiteReport> {
-    public ReportTestSuiteEvent(TestSuiteReport sectionReport) {
+public class ReportEventTestSuite extends ReportEvent {
+    public ReportEventTestSuite(TestSuiteReport sectionReport) {
         super(sectionReport);
     }
 
-    public ReportTestSuiteEvent(String identifier) {
+    public ReportEventTestSuite(String identifier) {
         super(identifier);
     }
 
-    public ReportTestSuiteEvent(TestSuiteReport sectionReport, String identifier) {
+    public ReportEventTestSuite(TestSuiteReport sectionReport, String identifier) {
         super(sectionReport, identifier);
     }
 }

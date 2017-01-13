@@ -18,4 +18,44 @@ public class TestMethodReport extends SectionReport {
     public TestMethodReport(String name) {
         super(name);
     }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    public TestResult.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(TestResult.Status status) {
+        this.status = status;
+    }
+
+    public Failure getFailure() {
+        return failure;
+    }
+
+    public void setFailure(Failure failure) {
+        this.failure = failure;
+    }
+
+    public Date getStop() {
+        return stop;
+    }
+
+    public void setStop(Date stop) {
+        this.stop = stop;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
 }

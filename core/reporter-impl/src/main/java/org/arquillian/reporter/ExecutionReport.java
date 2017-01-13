@@ -1,6 +1,8 @@
 package org.arquillian.reporter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
@@ -12,19 +14,15 @@ import org.arquillian.reporter.impl.Identifier;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ExecutionReport {
+public class ExecutionReport extends SectionReport {
 
-    private TestSuiteReport testSuiteReport;
+    private List<TestSuiteReport> testSuiteReports = new ArrayList<>();
     private Map<String, SectionReport> sectionsWithIdentifier = new HashMap<>();
 
     private Map<Identifier, SectionReport> sectionsAssociatedWithEvents = new HashMap<>();
 
-    public TestSuiteReport getTestSuiteReport() {
-        return testSuiteReport;
-    }
-
-    public void setTestSuiteReport(TestSuiteReport testSuiteReport) {
-        this.testSuiteReport = testSuiteReport;
+    public ExecutionReport() {
+        super("execution");
     }
 
     public Map<String, SectionReport> getSectionsWithIdentifier() {
@@ -69,5 +67,11 @@ public class ExecutionReport {
         return sectionsAssociatedWithEvents.get(new Identifier(event.getClass(), event.getIdentifier()));
     }
 
+    public List<TestSuiteReport> getTestSuiteReports() {
+        return testSuiteReports;
+    }
 
+    public void setTestSuiteReports(List<TestSuiteReport> testSuiteReports) {
+        this.testSuiteReports = testSuiteReports;
+    }
 }

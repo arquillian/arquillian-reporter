@@ -17,9 +17,9 @@ public class SectionModifier {
     }
 
     public static SectionReport merge(SectionReport originalSection, SectionReport newSection) {
-        if (Validate.isNotEmpty(newSection.getName())){
-            originalSection.setName(newSection.getName());
-        }
+//        if (Validate.isNotEmpty(newSection.getName())){
+//            originalSection.setName(newSection.getName());
+//        }
         originalSection.getEntries().addAll(newSection.getEntries());
         newSection.getSectionReports().forEach(sr -> originalSection.getSectionReports().add(sr));
         return originalSection;

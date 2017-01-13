@@ -5,13 +5,13 @@ import org.arquillian.reporter.api.model.SectionReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportEvent<T extends SectionReport>  {
+public class ReportEvent {
 
-    private T sectionReport;
+    private SectionReport sectionReport;
     private String identifier;
     private ReportEvent parentEvent;
 
-    public ReportEvent(T sectionReport) {
+    public ReportEvent(SectionReport sectionReport) {
         this.sectionReport = sectionReport;
     }
 
@@ -19,16 +19,16 @@ public class ReportEvent<T extends SectionReport>  {
         this.identifier = identifier;
     }
 
-    public ReportEvent(T sectionReport, String identifier) {
+    public ReportEvent(SectionReport sectionReport, String identifier) {
         this.sectionReport = sectionReport;
         this.identifier = identifier;
     }
 
-    public T getSectionReport() {
+    public SectionReport getSectionReport() {
         return sectionReport;
     }
 
-    public void setSectionReport(T sectionReport) {
+    public void setSectionReport(SectionReport sectionReport) {
         this.sectionReport = sectionReport;
     }
 

@@ -1,13 +1,20 @@
 package org.arquillian.reporter.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.ExecutionReport;
 import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.event.ReportTestClassEvent;
-import org.arquillian.reporter.api.event.ReportTestSuiteConfigurationEvent;
-import org.arquillian.reporter.api.event.ReportTestSuiteEvent;
+import org.arquillian.reporter.api.event.ReportEventTestClass;
+import org.arquillian.reporter.api.event.ReportEventTestMethod;
+import org.arquillian.reporter.api.event.ReportEventTestSuite;
+import org.arquillian.reporter.api.event.ReportEventTestSuiteConfiguration;
 import org.arquillian.reporter.api.model.SectionReport;
+import org.arquillian.reporter.api.model.TestSuiteReport;
 import org.arquillian.reporter.api.utils.SectionModifier;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -36,49 +43,67 @@ public class ReporterLifecycleManager {
         }
     }
 
-    public void observeTestSuiteReports(@Observes ReportTestSuiteEvent event) {
-        if (report().getTestSuiteReport() == null) {
-            report().setTestSuiteReport(event.getSectionReport());
-            report().register(event);
-        } else {
-            processSubclassEvent(ReportTestSuiteEvent.class, event, report().getTestSuiteReport());
+    private TestSuiteReport getLastTestSuiteReport() {
+        List<TestSuiteReport> testSuiteReports = report().getTestSuiteReports();
+        if (testSuiteReports.size() > 0) {
+            return testSuiteReports.get(testSuiteReports.size() - 1);
+        }
+        return null;
+    }
+
+    public void observeTestSuiteReports(@Observes ReportEventTestSuite event) {
+        processEvent(ReportEventTestSuite.class, event, report(), "getTestSuiteReports");
+    }
+
+    public void observeTestClassReports(@Observes ReportEventTestClass event) {
+        TestSuiteReport lastTestSuiteReport = getLastTestSuiteReport();
+        if (lastTestSuiteReport != null) {
+            processEvent(ReportEventTestClass.class, event, lastTestSuiteReport, "getTestClassReports");
         }
     }
 
-    public void observeTestSuiteReports(@Observes ReportTestClassEvent event) {
-        Class<? extends ReportEvent> eventClass = event.getClass();
-        if (eventClass.isAssignableFrom(ReportTestClassEvent.class)) {
-            SectionReport alreadyExists = report()
-                .getSectionReportByIdentifier(new Identifier(ReportTestClassEvent.class, event.getIdentifier()));
-            if (alreadyExists != null) {
-                SectionModifier.merge(alreadyExists, event.getSectionReport());
-            } else {
-                report().getTestSuiteReport().getTestClassReports().add(event.getSectionReport());
-            }
-        } else {
-            processEvent(ReportTestSuiteEvent.class, event, report().getTestSuiteReport());
+    public void observeTestMethodReports(@Observes ReportEventTestMethod event) {
+        processEvent(ReportEventTestMethod.class, event, null, "getTestMethodReports");
+
+    }
+
+    public void observeReportTestSuiteConfigurationEvents(@Observes ReportEventTestSuiteConfiguration event) {
+        TestSuiteReport lastTestSuiteReport = getLastTestSuiteReport();
+        if (lastTestSuiteReport != null) {
+            processEvent(ReportEventTestSuiteConfiguration.class, event,
+                         lastTestSuiteReport.getConfiguration(), "getSectionReports");
         }
     }
 
-    public void observeReportTestSuiteConfigurationEvents(@Observes ReportTestSuiteConfigurationEvent event) {
-        processEvent(ReportTestSuiteConfigurationEvent.class, event,
-                     report().getTestSuiteReport().getConfiguration());
-    }
-
-    private void processEvent(Class<? extends ReportEvent> parentEventClass, ReportEvent event,
-        SectionReport rootSectionReport) {
+    private <T extends SectionReport> void processEvent(
+        Class<? extends ReportEvent> parentEventClass,
+        ReportEvent event,
+        T parentSectionReport,
+        String methodNameToGetList) {
 
         if (!event.getClass().isAssignableFrom(parentEventClass)) {
-            processSubclassEvent(parentEventClass, event, rootSectionReport);
+            processSubclassEvent(parentEventClass, event, parentSectionReport, methodNameToGetList);
         } else {
-            rootSectionReport.getSectionReports().add(event.getSectionReport());
+
+            SectionReport alreadyExisting = report().getSectionReportByIdentifier(event);
+            if (alreadyExisting != null) {
+                SectionModifier.merge(alreadyExisting, event.getSectionReport());
+            } else if (parentSectionReport != null) {
+                getSectionList(parentSectionReport, methodNameToGetList).add((T) event.getSectionReport());
+                //                report().getTestSuiteReports().getTestClassReports().add(event.getSectionReport());
+            } else if (event.getParentEvent() != null) {
+                processParentEventIsSet(event, methodNameToGetList);
+            }
+            //            SectionModifier.merge(rootSectionReport, event.getSectionReport());
         }
 
         report().register(event);
     }
 
-    private void processSubclassEvent(Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
-        SectionReport rootSectionReport) {
+    private <T extends SectionReport> void processSubclassEvent(
+        Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
+        T parentSectionReport,
+        String methodNameToGetList) {
 
         SectionReport alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
         if (alreadyExisting != null) {
@@ -86,29 +111,49 @@ public class ReporterLifecycleManager {
             return;
         }
 
-        ReportEvent parentEvent = actualEvent.getParentEvent();
-
-        if (parentEvent != null) {
-            Identifier parentIdentifier = new Identifier(parentEvent.getClass(), parentEvent.getIdentifier());
-            SectionReport parentSection = report().getSectionReportByIdentifier(parentIdentifier);
-            if (parentSection != null) {
-                parentSection.getSectionReports().add(actualEvent.getSectionReport());
-            } else {
-                // todo
-                return;
-            }
-
+        if (actualEvent.getParentEvent() != null) {
+            processParentEventIsSet(actualEvent, null);
         } else {
             Class<?> superclass = actualEvent.getClass().getSuperclass();
             if (!superclass.isAssignableFrom(expectedReportEventClass)) {
-                rootSectionReport.getSectionReports().add(actualEvent.getSectionReport());
+                getSectionList(parentSectionReport, methodNameToGetList).add((T) actualEvent.getSectionReport());
             }
         }
     }
 
-    public void afterSuite(@Observes ManagerStopping stopping) {
+    private void processParentEventIsSet(ReportEvent actualEvent, String methodNameToGetList) {
+
+        ReportEvent parentEvent = actualEvent.getParentEvent();
+        Identifier parentIdentifier = new Identifier(parentEvent.getClass(), parentEvent.getIdentifier());
+
+        SectionReport parentSection = report().getSectionReportByIdentifier(parentIdentifier);
+        if (parentSection != null) {
+            if (methodNameToGetList != null) {
+                getSectionList(parentSection, methodNameToGetList).add(actualEvent.getSectionReport());
+            } else {
+                parentSection.getSectionReports().add(actualEvent.getSectionReport());
+            }
+        } else {
+            // todo
+            return;
+        }
+    }
+
+    private <T extends SectionReport> List<SectionReport> getSectionList(T parentSectionReport,
+        String methodNameToGetList) {
+        try {
+            return (List<SectionReport>) parentSectionReport.getClass().getMethod(methodNameToGetList)
+                .invoke(parentSectionReport);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void afterSuite(@Observes ManagerStopping stopping) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(report().getTestSuiteReport());
+        String json = gson.toJson(report().getTestSuiteReports());
+        FileUtils.writeStringToFile(new File("target/report.json"), json);
         System.out.println(json);
 
     }

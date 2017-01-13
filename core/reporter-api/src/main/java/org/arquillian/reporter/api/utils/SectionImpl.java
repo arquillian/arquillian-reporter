@@ -8,8 +8,6 @@ import org.arquillian.reporter.api.model.SectionReport;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 
-import static org.arquillian.reporter.api.utils.SectionModifier.merge;
-
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
@@ -73,19 +71,19 @@ public class SectionImpl implements Section {
     }
 
     public Section addSection(SectionReport newSection) {
-        if (Validate.isNotEmpty(newSection.getIdentifier())) {
-            SectionReport originalSection = sectionReport.getSectionReports()
-                .stream()
-                .filter(sr ->
-                            Validate.isNotEmpty(sr.getIdentifier())
-                                && sr.getIdentifier().equals(newSection.getIdentifier()))
-                .findFirst()
-                .get();
-            if (originalSection != null) {
-                merge(originalSection, newSection);
-                return this;
-            }
-        }
+//        if (Validate.isNotEmpty(newSection.getIdentifier())) {
+//            SectionReport originalSection = sectionReport.getSectionReports()
+//                .stream()
+//                .filter(sr ->
+//                            Validate.isNotEmpty(sr.getIdentifier())
+//                                && sr.getIdentifier().equals(newSection.getIdentifier()))
+//                .findFirst()
+//                .get();
+//            if (originalSection != null) {
+//                merge(originalSection, newSection);
+//                return this;
+//            }
+//        }
         sectionReport.getSectionReports().add(newSection);
         return this;
     }

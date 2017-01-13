@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends SectionReport {
+public class TestSuiteReport extends SectionReport<TestClassReport> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
@@ -24,6 +24,11 @@ public class TestSuiteReport extends SectionReport {
 
     public List<TestClassReport> getTestClassReports() {
         return testClassReports;
+    }
+
+    public TestSuiteReport stop() {
+        this.stop = new Date(System.currentTimeMillis());
+        return this;
     }
 
 }
