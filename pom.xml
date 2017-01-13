@@ -26,9 +26,10 @@
     </properties>
     <!-- Modules -->
     <modules>
-        <module>reporter-impl</module>
-        <module>reporter-api</module>
-        <module>reporter-spi</module>
+        <module>core/reporter-impl</module>
+        <module>core/reporter-api</module>
+        <module>core/reporter-spi</module>
+        <module>arquillian-core/arquillian-core-reporter-impl</module>
     </modules>
 
     <dependencyManagement>

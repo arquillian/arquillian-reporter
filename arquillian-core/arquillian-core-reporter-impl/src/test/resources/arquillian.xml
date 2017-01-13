@@ -1,0 +1,22 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+        http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <container qualifier="chameleon" default="true">
+        <configuration>
+            <property name="chameleonTarget">WildFly:10.0.0.Final:managed</property>
+            <!--<property name="modulePath">target/server/wildfly-dist_10.1.0.Final/wildfly-10.1.0.Final/modules/</property>-->
+        </configuration>
+    </container>
+
+    <!--<container qualifier="second_chameleon" >
+        <configuration>
+            <property name="chameleonTarget">WildFly:8.0.0.Final:managed</property>
+            &lt;!&ndash;<property name="modulePath">target/server/wildfly-dist_10.1.0.Final/wildfly-10.1.0.Final/modules/</property>&ndash;&gt;
+        </configuration>
+    </container>-->
+
+
+</arquillian>
