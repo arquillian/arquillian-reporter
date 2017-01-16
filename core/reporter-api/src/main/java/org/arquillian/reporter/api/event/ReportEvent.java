@@ -1,17 +1,17 @@
 package org.arquillian.reporter.api.event;
 
-import org.arquillian.reporter.api.model.SectionReport;
+import org.arquillian.reporter.api.model.Section;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportEvent {
+public abstract class ReportEvent<PAYLOAD_TYPE extends Section, PARENT_TYPE extends ReportEvent> {
 
-    private SectionReport sectionReport;
+    private PAYLOAD_TYPE sectionReport;
     private String identifier;
-    private ReportEvent parentEvent;
+    private PARENT_TYPE parentEvent;
 
-    public ReportEvent(SectionReport sectionReport) {
+    public ReportEvent(PAYLOAD_TYPE sectionReport) {
         this.sectionReport = sectionReport;
     }
 
@@ -19,16 +19,16 @@ public class ReportEvent {
         this.identifier = identifier;
     }
 
-    public ReportEvent(SectionReport sectionReport, String identifier) {
+    public ReportEvent(PAYLOAD_TYPE sectionReport, String identifier) {
         this.sectionReport = sectionReport;
         this.identifier = identifier;
     }
 
-    public SectionReport getSectionReport() {
+    public PAYLOAD_TYPE getSectionReport() {
         return sectionReport;
     }
 
-    public void setSectionReport(SectionReport sectionReport) {
+    public void setSectionReport(PAYLOAD_TYPE sectionReport) {
         this.sectionReport = sectionReport;
     }
 
@@ -40,11 +40,11 @@ public class ReportEvent {
         this.identifier = identifier;
     }
 
-    public ReportEvent getParentEvent() {
+    public PARENT_TYPE getParentEvent() {
         return parentEvent;
     }
 
-    public ReportEvent setParentEvent(ReportEvent parentEvent) {
+    public ReportEvent setParentEvent(PARENT_TYPE parentEvent) {
         this.parentEvent = parentEvent;
         return this;
     }

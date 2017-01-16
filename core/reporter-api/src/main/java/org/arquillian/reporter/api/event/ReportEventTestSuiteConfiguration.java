@@ -1,13 +1,13 @@
 package org.arquillian.reporter.api.event;
 
-import org.arquillian.reporter.api.model.SectionReport;
+import org.arquillian.reporter.api.model.Configuration;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportEventTestSuiteConfiguration extends ReportEvent {
+public class ReportEventTestSuiteConfiguration extends ReportEvent<Configuration, ReportEventTestSuite> {
 
-    public ReportEventTestSuiteConfiguration(SectionReport sectionReport) {
+    public ReportEventTestSuiteConfiguration(Configuration sectionReport) {
         super(sectionReport);
     }
 
@@ -15,7 +15,7 @@ public class ReportEventTestSuiteConfiguration extends ReportEvent {
         super(identifier);
     }
 
-    public ReportEventTestSuiteConfiguration(SectionReport sectionReport, String identifier) {
+    public ReportEventTestSuiteConfiguration(Configuration sectionReport, String identifier) {
         super(sectionReport, identifier);
     }
 }

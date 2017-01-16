@@ -1,5 +1,10 @@
 package org.arquillian.reporter.api.utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import org.arquillian.reporter.api.model.AbstractSectionReport;
+import org.arquillian.reporter.api.model.Section;
 import org.arquillian.reporter.api.model.SectionReport;
 
 /**
@@ -11,8 +16,24 @@ public class Reporter {
         return new SectionBuilderImpl(name);
     }
 
-    public static SectionBuilder section(SectionReport sectionReport){
-        return new SectionBuilderImpl(sectionReport);
+    public static <T extends SectionBuilder, S extends Section<? extends AbstractSectionReport, T>> T section(S sectionReport){
+
+        Class<? extends T> sectionBuilderClass = sectionReport.getSectionBuilderClass();
+        try {
+            Constructor<?> constructor = sectionBuilderClass.getConstructor(String.class);
+            return (T) constructor.newInstance(new Section[] { sectionReport });
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        throw new IllegalArgumentException();
     }
 
     public static FireSection fireSection(SectionReport sectionReport){

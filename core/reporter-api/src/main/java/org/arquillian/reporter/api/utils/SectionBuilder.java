@@ -3,33 +3,33 @@ package org.arquillian.reporter.api.utils;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.SectionReport;
+import org.arquillian.reporter.api.model.AbstractSectionReport;
 import org.arquillian.reporter.api.model.entry.Entry;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface SectionBuilder {
+public interface SectionBuilder<SECTIONTYPE extends AbstractSectionReport<SECTIONTYPE, ? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder> {
 
-    SectionReport build();
+    SECTIONTYPE build();
 
-    SectionBuilder addEntry(Entry entry);
+    BUILDERTYPE addEntry(Entry entry);
 
-    SectionBuilder setIdentifier(String identifier);
+    BUILDERTYPE setIdentifier(String identifier);
 
-    SectionBuilder feedKeyValueListFromMap(Map<String, String> keyValueMap);
+    BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap);
 
-    SectionBuilder addSection(SectionBuilder sectionBuilder);
+    BUILDERTYPE addSection(BUILDERTYPE sectionBuilder);
 
-    SectionBuilder addSection(SectionReport sectionBuilder);
+    BUILDERTYPE addSection(SECTIONTYPE section);
 
-    SectionBuilder addKeyValueEntry(String key, Entry value);
+    BUILDERTYPE addKeyValueEntry(String key, Entry value);
 
-    SectionBuilder addKeyValueEntry(String key, String value);
+    BUILDERTYPE addKeyValueEntry(String key, String value);
 
-    SectionBuilder addKeyValueEntry(String key, int value);
+    BUILDERTYPE addKeyValueEntry(String key, int value);
 
-    SectionBuilder addKeyValueEntry(String s, boolean runAsClient);
+    BUILDERTYPE addKeyValueEntry(String s, boolean runAsClient);
 
     SectionInEvent fireUsingEvent(ReportEvent reportEvent);
 }

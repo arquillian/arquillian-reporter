@@ -2,7 +2,6 @@ package org.arquillian.core.reporter.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Map;
 
 import org.arquillian.core.reporter.event.ContainerReportEventTestSuiteConfiguration;
@@ -44,9 +43,10 @@ public class ArquillianCoreReporterLifecycleManager {
     private Event<ReportEvent> reportEvent;
 
     public void startTestSuite(@Observes(precedence = Integer.MAX_VALUE) BeforeSuite managerProcessing) {
-        TestSuiteReport testSuiteReport = new TestSuiteReport(TEST_SUITE_NAME);
-
-        reportEvent.fire(new ReportEventTestSuite(testSuiteReport, TEST_SUITE_NAME));
+        Reporter
+            .section(new TestSuiteReport(TEST_SUITE_NAME))
+            .fireUsingEvent(new ReportEventTestSuite(TEST_SUITE_NAME))
+            .fire(reportEvent);
     }
 
     public void reportContainer(@Observes Container event) {
@@ -93,8 +93,8 @@ public class ArquillianCoreReporterLifecycleManager {
         Reporter
             .section(testClassReport)
             .addKeyValueEntry("Report message", reportMessage)
-            .fireUsingEvent(new ReportEventTestClass(testClass.getJavaClass())
-                                .inTestSuite("TEST_SUITE_NAME"))
+
+            .fireUsingEvent(new ReportEventTestClass(testClass.getJavaClass(), "TEST_SUITE_NAME"))
             .fire(reportEvent);
     }
 
@@ -115,37 +115,32 @@ public class ArquillianCoreReporterLifecycleManager {
             .fire(reportEvent);
     }
 
-    public void stopTestMethod(@Observes(precedence = Integer.MIN_VALUE) After event,
-        TestResult result) {
+    public void stopTestMethod(@Observes(precedence = Integer.MIN_VALUE) After event, TestResult result) {
 
         Method testMethod = event.getTestMethod();
-        TestMethodReport testMethodReport = new TestMethodReport(testMethod.getName());
-        testMethodReport.setStatus(result.getStatus());
-        testMethodReport.setStop(new Date(result.getEnd() * 1000));
-
         String reportMessage = ReportMessageParser.parseTestReportMessage(event.getTestMethod());
-        Reporter.section(testMethodReport).addKeyValueEntry("Report message", reportMessage);
 
-        if (result.getStatus() == TestResult.Status.FAILED && result.getThrowable() != null) {
-            String stackTrace = getStackTrace(result.getThrowable());
-            Reporter.section(testMethodReport.getFailure()).addKeyValueEntry("stacktrace", stackTrace);
-        }
+        Reporter
+            .section(new TestMethodReport(testMethod.getName()))
+            .stop()
+            .setResult(result)
+            .addKeyValueEntry("Report message", reportMessage)
+            .fireUsingEvent(new ReportEventTestMethod(testMethod))
+            .fire(reportEvent);
+
 
         //            inTestResourceReportEvent.fire(new InTestResourceReport());
         //            reporter.get().setReporterCursor(new ReporterCursor(reporter.get().getLastTestClassReport()));
         //            report(event, descriptor.get());
-
-        ReportEventTestMethod reportEventTestMethod = new ReportEventTestMethod(testMethodReport, testMethod);
-        reportEvent.fire(reportEventTestMethod);
     }
 
     public void stopTestClass(@Observes(precedence = Integer.MIN_VALUE) AfterClass event) {
 
-        TestClassReport testClassReport = new TestClassReport(event.getTestClass().getName()).stop();
-
-        ReportEventTestClass reportEventTestClass =
-            new ReportEventTestClass(testClassReport, event.getTestClass().getJavaClass()).inTestSuite(TEST_SUITE_NAME);
-        reportEvent.fire(reportEventTestClass);
+        Reporter
+            .section(new TestClassReport(event.getTestClass().getName()))
+            .stop()
+            .fireUsingEvent(new ReportEventTestClass(event.getTestClass().getJavaClass(), TEST_SUITE_NAME))
+            .fire(reportEvent);
 
         //        reporter.get().setReporterCursor(new ReporterCursor(reporter.get().getLastTestSuiteReport()));
         //        report(event, descriptor.get());
@@ -153,8 +148,10 @@ public class ArquillianCoreReporterLifecycleManager {
 
     public void stopTestSuite(@Observes(precedence = Integer.MIN_VALUE) AfterSuite event) {
 
-        TestSuiteReport testSuiteReport = new TestSuiteReport(TEST_SUITE_NAME).stop();
-        reportEvent.fire(new ReportEventTestSuite(testSuiteReport, TEST_SUITE_NAME));
+        Reporter
+            .section(new TestSuiteReport(TEST_SUITE_NAME).stop())
+            .fireUsingEvent(new ReportEventTestSuite(TEST_SUITE_NAME))
+            .fire(reportEvent);
 
 //        exportReportEvent.fire(new ExportReport(reporter.get().getReport()));
     }
@@ -197,18 +194,7 @@ public class ArquillianCoreReporterLifecycleManager {
 //        return extensionReports;
 //    }
 
-    private static String getStackTrace(Throwable aThrowable) {
-        StringBuilder sb = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        sb.append(aThrowable.toString());
-        sb.append(newLine);
 
-        for (StackTraceElement element : aThrowable.getStackTrace()) {
-            sb.append(element);
-            sb.append(newLine);
-        }
-        return sb.toString();
-    }
 
     private static final class ReportMessageParser {
 

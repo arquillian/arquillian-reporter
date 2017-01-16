@@ -2,12 +2,13 @@ package org.arquillian.reporter.api.model;
 
 import java.util.Date;
 
+import org.arquillian.reporter.api.utils.TestMethodSectionBuilderImpl;
 import org.jboss.arquillian.test.spi.TestResult;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends SectionReport {
+public class TestMethodReport extends AbstractSectionReport<TestMethodReport, TestMethodSectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
@@ -58,4 +59,30 @@ public class TestMethodReport extends SectionReport {
     public void setStart(Date start) {
         this.start = start;
     }
+
+    @Override
+    public TestMethodReport merge(TestMethodReport newSection) {
+        if (newSection == null){
+            return this;
+        }
+        defaultMerge(newSection);
+
+        if (newSection.getStop() != null){
+            setStop(newSection.getStop());
+        }
+
+        getConfiguration().merge(newSection.getConfiguration());
+        getFailure().merge(newSection.getFailure());
+
+        if (newSection.getStatus() != null){
+            setStatus(newSection.getStatus());
+        }
+
+        return this;
+    }
+
+    @Override public Class<? extends TestMethodSectionBuilderImpl> getSectionBuilderClass() {
+        return TestMethodSectionBuilderImpl.class;
+    }
+
 }

@@ -7,7 +7,7 @@ import org.arquillian.reporter.api.model.TestMethodReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportEventTestMethod extends ReportEvent {
+public class ReportEventTestMethod extends ReportEvent<TestMethodReport, ReportEventTestClass> {
 
     public ReportEventTestMethod(Method method) {
         super(getIdentifier(method));

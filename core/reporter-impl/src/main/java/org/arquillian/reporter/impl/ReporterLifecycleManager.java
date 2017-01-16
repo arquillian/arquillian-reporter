@@ -15,7 +15,6 @@ import org.arquillian.reporter.api.event.ReportEventTestSuite;
 import org.arquillian.reporter.api.event.ReportEventTestSuiteConfiguration;
 import org.arquillian.reporter.api.model.SectionReport;
 import org.arquillian.reporter.api.model.TestSuiteReport;
-import org.arquillian.reporter.api.utils.SectionModifier;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -76,7 +75,7 @@ public class ReporterLifecycleManager {
 
             SectionReport alreadyExisting = report().getSectionReportByIdentifier(event);
             if (alreadyExisting != null) {
-                SectionModifier.merge(alreadyExisting, event.getSectionReport());
+                alreadyExisting.merge(event.getSectionReport());
             } else if (parentSectionReport != null) {
                 getSectionList(parentSectionReport, methodNameToGetList).add(event.getSectionReport());
                 //                report().getTestSuiteReports().getTestClassReports().add(event.getSectionReport());
@@ -96,7 +95,7 @@ public class ReporterLifecycleManager {
 
         SectionReport alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
         if (alreadyExisting != null) {
-            SectionModifier.merge(alreadyExisting, actualEvent.getSectionReport());
+            alreadyExisting.merge(actualEvent.getSectionReport());
             return;
         }
 

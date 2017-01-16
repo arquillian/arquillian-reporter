@@ -1,56 +1,24 @@
 package org.arquillian.reporter.api.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.arquillian.reporter.api.model.entry.Entry;
+import org.arquillian.reporter.api.utils.SectionBuilder;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SectionReport implements Section {
-
-    private String name;
-
-    private List<Entry> entries = new ArrayList<>();
-
-    private List<SectionReport> sectionReports = new ArrayList<>();
-
-    private String identifier;
+public class SectionReport extends AbstractSectionReport<SectionReport, SectionBuilder> {
 
     public SectionReport(String name) {
-        this.name = name;
+        super(name);
     }
 
-    public String getName() {
-        return name;
+    public SectionReport merge(SectionReport newSection) {
+        defaultMerge(newSection);
+        return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public Class<SectionBuilder> getSectionBuilderClass() {
+        return SectionBuilder.class;
     }
 
-    public List<Entry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<Entry> entries) {
-        this.entries = entries;
-    }
-
-    public List<SectionReport> getSectionReports() {
-        return sectionReports;
-    }
-
-    public void setSectionReports(List<SectionReport> sectionReports) {
-        this.sectionReports = sectionReports;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
 }
