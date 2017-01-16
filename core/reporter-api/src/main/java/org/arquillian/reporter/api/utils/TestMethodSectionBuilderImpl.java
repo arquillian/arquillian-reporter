@@ -11,13 +11,9 @@ import org.jboss.arquillian.test.spi.TestResult;
  */
 public class TestMethodSectionBuilderImpl extends AbstractSectionBuilderImpl<TestMethodReport, TestMethodSectionBuilderImpl> {
 
-    public TestMethodSectionBuilderImpl(String name) {
-        super(name);
-    }
 
-    @Override
-    protected TestMethodReport createSectionInstanceWithName(String name) {
-        return new TestMethodReport(name);
+    public TestMethodSectionBuilderImpl(TestMethodReport sectionReport) {
+        super(sectionReport);
     }
 
     public TestMethodSectionBuilderImpl stop(){

@@ -13,8 +13,8 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport, Te
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
     private TestResult.Status status;
-    private Failure failure;
-    private Configuration configuration;
+    private Failure failure = new Failure("Failures");
+    private Configuration configuration = new Configuration();
 
     public TestMethodReport(String name) {
         super(name);
@@ -81,8 +81,9 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport, Te
         return this;
     }
 
-    @Override public Class<? extends TestMethodSectionBuilderImpl> getSectionBuilderClass() {
-        return TestMethodSectionBuilderImpl.class;
+    @Override
+    public TestMethodSectionBuilderImpl getSectionBuilderClass() {
+        return new TestMethodSectionBuilderImpl(this);
     }
 
 }

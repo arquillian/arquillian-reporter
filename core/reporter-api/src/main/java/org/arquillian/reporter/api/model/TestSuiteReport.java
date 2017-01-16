@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.arquillian.reporter.api.utils.SectionBuilder;
+import org.arquillian.reporter.api.utils.SectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, SectionBuilder> {
+public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, SectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
@@ -69,7 +69,7 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, Sect
     }
 
     @Override
-    public Class<? extends SectionBuilder> getSectionBuilderClass() {
-        return SectionBuilder.class;
+    public SectionBuilderImpl getSectionBuilderClass() {
+        return new SectionBuilderImpl(this);
     }
 }

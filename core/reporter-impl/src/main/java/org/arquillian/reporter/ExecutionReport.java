@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
+import org.arquillian.reporter.api.model.Section;
 import org.arquillian.reporter.api.model.SectionReport;
 import org.arquillian.reporter.api.model.TestSuiteReport;
 import org.arquillian.reporter.api.utils.Validate;
@@ -19,7 +20,7 @@ public class ExecutionReport extends SectionReport {
     private List<TestSuiteReport> testSuiteReports = new ArrayList<>();
     private Map<String, SectionReport> sectionsWithIdentifier = new HashMap<>();
 
-    private Map<Identifier, SectionReport> sectionsAssociatedWithEvents = new HashMap<>();
+    private Map<Identifier, Section> sectionsAssociatedWithEvents = new HashMap<>();
 
     public ExecutionReport() {
         super("execution");
@@ -59,11 +60,11 @@ public class ExecutionReport extends SectionReport {
 
 
 
-    public SectionReport getSectionReportByIdentifier(Identifier identifier){
+    public Section getSectionReportByIdentifier(Identifier identifier){
         return sectionsAssociatedWithEvents.get(identifier);
     }
 
-    public SectionReport getSectionReportByIdentifier(ReportEvent event){
+    public Section getSectionReportByIdentifier(ReportEvent event){
         return sectionsAssociatedWithEvents.get(new Identifier(event.getClass(), event.getIdentifier()));
     }
 

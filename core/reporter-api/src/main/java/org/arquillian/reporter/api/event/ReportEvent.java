@@ -10,6 +10,7 @@ public abstract class ReportEvent<PAYLOAD_TYPE extends Section, PARENT_TYPE exte
     private PAYLOAD_TYPE sectionReport;
     private String identifier;
     private PARENT_TYPE parentEvent;
+    private boolean processed = false;
 
     public ReportEvent(PAYLOAD_TYPE sectionReport) {
         this.sectionReport = sectionReport;
@@ -47,5 +48,13 @@ public abstract class ReportEvent<PAYLOAD_TYPE extends Section, PARENT_TYPE exte
     public ReportEvent setParentEvent(PARENT_TYPE parentEvent) {
         this.parentEvent = parentEvent;
         return this;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 }

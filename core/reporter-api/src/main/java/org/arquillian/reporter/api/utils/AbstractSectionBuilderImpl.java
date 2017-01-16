@@ -18,11 +18,6 @@ public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSec
     private final SECTIONTYPE sectionReport;
     private List<BUILDERTYPE> subsectionBuilders = new ArrayList<>();
 
-    public AbstractSectionBuilderImpl(String name) {
-        sectionReport = createSectionInstanceWithName(name);
-    }
-
-    protected abstract SECTIONTYPE createSectionInstanceWithName(String name);
 
     public AbstractSectionBuilderImpl(SECTIONTYPE sectionReport) {
         this.sectionReport = sectionReport;
@@ -34,7 +29,6 @@ public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSec
     }
 
     public BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap) {
-//        SectionModifier.feedKeyValueListFromMap(sectionReport, keyValueMap);
         keyValueMap.forEach((k,v) -> getSectionReport().getEntries().add(new KeyValueEntry(k, v)));
         return (BUILDERTYPE) this;
     }

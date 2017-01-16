@@ -28,5 +28,5 @@ public interface Section<TYPE extends Section, UTILS extends SectionBuilder> {
 
     void setIdentifier(String identifier);
 
-    Class<? extends UTILS> getSectionBuilderClass();
+    UTILS getSectionBuilderClass();
 }

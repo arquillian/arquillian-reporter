@@ -13,7 +13,7 @@ import org.arquillian.reporter.api.event.ReportEventTestClass;
 import org.arquillian.reporter.api.event.ReportEventTestMethod;
 import org.arquillian.reporter.api.event.ReportEventTestSuite;
 import org.arquillian.reporter.api.event.ReportEventTestSuiteConfiguration;
-import org.arquillian.reporter.api.model.SectionReport;
+import org.arquillian.reporter.api.model.Section;
 import org.arquillian.reporter.api.model.TestSuiteReport;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -42,12 +42,16 @@ public class ReporterLifecycleManager {
         }
     }
 
+    public void observeSectionReports(@Observes(precedence = -100) ReportEvent event){
+        processEvent(null, event, null, "getSectionReports");
+    }
+
     public void observeTestSuiteReports(@Observes ReportEventTestSuite event) {
         processEvent(ReportEventTestSuite.class, event, report(), "getTestSuiteReports");
     }
 
     public void observeTestClassReports(@Observes ReportEventTestClass event) {
-        TestSuiteReport lastTestSuiteReport = getLastTestSuiteReport();
+        Section lastTestSuiteReport = getLastTestSuiteReport();
         if (lastTestSuiteReport != null) {
             processEvent(ReportEventTestClass.class, event, lastTestSuiteReport, "getTestClassReports");
         }
@@ -67,13 +71,16 @@ public class ReporterLifecycleManager {
     }
 
     private void processEvent(Class<? extends ReportEvent> parentEventClass, ReportEvent event,
-        SectionReport parentSectionReport, String methodNameToGetList) {
+        Section parentSectionReport, String methodNameToGetList) {
+        if (event.isProcessed()){
+            return;
+        }
 
-        if (!event.getClass().isAssignableFrom(parentEventClass)) {
+        if (parentEventClass == null || !event.getClass().isAssignableFrom(parentEventClass)) {
             processSubclassEvent(parentEventClass, event, parentSectionReport, methodNameToGetList);
         } else {
 
-            SectionReport alreadyExisting = report().getSectionReportByIdentifier(event);
+            Section alreadyExisting = report().getSectionReportByIdentifier(event);
             if (alreadyExisting != null) {
                 alreadyExisting.merge(event.getSectionReport());
             } else if (parentSectionReport != null) {
@@ -88,12 +95,13 @@ public class ReporterLifecycleManager {
         }
 
         report().register(event);
+        event.setProcessed(true);
     }
 
     private void processSubclassEvent(Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
-        SectionReport parentSectionReport, String methodNameToGetList) {
+        Section parentSectionReport, String methodNameToGetList) {
 
-        SectionReport alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
+        Section alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
         if (alreadyExisting != null) {
             alreadyExisting.merge(actualEvent.getSectionReport());
             return;
@@ -114,7 +122,7 @@ public class ReporterLifecycleManager {
         ReportEvent parentEvent = actualEvent.getParentEvent();
         Identifier parentIdentifier = new Identifier(parentEvent.getClass(), parentEvent.getIdentifier());
 
-        SectionReport parentSection = report().getSectionReportByIdentifier(parentIdentifier);
+        Section parentSection = report().getSectionReportByIdentifier(parentIdentifier);
         if (parentSection != null) {
             if (methodNameToGetList != null) {
                 getSectionList(parentSection, methodNameToGetList).add(actualEvent.getSectionReport());
@@ -127,10 +135,10 @@ public class ReporterLifecycleManager {
         }
     }
 
-    private List<SectionReport> getSectionList(SectionReport parentSectionReport,
+    private List<Section> getSectionList(Section parentSectionReport,
         String methodNameToGetList) {
         try {
-            return (List<SectionReport>) parentSectionReport.getClass().getMethod(methodNameToGetList)
+            return (List<Section>) parentSectionReport.getClass().getMethod(methodNameToGetList)
                 .invoke(parentSectionReport);
         } catch (Exception e) {
             e.printStackTrace();

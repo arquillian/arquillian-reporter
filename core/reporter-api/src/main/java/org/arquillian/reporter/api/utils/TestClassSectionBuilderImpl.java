@@ -13,12 +13,6 @@ public class TestClassSectionBuilderImpl extends AbstractSectionBuilderImpl<Test
         super(sectionReport);
     }
 
-    @Override
-    protected TestClassReport createSectionInstanceWithName(String name) {
-        return new TestClassReport(name);
-    }
-
-
     public TestClassSectionBuilderImpl stop() {
         getSectionReport().setStop(new Date(System.currentTimeMillis()));
         return this;

@@ -63,8 +63,8 @@ public class TestClassReport extends AbstractSectionReport<TestClassReport, Test
     }
 
     @Override
-    public Class<? extends TestClassSectionBuilderImpl> getSectionBuilderClass() {
-        return TestClassSectionBuilderImpl.class;
+    public TestClassSectionBuilderImpl getSectionBuilderClass() {
+        return new TestClassSectionBuilderImpl(this);
     }
 
 }

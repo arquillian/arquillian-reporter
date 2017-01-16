@@ -1,11 +1,11 @@
 package org.arquillian.reporter.api.model;
 
-import org.arquillian.reporter.api.utils.SectionBuilder;
+import org.arquillian.reporter.api.utils.SectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SectionReport extends AbstractSectionReport<SectionReport, SectionBuilder> {
+public class SectionReport extends AbstractSectionReport<SectionReport, SectionBuilderImpl> {
 
     public SectionReport(String name) {
         super(name);
@@ -17,8 +17,8 @@ public class SectionReport extends AbstractSectionReport<SectionReport, SectionB
     }
 
     @Override
-    public Class<SectionBuilder> getSectionBuilderClass() {
-        return SectionBuilder.class;
+    public SectionBuilderImpl getSectionBuilderClass() {
+        return new SectionBuilderImpl(this);
     }
 
 }
