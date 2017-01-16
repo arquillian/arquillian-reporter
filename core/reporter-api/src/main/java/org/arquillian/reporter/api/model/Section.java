@@ -1,32 +1,23 @@
 package org.arquillian.reporter.api.model;
 
-import java.util.List;
-
-import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.utils.SectionBuilder;
+import org.arquillian.reporter.api.utils.SectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface Section<TYPE extends Section, UTILS extends SectionBuilder> {
+public class Section extends AbstractSection<Section,SectionBuilderImpl> {
 
-    TYPE merge(TYPE newSection);
+    public Section(String name) {
+        super(name);
+    }
 
-    String getName();
+    public Section merge(Section newSection) {
+        defaultMerge(newSection);
+        return this;
+    }
 
-    void setName(String name);
+    public SectionBuilderImpl getSectionBuilderClass() {
+        return new SectionBuilderImpl(this);
+    }
 
-    List<Entry> getEntries();
-
-    void setEntries(List<Entry> entries);
-
-    List<Section> getSectionReports();
-
-    void setSectionReports(List<Section> sectionReports);
-
-    String getIdentifier();
-
-    void setIdentifier(String identifier);
-
-    UTILS getSectionBuilderClass();
 }

@@ -9,17 +9,17 @@ import org.arquillian.reporter.api.utils.SectionBuilder;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractSectionReport<TYPE extends AbstractSectionReport, UTILS extends SectionBuilder> implements Section<TYPE, UTILS> {
+public abstract class AbstractSection<TYPE extends AbstractSection, UTILS extends SectionBuilder> {
 
     private String name;
 
     private List<Entry> entries = new ArrayList<>();
 
-    private List<Section> sectionReports = new ArrayList<>();
+    private List<AbstractSection> sectionReports = new ArrayList<>();
 
     private String identifier;
 
-    public AbstractSectionReport(String name) {
+    public AbstractSection(String name) {
         this.name = name;
     }
 
@@ -39,11 +39,11 @@ public abstract class AbstractSectionReport<TYPE extends AbstractSectionReport, 
         this.entries = entries;
     }
 
-    public List<Section> getSectionReports() {
+    public List<AbstractSection> getSectionReports() {
         return sectionReports;
     }
 
-    public void setSectionReports(List<Section> sectionReports) {
+    public void setSectionReports(List<AbstractSection> sectionReports) {
         this.sectionReports = sectionReports;
     }
 
@@ -59,4 +59,8 @@ public abstract class AbstractSectionReport<TYPE extends AbstractSectionReport, 
         getEntries().addAll(newSection.getEntries());
         getSectionReports().addAll(newSection.getSectionReports());
     }
+
+    public abstract UTILS getSectionBuilderClass();
+
+    public abstract TYPE merge(TYPE newSection);
 }

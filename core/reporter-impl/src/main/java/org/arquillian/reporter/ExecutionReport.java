@@ -6,32 +6,32 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
+import org.arquillian.reporter.api.model.AbstractSection;
 import org.arquillian.reporter.api.model.Section;
-import org.arquillian.reporter.api.model.SectionReport;
-import org.arquillian.reporter.api.model.TestSuiteReport;
+import org.arquillian.reporter.api.model.TestSuiteSection;
 import org.arquillian.reporter.api.utils.Validate;
 import org.arquillian.reporter.impl.Identifier;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ExecutionReport extends SectionReport {
+public class ExecutionReport extends Section {
 
-    private List<TestSuiteReport> testSuiteReports = new ArrayList<>();
-    private Map<String, SectionReport> sectionsWithIdentifier = new HashMap<>();
+    private List<TestSuiteSection> testSuiteSections = new ArrayList<>();
+    private Map<String, Section> sectionsWithIdentifier = new HashMap<>();
 
-    private Map<Identifier, Section> sectionsAssociatedWithEvents = new HashMap<>();
+    private Map<Identifier, AbstractSection> sectionsAssociatedWithEvents = new HashMap<>();
 
     public ExecutionReport() {
         super("execution");
     }
 
-    public Map<String, SectionReport> getSectionsWithIdentifier() {
+    public Map<String, Section> getSectionsWithIdentifier() {
         return sectionsWithIdentifier;
     }
 
     public void setSectionsWithIdentifier(
-        Map<String, SectionReport> sectionsWithIdentifier) {
+        Map<String, Section> sectionsWithIdentifier) {
         this.sectionsWithIdentifier = sectionsWithIdentifier;
     }
 
@@ -39,18 +39,18 @@ public class ExecutionReport extends SectionReport {
         return sectionsWithIdentifier.containsKey(identifier);
     }
 
-    public SectionReport getRegisteredSection(String identifier){
+    public Section getRegisteredSection(String identifier){
         return sectionsWithIdentifier.get(identifier);
     }
 
-    public void register(SectionReport section) {
+    public void register(Section section) {
         if (section != null && Validate.isNotEmpty(section.getIdentifier())){
             sectionsWithIdentifier.put(section.getIdentifier(), section);
         }
     }
 
-    public void register(Identifier identifier, SectionReport sectionReport){
-        sectionsAssociatedWithEvents.put(identifier, sectionReport);
+    public void register(Identifier identifier, Section section){
+        sectionsAssociatedWithEvents.put(identifier, section);
     }
 
     public void register(ReportEvent event){
@@ -60,19 +60,19 @@ public class ExecutionReport extends SectionReport {
 
 
 
-    public Section getSectionReportByIdentifier(Identifier identifier){
+    public AbstractSection getSectionReportByIdentifier(Identifier identifier){
         return sectionsAssociatedWithEvents.get(identifier);
     }
 
-    public Section getSectionReportByIdentifier(ReportEvent event){
+    public AbstractSection getSectionReportByIdentifier(ReportEvent event){
         return sectionsAssociatedWithEvents.get(new Identifier(event.getClass(), event.getIdentifier()));
     }
 
-    public List<TestSuiteReport> getTestSuiteReports() {
-        return testSuiteReports;
+    public List<TestSuiteSection> getTestSuiteSections() {
+        return testSuiteSections;
     }
 
-    public void setTestSuiteReports(List<TestSuiteReport> testSuiteReports) {
-        this.testSuiteReports = testSuiteReports;
+    public void setTestSuiteSections(List<TestSuiteSection> testSuiteSections) {
+        this.testSuiteSections = testSuiteSections;
     }
 }

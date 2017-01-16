@@ -9,14 +9,14 @@ import org.arquillian.reporter.api.utils.SectionBuilderImpl;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, SectionBuilderImpl> {
+public class TestSuiteSection extends AbstractSection<TestSuiteSection,SectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
     private Configuration configuration = new Configuration();
-    private List<TestClassReport> testClassReports = new ArrayList<>();
+    private List<TestClassSection> testClassSections = new ArrayList<>();
 
-    public TestSuiteReport(String name) {
+    public TestSuiteSection(String name) {
         super(name);
     }
 
@@ -24,11 +24,11 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, Sect
         return configuration;
     }
 
-    public List<TestClassReport> getTestClassReports() {
-        return testClassReports;
+    public List<TestClassSection> getTestClassSections() {
+        return testClassSections;
     }
 
-    public TestSuiteReport stop() {
+    public TestSuiteSection stop() {
         this.stop = new Date(System.currentTimeMillis());
         return this;
     }
@@ -50,13 +50,13 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport, Sect
     }
 
     @Override
-    public TestSuiteReport merge(TestSuiteReport newSection) {
+    public TestSuiteSection merge(TestSuiteSection newSection) {
         if (newSection == null){
             return this;
         }
         defaultMerge(newSection);
 
-        getTestClassReports().addAll(newSection.getTestClassReports());
+        getTestClassSections().addAll(newSection.getTestClassSections());
 
         if (newSection.getStop() != null){
             setStop(newSection.getStop());

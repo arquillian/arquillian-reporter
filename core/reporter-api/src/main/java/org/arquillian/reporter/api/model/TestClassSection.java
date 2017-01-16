@@ -9,14 +9,14 @@ import org.arquillian.reporter.api.utils.TestClassSectionBuilderImpl;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestClassReport extends AbstractSectionReport<TestClassReport, TestClassSectionBuilderImpl> {
+public class TestClassSection extends AbstractSection<TestClassSection,TestClassSectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
     private Configuration configuration = new Configuration();
-    private List<TestMethodReport> testMethodReports = new ArrayList<>();
+    private List<TestMethodSection> testMethodSections = new ArrayList<>();
 
-    public TestClassReport(String name) {
+    public TestClassSection(String name) {
         super(name);
     }
 
@@ -40,18 +40,18 @@ public class TestClassReport extends AbstractSectionReport<TestClassReport, Test
         this.start = start;
     }
 
-    public List<TestMethodReport> getTestMethodReports() {
-        return testMethodReports;
+    public List<TestMethodSection> getTestMethodSections() {
+        return testMethodSections;
     }
 
     @Override
-    public TestClassReport merge(TestClassReport newSection) {
+    public TestClassSection merge(TestClassSection newSection) {
         if (newSection == null) {
             return this;
         }
         defaultMerge(newSection);
 
-        getTestMethodReports().addAll(newSection.getTestMethodReports());
+        getTestMethodSections().addAll(newSection.getTestMethodSections());
 
         if (newSection.getStop() != null) {
             setStop(newSection.getStop());

@@ -3,13 +3,13 @@ package org.arquillian.reporter.api.utils;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.AbstractSectionReport;
+import org.arquillian.reporter.api.model.AbstractSection;
 import org.arquillian.reporter.api.model.entry.Entry;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface SectionBuilder<SECTIONTYPE extends AbstractSectionReport<SECTIONTYPE, ? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder> {
+public interface SectionBuilder<SECTIONTYPE extends AbstractSection<SECTIONTYPE,? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder> {
 
     SECTIONTYPE build();
 

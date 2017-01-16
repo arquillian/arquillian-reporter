@@ -3,16 +3,16 @@ package org.arquillian.reporter.api.utils;
 import java.util.Date;
 
 import org.arquillian.reporter.api.model.Failure;
-import org.arquillian.reporter.api.model.TestMethodReport;
+import org.arquillian.reporter.api.model.TestMethodSection;
 import org.jboss.arquillian.test.spi.TestResult;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodSectionBuilderImpl extends AbstractSectionBuilderImpl<TestMethodReport, TestMethodSectionBuilderImpl> {
+public class TestMethodSectionBuilderImpl extends AbstractSectionBuilderImpl<TestMethodSection, TestMethodSectionBuilderImpl> {
 
 
-    public TestMethodSectionBuilderImpl(TestMethodReport sectionReport) {
+    public TestMethodSectionBuilderImpl(TestMethodSection sectionReport) {
         super(sectionReport);
     }
 

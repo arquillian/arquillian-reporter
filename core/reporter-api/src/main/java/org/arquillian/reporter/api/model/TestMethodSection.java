@@ -8,7 +8,7 @@ import org.jboss.arquillian.test.spi.TestResult;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends AbstractSectionReport<TestMethodReport, TestMethodSectionBuilderImpl> {
+public class TestMethodSection extends AbstractSection<TestMethodSection,TestMethodSectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
@@ -16,7 +16,7 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport, Te
     private Failure failure = new Failure("Failures");
     private Configuration configuration = new Configuration();
 
-    public TestMethodReport(String name) {
+    public TestMethodSection(String name) {
         super(name);
     }
 
@@ -61,7 +61,7 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport, Te
     }
 
     @Override
-    public TestMethodReport merge(TestMethodReport newSection) {
+    public TestMethodSection merge(TestMethodSection newSection) {
         if (newSection == null){
             return this;
         }

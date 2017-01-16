@@ -1,11 +1,11 @@
 package org.arquillian.reporter.api.event;
 
-import org.arquillian.reporter.api.model.Section;
+import org.arquillian.reporter.api.model.AbstractSection;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class ReportEvent<PAYLOAD_TYPE extends Section, PARENT_TYPE extends ReportEvent> {
+public abstract class ReportEvent<PAYLOAD_TYPE extends AbstractSection, PARENT_TYPE extends ReportEvent> {
 
     private PAYLOAD_TYPE sectionReport;
     private String identifier;

@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.AbstractSectionReport;
+import org.arquillian.reporter.api.model.AbstractSection;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSectionReport<SECTIONTYPE, ? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder>
+public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSection<SECTIONTYPE,? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder>
     implements SectionBuilder<SECTIONTYPE, BUILDERTYPE> {
 
     private final SECTIONTYPE sectionReport;
@@ -64,7 +64,7 @@ public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSec
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addSection(AbstractSectionReport newSection) {
+    public BUILDERTYPE addSection(AbstractSection newSection) {
         // todo should we take care of merging?
         sectionReport.getSectionReports().add(newSection);
         return (BUILDERTYPE) this;
