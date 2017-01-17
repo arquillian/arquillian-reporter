@@ -1,25 +1,26 @@
-package org.arquillian.reporter.api.utils;
+package org.arquillian.reporter.api.builder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.AbstractSection;
+import org.arquillian.reporter.api.builder.impl.SectionInNodeImpl;
+import org.arquillian.reporter.api.event.ReportNodeEvent;
+import org.arquillian.reporter.api.model.report.AbstractSectionReport;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSection<SECTIONTYPE,? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder>
+public abstract class AbstractSectionBuilder<SECTIONTYPE extends AbstractSectionReport<SECTIONTYPE,? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder>
     implements SectionBuilder<SECTIONTYPE, BUILDERTYPE> {
 
     private final SECTIONTYPE sectionReport;
     private List<BUILDERTYPE> subsectionBuilders = new ArrayList<>();
 
 
-    public AbstractSectionBuilderImpl(SECTIONTYPE sectionReport) {
+    public AbstractSectionBuilder(SECTIONTYPE sectionReport) {
         this.sectionReport = sectionReport;
     }
 
@@ -64,7 +65,7 @@ public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSec
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addSection(AbstractSection newSection) {
+    public BUILDERTYPE addSection(AbstractSectionReport newSection) {
         // todo should we take care of merging?
         sectionReport.getSectionReports().add(newSection);
         return (BUILDERTYPE) this;
@@ -75,9 +76,11 @@ public abstract class AbstractSectionBuilderImpl<SECTIONTYPE extends AbstractSec
         return sectionReport;
     }
 
-    public SectionInEvent fireUsingEvent(ReportEvent event){
-        return new SectionInEventImpl(build(), event);
+    public <NODETYPE extends ReportNodeEvent<SECTIONTYPE, ? extends ReportNodeEvent>> SectionInNode<SECTIONTYPE, NODETYPE> attachToNode(NODETYPE event){
+        return new SectionInNodeImpl<>(build(), event);
     }
+
+
 
     protected List<BUILDERTYPE> getSubsectionBuilders() {
         return subsectionBuilders;

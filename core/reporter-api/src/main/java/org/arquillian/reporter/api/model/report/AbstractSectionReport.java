@@ -1,25 +1,25 @@
-package org.arquillian.reporter.api.model;
+package org.arquillian.reporter.api.model.report;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.utils.SectionBuilder;
+import org.arquillian.reporter.api.builder.SectionBuilder;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractSection<TYPE extends AbstractSection, UTILS extends SectionBuilder> {
+public abstract class AbstractSectionReport<TYPE extends AbstractSectionReport, UTILS extends SectionBuilder> {
 
     private String name;
 
     private List<Entry> entries = new ArrayList<>();
 
-    private List<AbstractSection> sectionReports = new ArrayList<>();
+    private List<AbstractSectionReport> sectionReports = new ArrayList<>();
 
     private String identifier;
 
-    public AbstractSection(String name) {
+    public AbstractSectionReport(String name) {
         this.name = name;
     }
 
@@ -39,11 +39,11 @@ public abstract class AbstractSection<TYPE extends AbstractSection, UTILS extend
         this.entries = entries;
     }
 
-    public List<AbstractSection> getSectionReports() {
+    public List<AbstractSectionReport> getSectionReports() {
         return sectionReports;
     }
 
-    public void setSectionReports(List<AbstractSection> sectionReports) {
+    public void setSectionReports(List<AbstractSectionReport> sectionReports) {
         this.sectionReports = sectionReports;
     }
 

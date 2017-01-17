@@ -1,18 +1,21 @@
-package org.arquillian.reporter.api.utils;
+package org.arquillian.reporter.api.builder.impl;
 
 import java.util.Date;
 
-import org.arquillian.reporter.api.model.Failure;
-import org.arquillian.reporter.api.model.TestMethodSection;
+import org.arquillian.reporter.api.builder.AbstractSectionBuilder;
+import org.arquillian.reporter.api.builder.Reporter;
+import org.arquillian.reporter.api.model.report.FailureReport;
+import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.jboss.arquillian.test.spi.TestResult;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodSectionBuilderImpl extends AbstractSectionBuilderImpl<TestMethodSection, TestMethodSectionBuilderImpl> {
+public class TestMethodSectionBuilderImpl extends
+    AbstractSectionBuilder<TestMethodReport, TestMethodSectionBuilderImpl> {
 
 
-    public TestMethodSectionBuilderImpl(TestMethodSection sectionReport) {
+    public TestMethodSectionBuilderImpl(TestMethodReport sectionReport) {
         super(sectionReport);
     }
 
@@ -34,9 +37,9 @@ public class TestMethodSectionBuilderImpl extends AbstractSectionBuilderImpl<Tes
     public TestMethodSectionBuilderImpl setResult(TestResult result){
         if (result.getStatus() == TestResult.Status.FAILED && result.getThrowable() != null) {
             String stackTrace = getStackTrace(result.getThrowable());
-            Failure failure = new Failure("Test failure");
-            Reporter.section(failure).addKeyValueEntry("stacktrace", stackTrace);
-            getSectionReport().setFailure(failure);
+            FailureReport failureReport = new FailureReport("Test failure");
+            Reporter.section(failureReport).addKeyValueEntry("stacktrace", stackTrace);
+            getSectionReport().setFailureReport(failureReport);
         }
         getSectionReport().setStatus(result.getStatus());
         return this;

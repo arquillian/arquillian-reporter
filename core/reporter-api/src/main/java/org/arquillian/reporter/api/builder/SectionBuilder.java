@@ -1,15 +1,15 @@
-package org.arquillian.reporter.api.utils;
+package org.arquillian.reporter.api.builder;
 
 import java.util.Map;
 
-import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.AbstractSection;
+import org.arquillian.reporter.api.event.ReportNodeEvent;
 import org.arquillian.reporter.api.model.entry.Entry;
+import org.arquillian.reporter.api.model.report.AbstractSectionReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface SectionBuilder<SECTIONTYPE extends AbstractSection<SECTIONTYPE,? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder> {
+public interface SectionBuilder<SECTIONTYPE extends AbstractSectionReport<SECTIONTYPE, ? extends SectionBuilder>, BUILDERTYPE extends SectionBuilder> {
 
     SECTIONTYPE build();
 
@@ -31,5 +31,5 @@ public interface SectionBuilder<SECTIONTYPE extends AbstractSection<SECTIONTYPE,
 
     BUILDERTYPE addKeyValueEntry(String s, boolean runAsClient);
 
-    SectionInEvent fireUsingEvent(ReportEvent reportEvent);
+    <NODETYPE extends ReportNodeEvent<SECTIONTYPE, ? extends ReportNodeEvent>> SectionInNode<SECTIONTYPE, NODETYPE> attachToNode(NODETYPE event);
 }

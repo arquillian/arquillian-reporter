@@ -5,33 +5,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.model.AbstractSection;
-import org.arquillian.reporter.api.model.Section;
-import org.arquillian.reporter.api.model.TestSuiteSection;
-import org.arquillian.reporter.api.utils.Validate;
+import org.arquillian.reporter.api.event.ReportNodeEvent;
+import org.arquillian.reporter.api.model.report.AbstractSectionReport;
+import org.arquillian.reporter.api.model.report.SectionReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.api.builder.Validate;
 import org.arquillian.reporter.impl.Identifier;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ExecutionReport extends Section {
+public class ExecutionReport extends SectionReport {
 
-    private List<TestSuiteSection> testSuiteSections = new ArrayList<>();
-    private Map<String, Section> sectionsWithIdentifier = new HashMap<>();
+    private List<TestSuiteReport> testSuiteReports = new ArrayList<>();
+    private Map<String, SectionReport> sectionsWithIdentifier = new HashMap<>();
 
-    private Map<Identifier, AbstractSection> sectionsAssociatedWithEvents = new HashMap<>();
+    private Map<Identifier, AbstractSectionReport> sectionsAssociatedWithEvents = new HashMap<>();
 
     public ExecutionReport() {
         super("execution");
     }
 
-    public Map<String, Section> getSectionsWithIdentifier() {
+    public Map<String, SectionReport> getSectionsWithIdentifier() {
         return sectionsWithIdentifier;
     }
 
     public void setSectionsWithIdentifier(
-        Map<String, Section> sectionsWithIdentifier) {
+        Map<String, SectionReport> sectionsWithIdentifier) {
         this.sectionsWithIdentifier = sectionsWithIdentifier;
     }
 
@@ -39,40 +39,40 @@ public class ExecutionReport extends Section {
         return sectionsWithIdentifier.containsKey(identifier);
     }
 
-    public Section getRegisteredSection(String identifier){
+    public SectionReport getRegisteredSection(String identifier){
         return sectionsWithIdentifier.get(identifier);
     }
 
-    public void register(Section section) {
-        if (section != null && Validate.isNotEmpty(section.getIdentifier())){
-            sectionsWithIdentifier.put(section.getIdentifier(), section);
+    public void register(SectionReport sectionReport) {
+        if (sectionReport != null && Validate.isNotEmpty(sectionReport.getIdentifier())){
+            sectionsWithIdentifier.put(sectionReport.getIdentifier(), sectionReport);
         }
     }
 
-    public void register(Identifier identifier, Section section){
-        sectionsAssociatedWithEvents.put(identifier, section);
+    public void register(Identifier identifier, SectionReport sectionReport){
+        sectionsAssociatedWithEvents.put(identifier, sectionReport);
     }
 
-    public void register(ReportEvent event){
+    public void register(ReportNodeEvent event){
         Identifier identifier = new Identifier(event.getClass(), event.getIdentifier());
-        sectionsAssociatedWithEvents.put(identifier, event.getSectionReport());
+        sectionsAssociatedWithEvents.put(identifier, event.getSection());
     }
 
 
 
-    public AbstractSection getSectionReportByIdentifier(Identifier identifier){
+    public AbstractSectionReport getSectionReportByIdentifier(Identifier identifier){
         return sectionsAssociatedWithEvents.get(identifier);
     }
 
-    public AbstractSection getSectionReportByIdentifier(ReportEvent event){
+    public AbstractSectionReport getSectionReportByIdentifier(ReportNodeEvent event){
         return sectionsAssociatedWithEvents.get(new Identifier(event.getClass(), event.getIdentifier()));
     }
 
-    public List<TestSuiteSection> getTestSuiteSections() {
-        return testSuiteSections;
+    public List<TestSuiteReport> getTestSuiteReports() {
+        return testSuiteReports;
     }
 
-    public void setTestSuiteSections(List<TestSuiteSection> testSuiteSections) {
-        this.testSuiteSections = testSuiteSections;
+    public void setTestSuiteReports(List<TestSuiteReport> testSuiteReports) {
+        this.testSuiteReports = testSuiteReports;
     }
 }

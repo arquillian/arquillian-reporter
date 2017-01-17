@@ -8,13 +8,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.ExecutionReport;
-import org.arquillian.reporter.api.event.ReportEvent;
-import org.arquillian.reporter.api.event.ReportTestClass;
-import org.arquillian.reporter.api.event.ReportTestMethod;
-import org.arquillian.reporter.api.event.ReportTestSuite;
-import org.arquillian.reporter.api.event.ReportTestSuiteConfiguration;
-import org.arquillian.reporter.api.model.AbstractSection;
-import org.arquillian.reporter.api.model.TestSuiteSection;
+import org.arquillian.reporter.api.event.ReportNodeEvent;
+import org.arquillian.reporter.api.event.TestClassNode;
+import org.arquillian.reporter.api.event.TestMethodNode;
+import org.arquillian.reporter.api.event.TestSuiteNode;
+import org.arquillian.reporter.api.event.TestSuiteConfigurationNode;
+import org.arquillian.reporter.api.model.report.AbstractSectionReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -42,36 +42,36 @@ public class ReporterLifecycleManager {
         }
     }
 
-    public void observeSectionReports(@Observes(precedence = -100) ReportEvent event){
+    public void observeSectionReports(@Observes(precedence = -100) ReportNodeEvent event){
         processEvent(null, event, null, null);
     }
 
-    public void observeTestSuiteReports(@Observes ReportTestSuite event) {
-        processEvent(ReportTestSuite.class, event, report(), "getTestSuiteSections");
+    public void observeTestSuiteReports(@Observes TestSuiteNode event) {
+        processEvent(TestSuiteNode.class, event, report(), "getTestSuiteReports");
     }
 
-    public void observeTestClassReports(@Observes ReportTestClass event) {
-        AbstractSection lastTestSuiteReport = getLastTestSuiteReport();
+    public void observeTestClassReports(@Observes TestClassNode event) {
+        AbstractSectionReport lastTestSuiteReport = getLastTestSuiteReport();
         if (lastTestSuiteReport != null) {
-            processEvent(ReportTestClass.class, event, lastTestSuiteReport, "getTestClassSections");
+            processEvent(TestClassNode.class, event, lastTestSuiteReport, "getTestClassReports");
         }
     }
 
-    public void observeTestMethodReports(@Observes ReportTestMethod event) {
-        processEvent(ReportTestMethod.class, event, null, "getTestMethodSections");
+    public void observeTestMethodReports(@Observes TestMethodNode event) {
+        processEvent(TestMethodNode.class, event, null, "getTestMethodReports");
 
     }
 
-    public void observeReportTestSuiteConfigurationEvents(@Observes ReportTestSuiteConfiguration event) {
-        TestSuiteSection lastTestSuiteSection = getLastTestSuiteReport();
-        if (lastTestSuiteSection != null) {
-            processEvent(ReportTestSuiteConfiguration.class, event,
-                         lastTestSuiteSection.getConfiguration(), null);
+    public void observeReportTestSuiteConfigurationEvents(@Observes TestSuiteConfigurationNode event) {
+        TestSuiteReport lastTestSuiteReport = getLastTestSuiteReport();
+        if (lastTestSuiteReport != null) {
+            processEvent(TestSuiteConfigurationNode.class, event,
+                         lastTestSuiteReport.getConfiguration(), null);
         }
     }
 
-    private void processEvent(Class<? extends ReportEvent> parentEventClass, ReportEvent event,
-        AbstractSection parentSectionReport, String methodNameToGetList) {
+    private void processEvent(Class<? extends ReportNodeEvent> parentEventClass, ReportNodeEvent event,
+        AbstractSectionReport parentSectionReport, String methodNameToGetList) {
         if (event.isProcessed()){
             return;
         }
@@ -80,12 +80,12 @@ public class ReporterLifecycleManager {
             processSubclassEvent(parentEventClass, event, parentSectionReport, methodNameToGetList);
         } else {
 
-            AbstractSection alreadyExisting = report().getSectionReportByIdentifier(event);
+            AbstractSectionReport alreadyExisting = report().getSectionReportByIdentifier(event);
             if (alreadyExisting != null) {
-                alreadyExisting.merge(event.getSectionReport());
+                alreadyExisting.merge(event.getSection());
             } else if (parentSectionReport != null) {
-                getSectionList(parentSectionReport, methodNameToGetList).add(event.getSectionReport());
-                //                report().getTestSuiteReports().getTestClassReports().add(event.getSectionReport());
+                getSectionList(parentSectionReport, methodNameToGetList).add(event.getSection());
+                //                report().getTestSuiteReports().getTestClassReports().add(event.getSection());
             } else if (event.getParentEvent() != null) {
                 processParentEventIsSet(event, methodNameToGetList);
             } else {
@@ -98,12 +98,12 @@ public class ReporterLifecycleManager {
         event.setProcessed(true);
     }
 
-    private void processSubclassEvent(Class<? extends ReportEvent> expectedReportEventClass, ReportEvent actualEvent,
-        AbstractSection parentSectionReport, String methodNameToGetList) {
+    private void processSubclassEvent(Class<? extends ReportNodeEvent> expectedReportEventClass, ReportNodeEvent actualEvent,
+        AbstractSectionReport parentSectionReport, String methodNameToGetList) {
 
-        AbstractSection alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
+        AbstractSectionReport alreadyExisting = report().getSectionReportByIdentifier(actualEvent);
         if (alreadyExisting != null) {
-            alreadyExisting.merge(actualEvent.getSectionReport());
+            alreadyExisting.merge(actualEvent.getSection());
             return;
         }
 
@@ -112,22 +112,22 @@ public class ReporterLifecycleManager {
         } else {
             Class<?> superclass = actualEvent.getClass().getSuperclass();
             if (!superclass.isAssignableFrom(expectedReportEventClass)) {
-                getSectionList(parentSectionReport, methodNameToGetList).add(actualEvent.getSectionReport());
+                getSectionList(parentSectionReport, methodNameToGetList).add(actualEvent.getSection());
             }
         }
     }
 
-    private void processParentEventIsSet(ReportEvent actualEvent, String methodNameToGetList) {
+    private void processParentEventIsSet(ReportNodeEvent actualEvent, String methodNameToGetList) {
 
-        ReportEvent parentEvent = actualEvent.getParentEvent();
+        ReportNodeEvent parentEvent = actualEvent.getParentEvent();
         Identifier parentIdentifier = new Identifier(parentEvent.getClass(), parentEvent.getIdentifier());
 
-        AbstractSection parentSection = report().getSectionReportByIdentifier(parentIdentifier);
+        AbstractSectionReport parentSection = report().getSectionReportByIdentifier(parentIdentifier);
         if (parentSection != null) {
             if (methodNameToGetList != null) {
-                getSectionList(parentSection, methodNameToGetList).add(actualEvent.getSectionReport());
+                getSectionList(parentSection, methodNameToGetList).add(actualEvent.getSection());
             } else {
-                parentSection.getSectionReports().add(actualEvent.getSectionReport());
+                parentSection.getSectionReports().add(actualEvent.getSection());
             }
         } else {
             // todo
@@ -135,13 +135,13 @@ public class ReporterLifecycleManager {
         }
     }
 
-    private List<AbstractSection> getSectionList(AbstractSection parentSectionReport,
+    private List<AbstractSectionReport> getSectionList(AbstractSectionReport parentSectionReport,
         String methodNameToGetList) {
         if (methodNameToGetList == null){
             return parentSectionReport.getSectionReports();
         }
         try {
-            return (List<AbstractSection>) parentSectionReport.getClass().getMethod(methodNameToGetList)
+            return (List<AbstractSectionReport>) parentSectionReport.getClass().getMethod(methodNameToGetList)
                 .invoke(parentSectionReport);
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,17 +151,17 @@ public class ReporterLifecycleManager {
 
     public void afterSuite(@Observes ManagerStopping event) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(report().getTestSuiteSections());
+        String json = gson.toJson(report().getTestSuiteReports());
         FileUtils.writeStringToFile(new File("target/report.json"), json);
         System.out.println(json);
 
     }
 
     // todo support multiple test suites within one execution
-    private TestSuiteSection getLastTestSuiteReport() {
-        List<TestSuiteSection> testSuiteSections = report().getTestSuiteSections();
-        if (testSuiteSections.size() > 0) {
-            return testSuiteSections.get(testSuiteSections.size() - 1);
+    private TestSuiteReport getLastTestSuiteReport() {
+        List<TestSuiteReport> testSuiteReports = report().getTestSuiteReports();
+        if (testSuiteReports.size() > 0) {
+            return testSuiteReports.get(testSuiteReports.size() - 1);
         }
         return null;
     }

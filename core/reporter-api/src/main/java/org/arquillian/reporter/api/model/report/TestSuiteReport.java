@@ -1,34 +1,34 @@
-package org.arquillian.reporter.api.model;
+package org.arquillian.reporter.api.model.report;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.arquillian.reporter.api.utils.SectionBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.SectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteSection extends AbstractSection<TestSuiteSection,SectionBuilderImpl> {
+public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,SectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
-    private Configuration configuration = new Configuration();
-    private List<TestClassSection> testClassSections = new ArrayList<>();
+    private ConfigurationReport configuration = new ConfigurationReport();
+    private List<TestClassReport> testClassReports = new ArrayList<>();
 
-    public TestSuiteSection(String name) {
+    public TestSuiteReport(String name) {
         super(name);
     }
 
-    public Configuration getConfiguration() {
+    public ConfigurationReport getConfiguration() {
         return configuration;
     }
 
-    public List<TestClassSection> getTestClassSections() {
-        return testClassSections;
+    public List<TestClassReport> getTestClassReports() {
+        return testClassReports;
     }
 
-    public TestSuiteSection stop() {
+    public TestSuiteReport stop() {
         this.stop = new Date(System.currentTimeMillis());
         return this;
     }
@@ -50,13 +50,13 @@ public class TestSuiteSection extends AbstractSection<TestSuiteSection,SectionBu
     }
 
     @Override
-    public TestSuiteSection merge(TestSuiteSection newSection) {
+    public TestSuiteReport merge(TestSuiteReport newSection) {
         if (newSection == null){
             return this;
         }
         defaultMerge(newSection);
 
-        getTestClassSections().addAll(newSection.getTestClassSections());
+        getTestClassReports().addAll(newSection.getTestClassReports());
 
         if (newSection.getStop() != null){
             setStop(newSection.getStop());

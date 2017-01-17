@@ -1,36 +1,39 @@
 package org.arquillian.reporter.api.event;
 
-import org.arquillian.reporter.api.model.AbstractSection;
+import org.arquillian.reporter.api.model.report.AbstractSectionReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class ReportEvent<PAYLOAD_TYPE extends AbstractSection, PARENT_TYPE extends ReportEvent> {
+public abstract class ReportNodeEvent<PAYLOAD_TYPE extends AbstractSectionReport, PARENT_TYPE extends ReportNodeEvent> {
 
-    private PAYLOAD_TYPE sectionReport;
+    private PAYLOAD_TYPE section;
     private String identifier;
     private PARENT_TYPE parentEvent;
     private boolean processed = false;
 
-    public ReportEvent(PAYLOAD_TYPE sectionReport) {
-        this.sectionReport = sectionReport;
+    public ReportNodeEvent(){
     }
 
-    public ReportEvent(String identifier) {
+    public ReportNodeEvent(PAYLOAD_TYPE section) {
+        this.section = section;
+    }
+
+    public ReportNodeEvent(String identifier) {
         this.identifier = identifier;
     }
 
-    public ReportEvent(PAYLOAD_TYPE sectionReport, String identifier) {
-        this.sectionReport = sectionReport;
+    public ReportNodeEvent(PAYLOAD_TYPE section, String identifier) {
+        this.section = section;
         this.identifier = identifier;
     }
 
-    public PAYLOAD_TYPE getSectionReport() {
-        return sectionReport;
+    public PAYLOAD_TYPE getSection() {
+        return section;
     }
 
-    public void setSectionReport(PAYLOAD_TYPE sectionReport) {
-        this.sectionReport = sectionReport;
+    public void setSection(PAYLOAD_TYPE section) {
+        this.section = section;
     }
 
     public String getIdentifier() {
@@ -45,7 +48,7 @@ public abstract class ReportEvent<PAYLOAD_TYPE extends AbstractSection, PARENT_T
         return parentEvent;
     }
 
-    public ReportEvent setParentEvent(PARENT_TYPE parentEvent) {
+    public ReportNodeEvent setParentEvent(PARENT_TYPE parentEvent) {
         this.parentEvent = parentEvent;
         return this;
     }

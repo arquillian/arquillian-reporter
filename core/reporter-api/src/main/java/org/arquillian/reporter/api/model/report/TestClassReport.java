@@ -1,26 +1,26 @@
-package org.arquillian.reporter.api.model;
+package org.arquillian.reporter.api.model.report;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.arquillian.reporter.api.utils.TestClassSectionBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.TestClassSectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestClassSection extends AbstractSection<TestClassSection,TestClassSectionBuilderImpl> {
+public class TestClassReport extends AbstractSectionReport<TestClassReport,TestClassSectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
-    private Configuration configuration = new Configuration();
-    private List<TestMethodSection> testMethodSections = new ArrayList<>();
+    private ConfigurationReport configuration = new ConfigurationReport();
+    private List<TestMethodReport> testMethodReports = new ArrayList<>();
 
-    public TestClassSection(String name) {
+    public TestClassReport(String name) {
         super(name);
     }
 
-    public Configuration getConfiguration() {
+    public ConfigurationReport getConfiguration() {
         return configuration;
     }
 
@@ -40,18 +40,18 @@ public class TestClassSection extends AbstractSection<TestClassSection,TestClass
         this.start = start;
     }
 
-    public List<TestMethodSection> getTestMethodSections() {
-        return testMethodSections;
+    public List<TestMethodReport> getTestMethodReports() {
+        return testMethodReports;
     }
 
     @Override
-    public TestClassSection merge(TestClassSection newSection) {
+    public TestClassReport merge(TestClassReport newSection) {
         if (newSection == null) {
             return this;
         }
         defaultMerge(newSection);
 
-        getTestMethodSections().addAll(newSection.getTestMethodSections());
+        getTestMethodReports().addAll(newSection.getTestMethodReports());
 
         if (newSection.getStop() != null) {
             setStop(newSection.getStop());

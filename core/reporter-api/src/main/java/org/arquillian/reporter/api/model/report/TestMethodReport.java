@@ -1,30 +1,30 @@
-package org.arquillian.reporter.api.model;
+package org.arquillian.reporter.api.model.report;
 
 import java.util.Date;
 
-import org.arquillian.reporter.api.utils.TestMethodSectionBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.TestMethodSectionBuilderImpl;
 import org.jboss.arquillian.test.spi.TestResult;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodSection extends AbstractSection<TestMethodSection,TestMethodSectionBuilderImpl> {
+public class TestMethodReport extends AbstractSectionReport<TestMethodReport,TestMethodSectionBuilderImpl> {
 
     private Date start = new Date(System.currentTimeMillis());
     private Date stop;
     private TestResult.Status status;
-    private Failure failure = new Failure("Failures");
-    private Configuration configuration = new Configuration();
+    private FailureReport failureReport = new FailureReport("Failures");
+    private ConfigurationReport configuration = new ConfigurationReport();
 
-    public TestMethodSection(String name) {
+    public TestMethodReport(String name) {
         super(name);
     }
 
-    public Configuration getConfiguration() {
+    public ConfigurationReport getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(Configuration configuration) {
+    public void setConfiguration(ConfigurationReport configuration) {
         this.configuration = configuration;
     }
 
@@ -36,12 +36,12 @@ public class TestMethodSection extends AbstractSection<TestMethodSection,TestMet
         this.status = status;
     }
 
-    public Failure getFailure() {
-        return failure;
+    public FailureReport getFailureReport() {
+        return failureReport;
     }
 
-    public void setFailure(Failure failure) {
-        this.failure = failure;
+    public void setFailureReport(FailureReport failureReport) {
+        this.failureReport = failureReport;
     }
 
     public Date getStop() {
@@ -61,7 +61,7 @@ public class TestMethodSection extends AbstractSection<TestMethodSection,TestMet
     }
 
     @Override
-    public TestMethodSection merge(TestMethodSection newSection) {
+    public TestMethodReport merge(TestMethodReport newSection) {
         if (newSection == null){
             return this;
         }
@@ -72,7 +72,7 @@ public class TestMethodSection extends AbstractSection<TestMethodSection,TestMet
         }
 
         getConfiguration().merge(newSection.getConfiguration());
-        getFailure().merge(newSection.getFailure());
+        getFailureReport().merge(newSection.getFailureReport());
 
         if (newSection.getStatus() != null){
             setStatus(newSection.getStatus());
