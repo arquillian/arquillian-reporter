@@ -1,9 +1,9 @@
 package org.arquillian.reporter.api.model.report;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestClassSectionBuilderImpl;
 
 /**
@@ -11,8 +11,8 @@ import org.arquillian.reporter.api.builder.impl.TestClassSectionBuilderImpl;
  */
 public class TestClassReport extends AbstractSectionReport<TestClassReport,TestClassSectionBuilderImpl> {
 
-    private Date start = new Date(System.currentTimeMillis());
-    private Date stop;
+    private String start = Utils.getCurrentDate();
+    private String stop;
     private ConfigurationReport configuration = new ConfigurationReport();
     private List<TestMethodReport> testMethodReports = new ArrayList<>();
 
@@ -24,19 +24,19 @@ public class TestClassReport extends AbstractSectionReport<TestClassReport,TestC
         return configuration;
     }
 
-    public Date getStop() {
+    public String getStop() {
         return stop;
     }
 
-    public void setStop(Date stop) {
+    public void setStop(String stop) {
         this.stop = stop;
     }
 
-    public Date getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(String start) {
         this.start = start;
     }
 

@@ -153,7 +153,8 @@ public class ArquillianCoreReporterLifecycleManager {
     public void stopTestSuite(@Observes(precedence = Integer.MIN_VALUE) AfterSuite event) {
 
         Reporter
-            .section(new TestSuiteReport(TEST_SUITE_NAME).stop())
+            .section(new TestSuiteReport(TEST_SUITE_NAME))
+            .stop()
             .attachToNode(new TestSuiteNode(TEST_SUITE_NAME))
             .report(reportEvent);
 

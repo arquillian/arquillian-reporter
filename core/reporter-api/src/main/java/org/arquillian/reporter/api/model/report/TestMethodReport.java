@@ -1,7 +1,6 @@
 package org.arquillian.reporter.api.model.report;
 
-import java.util.Date;
-
+import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestMethodSectionBuilderImpl;
 import org.jboss.arquillian.test.spi.TestResult;
 
@@ -10,8 +9,8 @@ import org.jboss.arquillian.test.spi.TestResult;
  */
 public class TestMethodReport extends AbstractSectionReport<TestMethodReport,TestMethodSectionBuilderImpl> {
 
-    private Date start = new Date(System.currentTimeMillis());
-    private Date stop;
+    private String start = Utils.getCurrentDate();
+    private String stop;
     private TestResult.Status status;
     private FailureReport failureReport = new FailureReport("Failures");
     private ConfigurationReport configuration = new ConfigurationReport();
@@ -44,19 +43,19 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport,Tes
         this.failureReport = failureReport;
     }
 
-    public Date getStop() {
+    public String getStop() {
         return stop;
     }
 
-    public void setStop(Date stop) {
+    public void setStop(String stop) {
         this.stop = stop;
     }
 
-    public Date getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(String start) {
         this.start = start;
     }
 

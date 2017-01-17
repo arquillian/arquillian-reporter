@@ -1,9 +1,8 @@
 package org.arquillian.reporter.api.builder.impl;
 
-import java.util.Date;
-
 import org.arquillian.reporter.api.builder.AbstractSectionBuilder;
 import org.arquillian.reporter.api.builder.Reporter;
+import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.jboss.arquillian.test.spi.TestResult;
@@ -20,7 +19,7 @@ public class TestMethodSectionBuilderImpl extends
     }
 
     public TestMethodSectionBuilderImpl stop(){
-        getSectionReport().setStop(new Date(System.currentTimeMillis()));
+        getSectionReport().setStop(Utils.getCurrentDate());
         return this;
     }
 

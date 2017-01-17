@@ -1,18 +1,18 @@
 package org.arquillian.reporter.api.model.report;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.arquillian.reporter.api.builder.impl.SectionBuilderImpl;
+import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.builder.impl.TestSuiteSectionBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,SectionBuilderImpl> {
+public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,TestSuiteSectionBuilderImpl> {
 
-    private Date start = new Date(System.currentTimeMillis());
-    private Date stop;
+    private String start = Utils.getCurrentDate();
+    private String stop;
     private ConfigurationReport configuration = new ConfigurationReport();
     private List<TestClassReport> testClassReports = new ArrayList<>();
 
@@ -28,24 +28,19 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,Secti
         return testClassReports;
     }
 
-    public TestSuiteReport stop() {
-        this.stop = new Date(System.currentTimeMillis());
-        return this;
-    }
-
-    public Date getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public Date getStop() {
+    public String getStop() {
         return stop;
     }
 
-    public void setStop(Date stop) {
+    public void setStop(String stop) {
         this.stop = stop;
     }
 
@@ -69,7 +64,7 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,Secti
     }
 
     @Override
-    public SectionBuilderImpl getSectionBuilderClass() {
-        return new SectionBuilderImpl(this);
+    public TestSuiteSectionBuilderImpl getSectionBuilderClass() {
+        return new TestSuiteSectionBuilderImpl(this);
     }
 }
