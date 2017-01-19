@@ -1,25 +1,25 @@
 package org.arquillian.reporter.api.builder;
 
-import org.arquillian.reporter.api.builder.impl.FireSectionImpl;
-import org.arquillian.reporter.api.builder.impl.SectionBuilderImpl;
-import org.arquillian.reporter.api.model.report.AbstractSectionReport;
-import org.arquillian.reporter.api.model.report.SectionReport;
+import org.arquillian.reporter.api.builder.impl.FireReportImpl;
+import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class Reporter {
 
-    public static SectionBuilder section(String name){
-        return new SectionBuilderImpl(new SectionReport(name));
+    public static ReportBuilder createReport(String name){
+        return new ReportBuilderImpl(new Report(name));
     }
 
-    public static <T extends SectionBuilder<? extends AbstractSectionReport,T>, S extends AbstractSectionReport<? extends AbstractSectionReport, T>> T section(S sectionReport) {
-        return sectionReport.getSectionBuilderClass();
+    public static <T extends ReportBuilder<? extends AbstractReport,T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(S report) {
+        return report.getReportBuilderClass();
     }
 
-    public static FireSection reportSection(SectionReport sectionReport){
-        return new FireSectionImpl(sectionReport);
+    public static FireReport reportSection(Report sectionReport){
+        return new FireReportImpl(sectionReport);
     }
 
 //    public static CreateNode createNode(ReportNodeEvent reportNodeEvent){

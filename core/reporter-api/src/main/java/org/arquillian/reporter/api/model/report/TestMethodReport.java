@@ -1,30 +1,33 @@
 package org.arquillian.reporter.api.model.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.arquillian.reporter.api.builder.Utils;
-import org.arquillian.reporter.api.builder.impl.TestMethodSectionBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.TestMethodReportBuilderImpl;
 import org.jboss.arquillian.test.spi.TestResult;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends AbstractSectionReport<TestMethodReport,TestMethodSectionBuilderImpl> {
+public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethodReportBuilderImpl> {
 
     private String start = Utils.getCurrentDate();
     private String stop;
     private TestResult.Status status;
-    private FailureReport failureReport = new FailureReport("Failures");
-    private ConfigurationReport configuration = new ConfigurationReport();
+    private List<FailureReport> failureReports = new ArrayList<>();
+    private List<ConfigurationReport> configurations = new ArrayList<>();
 
     public TestMethodReport(String name) {
         super(name);
     }
 
-    public ConfigurationReport getConfiguration() {
-        return configuration;
+    public List<ConfigurationReport> getConfigurations() {
+        return configurations;
     }
 
-    public void setConfiguration(ConfigurationReport configuration) {
-        this.configuration = configuration;
+    public void setConfigurations(List<ConfigurationReport> configurations) {
+        this.configurations = configurations;
     }
 
     public TestResult.Status getStatus() {
@@ -35,12 +38,12 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport,Tes
         this.status = status;
     }
 
-    public FailureReport getFailureReport() {
-        return failureReport;
+    public List<FailureReport> getFailureReports() {
+        return failureReports;
     }
 
-    public void setFailureReport(FailureReport failureReport) {
-        this.failureReport = failureReport;
+    public void setFailureReports(List<FailureReport> failureReports) {
+        this.failureReports = failureReports;
     }
 
     public String getStop() {
@@ -60,29 +63,41 @@ public class TestMethodReport extends AbstractSectionReport<TestMethodReport,Tes
     }
 
     @Override
-    public TestMethodReport merge(TestMethodReport newSection) {
-        if (newSection == null){
+    public TestMethodReport merge(TestMethodReport newReport) {
+        if (newReport == null){
             return this;
         }
-        defaultMerge(newSection);
+        defaultMerge(newReport);
 
-        if (newSection.getStop() != null){
-            setStop(newSection.getStop());
+        if (newReport.getStop() != null){
+            setStop(newReport.getStop());
         }
 
-        getConfiguration().merge(newSection.getConfiguration());
-        getFailureReport().merge(newSection.getFailureReport());
+        getConfigurations().addAll(newReport.getConfigurations());
+        getFailureReports().addAll(newReport.getFailureReports());
 
-        if (newSection.getStatus() != null){
-            setStatus(newSection.getStatus());
+        if (newReport.getStatus() != null){
+            setStatus(newReport.getStatus());
         }
 
         return this;
     }
 
+    @Override public TestMethodReport addNewReport(AbstractReport newReport) {
+        Class<? extends AbstractReport> newReportClass = newReport.getClass();
+        if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
+            getConfigurations().add((ConfigurationReport) newReport);
+        } else if (FailureReport.class.isAssignableFrom(newReportClass)){
+            getFailureReports().add((FailureReport) newReport);
+        } else {
+            getSubreports().add(newReport);
+        }
+        return this;
+    }
+
     @Override
-    public TestMethodSectionBuilderImpl getSectionBuilderClass() {
-        return new TestMethodSectionBuilderImpl(this);
+    public TestMethodReportBuilderImpl getReportBuilderClass() {
+        return new TestMethodReportBuilderImpl(this);
     }
 
 }

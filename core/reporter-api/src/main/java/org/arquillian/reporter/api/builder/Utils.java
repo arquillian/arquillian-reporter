@@ -1,5 +1,6 @@
 package org.arquillian.reporter.api.builder;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,5 +15,9 @@ public class Utils {
 
     public static String getCurrentDate(){
         return new SimpleDateFormat(getDateFormat()).format(new Date(System.currentTimeMillis()));
+    }
+
+    public static String getTestMethodId(Method method){
+        return String.format("%s#%s", method.getDeclaringClass(), method.getName());
     }
 }

@@ -12,10 +12,10 @@
     </container>
 
     <!--<container qualifier="second_chameleon" >
-        <configuration>
+        <configurations>
             <property name="chameleonTarget">WildFly:8.0.0.Final:managed</property>
             &lt;!&ndash;<property name="modulePath">target/server/wildfly-dist_10.1.0.Final/wildfly-10.1.0.Final/modules/</property>&ndash;&gt;
-        </configuration>
+        </configurations>
     </container>-->
 
 

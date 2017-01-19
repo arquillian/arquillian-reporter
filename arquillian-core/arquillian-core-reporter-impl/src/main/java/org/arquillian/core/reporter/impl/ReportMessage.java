@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When this is put on a test method and enter some message, that message will be written into target report so you can comment
+ * When this is put on a test method and enter some message, that message will be written into target fire so you can comment
  * your test in any way.
  *
  * https://issues.jboss.org/browse/ARQ-1703

@@ -1,6 +1,6 @@
 package org.arquillian.reporter.api.builder.impl;
 
-import org.arquillian.reporter.api.builder.AbstractSectionBuilder;
+import org.arquillian.reporter.api.builder.AbstractReportBuilder;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.model.report.FailureReport;
@@ -10,16 +10,16 @@ import org.jboss.arquillian.test.spi.TestResult;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodSectionBuilderImpl extends
-    AbstractSectionBuilder<TestMethodReport, TestMethodSectionBuilderImpl> {
+public class TestMethodReportBuilderImpl extends
+    AbstractReportBuilder<TestMethodReport, TestMethodReportBuilderImpl> {
 
 
-    public TestMethodSectionBuilderImpl(TestMethodReport sectionReport) {
+    public TestMethodReportBuilderImpl(TestMethodReport sectionReport) {
         super(sectionReport);
     }
 
-    public TestMethodSectionBuilderImpl stop(){
-        getSectionReport().setStop(Utils.getCurrentDate());
+    public TestMethodReportBuilderImpl stop(){
+        getReport().setStop(Utils.getCurrentDate());
         return this;
     }
 
@@ -33,14 +33,14 @@ public class TestMethodSectionBuilderImpl extends
 //        return this;
 //    }
 
-    public TestMethodSectionBuilderImpl setResult(TestResult result){
+    public TestMethodReportBuilderImpl setResult(TestResult result){
         if (result.getStatus() == TestResult.Status.FAILED && result.getThrowable() != null) {
             String stackTrace = getStackTrace(result.getThrowable());
             FailureReport failureReport = new FailureReport("Test failure");
-            Reporter.section(failureReport).addKeyValueEntry("stacktrace", stackTrace);
-            getSectionReport().setFailureReport(failureReport);
+            Reporter.createReport(failureReport).addKeyValueEntry("stacktrace", stackTrace);
+            getReport().getFailureReports().add(failureReport);
         }
-        getSectionReport().setStatus(result.getStatus());
+        getReport().setStatus(result.getStatus());
         return this;
     }
 

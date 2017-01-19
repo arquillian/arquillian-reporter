@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.arquillian.reporter.api.builder.Utils;
-import org.arquillian.reporter.api.builder.impl.TestSuiteSectionBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.TestSuiteReportBuilderImpl;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,TestSuiteSectionBuilderImpl> {
+public class TestSuiteReport extends AbstractReport<TestSuiteReport,TestSuiteReportBuilderImpl> {
 
     private String start = Utils.getCurrentDate();
     private String stop;
-    private ConfigurationReport configuration = new ConfigurationReport();
+    private List<ConfigurationReport> configurations = new ArrayList<>();
     private List<TestClassReport> testClassReports = new ArrayList<>();
 
     public TestSuiteReport(String name) {
         super(name);
     }
 
-    public ConfigurationReport getConfiguration() {
-        return configuration;
+    public List<ConfigurationReport> getConfigurations() {
+        return configurations;
     }
 
     public List<TestClassReport> getTestClassReports() {
@@ -45,26 +45,38 @@ public class TestSuiteReport extends AbstractSectionReport<TestSuiteReport,TestS
     }
 
     @Override
-    public TestSuiteReport merge(TestSuiteReport newSection) {
-        if (newSection == null){
+    public TestSuiteReport merge(TestSuiteReport newReport) {
+        if (newReport == null){
             return this;
         }
-        defaultMerge(newSection);
+        defaultMerge(newReport);
 
-        getTestClassReports().addAll(newSection.getTestClassReports());
+        getTestClassReports().addAll(newReport.getTestClassReports());
 
-        if (newSection.getStop() != null){
-            setStop(newSection.getStop());
+        if (newReport.getStop() != null){
+            setStop(newReport.getStop());
         }
 
-
-        getConfiguration().merge(newSection.getConfiguration());
+        getConfigurations().addAll(newReport.getConfigurations());
 
         return this;
     }
 
     @Override
-    public TestSuiteSectionBuilderImpl getSectionBuilderClass() {
-        return new TestSuiteSectionBuilderImpl(this);
+    public TestSuiteReport addNewReport(AbstractReport newReport) {
+        Class<? extends AbstractReport> newReportClass = newReport.getClass();
+        if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
+            getConfigurations().add((ConfigurationReport) newReport);
+        } else if (TestClassReport.class.isAssignableFrom(newReportClass)){
+            getTestClassReports().add((TestClassReport) newReport);
+        } else {
+            getSubreports().add(newReport);
+        }
+        return this;
+    }
+
+    @Override
+    public TestSuiteReportBuilderImpl getReportBuilderClass() {
+        return new TestSuiteReportBuilderImpl(this);
     }
 }
