@@ -33,12 +33,14 @@ import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 
+import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.*;
+
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ArquillianCoreReporterLifecycleManager {
 
-    private static String TEST_SUITE_NAME = "Arquillian Test Suite";
+    public final static String DEFAULT_TEST_SUITE_ID = "arquillian-default-test-suite";
 
     @Inject
     private Event<SectionEvent> reportEvent;
@@ -49,7 +51,7 @@ public class ArquillianCoreReporterLifecycleManager {
     public void startTestSuite(@Observes(precedence = Integer.MAX_VALUE) BeforeSuite managerProcessing) {
         Reporter
             .createReport(new TestSuiteReport(TEST_SUITE_NAME))
-            .inSection(new TestSuiteSection(TEST_SUITE_NAME))
+            .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 
@@ -63,12 +65,12 @@ public class ArquillianCoreReporterLifecycleManager {
 
         String containerId = event.getContainerConfiguration().isDefault() ? "_DEFAULT_" : event.getName();
 
-        Reporter.createReport("Container")
-                .addKeyValueEntry("Container name", event.getName())
+        Reporter.createReport(CONTAINER_REPORT)
+                .addKeyValueEntry(CONTAINER_NAME, event.getName())
                 .addReport(
-                    Reporter.createReport("Configuration")
+                    Reporter.createReport(CONTAINER_CONFIGURATION_REPORT)
                         .feedKeyValueListFromMap(containerProperties))
-            .inSection(new TestSuiteConfigurationContainerSection(containerId, TEST_SUITE_NAME))
+            .inSection(new TestSuiteConfigurationContainerSection(containerId, DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 
@@ -77,11 +79,11 @@ public class ArquillianCoreReporterLifecycleManager {
         String targetContainer = description.getTarget().getName();
 
         Reporter
-            .createReport("Deployment")
-            .addKeyValueEntry("Deployment name", description.getName())
-            .addKeyValueEntry("Archive name", description.getArchive().getName())
-            .addKeyValueEntry("Order", description.getOrder())
-            .addKeyValueEntry("Protocol", description.getProtocol().getName())
+            .createReport(DEPLOYMENT_IN_CONTAINER_REPORT)
+            .addKeyValueEntry(DEPLOYMENT_IN_CONTAINER_NAME, description.getName())
+            .addKeyValueEntry(ARCHIVE_NAME_OF_DEPLOYMENT, description.getArchive().getName())
+            .addKeyValueEntry(ORDER_OF_DEPLOYMENT, description.getOrder())
+            .addKeyValueEntry(PROTOCOL_USED_FOR_DEPLOYMENT, description.getProtocol().getName())
             .inSection(new TestSuiteConfigurationContainerDeploymentSection(description.getName(), targetContainer))
             .fire(reportEvent);
     }
@@ -92,15 +94,15 @@ public class ArquillianCoreReporterLifecycleManager {
 
         TestClassReport testClassReport = new TestClassReport(testClass.getName());
         Reporter
-            .createReport(new ConfigurationReport("Test class config"))
-            .addKeyValueEntry("Runs as client", runAsClient);
+            .createReport(new ConfigurationReport(TEST_CLASS_CONFIGURATION))
+            .addKeyValueEntry(CLASS_RUNS_AS_CLIENT, runAsClient);
 
         String reportMessage = ReportMessageParser.parseTestClassReportMessage(event.getTestClass().getJavaClass());
         Reporter
             .createReport(testClassReport)
-            .addKeyValueEntry("Report message", reportMessage)
+            .addKeyValueEntry(TEST_CLASS_REPORT_MESSAGE, reportMessage)
 
-            .inSection(new TestClassSection(testClass.getJavaClass(), TEST_SUITE_NAME))
+            .inSection(new TestClassSection(testClass.getJavaClass(), DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 
@@ -115,8 +117,8 @@ public class ArquillianCoreReporterLifecycleManager {
 
         Reporter
             .createReport(new TestMethodReport(testMethod.getName()))
-            .addKeyValueEntry("Operates on deployment", deploymentName)
-            .addKeyValueEntry("Runs as client", runAsClient)
+            .addKeyValueEntry(TEST_METHOD_OPERATES_ON_DEPLOYMENT, deploymentName)
+            .addKeyValueEntry(TEST_METHOD_RUNS_AS_CLIENT, runAsClient)
             .inSection(new TestMethodSection(testMethod))
             .fire(reportEvent);
     }
@@ -130,7 +132,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .createReport(new TestMethodReport(testMethod.getName()))
             .stop()
             .setResult(result)
-            .addKeyValueEntry("Report message", reportMessage)
+            .addKeyValueEntry(TEST_METHOD_REPORT_MESSAGE, reportMessage)
             .inSection(new TestMethodSection(testMethod))
             .fire(reportEvent);
     }
@@ -140,7 +142,7 @@ public class ArquillianCoreReporterLifecycleManager {
         Reporter
             .createReport(new TestClassReport(event.getTestClass().getName()))
             .stop()
-            .inSection(new TestClassSection(event.getTestClass().getJavaClass(), TEST_SUITE_NAME))
+            .inSection(new TestClassSection(event.getTestClass().getJavaClass(), DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 
@@ -149,7 +151,7 @@ public class ArquillianCoreReporterLifecycleManager {
         Reporter
             .createReport(new TestSuiteReport(TEST_SUITE_NAME))
             .stop()
-            .inSection(new TestSuiteSection(TEST_SUITE_NAME))
+            .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 

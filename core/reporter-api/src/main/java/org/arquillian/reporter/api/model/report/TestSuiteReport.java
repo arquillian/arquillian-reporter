@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestSuiteReportBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.UnknownKey;
+import org.arquillian.reporter.api.model.StringKey;
+
+import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_SUITE_CONFIGURATION_REPORT;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -13,14 +17,18 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport,TestSuiteRep
 
     private String start = Utils.getCurrentDate();
     private String stop;
-    private ConfigurationReport configuration = new ConfigurationReport("configuration");
+    private ConfigurationReport configuration = new ConfigurationReport(GENERAL_TEST_SUITE_CONFIGURATION_REPORT);
     private List<TestClassReport> testClassReports = new ArrayList<>();
 
     public TestSuiteReport() {
     }
 
-    public TestSuiteReport(String name) {
+    public TestSuiteReport(StringKey name) {
         super(name);
+    }
+
+    public TestSuiteReport(String name) {
+        super(new UnknownKey(name));
     }
 
     public ConfigurationReport getConfiguration() {

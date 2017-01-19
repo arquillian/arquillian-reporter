@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.builder.impl.ReportInSectionImpl;
+import org.arquillian.reporter.api.builder.impl.UnknownKey;
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
@@ -25,7 +27,7 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
     }
 
     public BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap) {
-        keyValueMap.forEach((k,v) -> getReport().getEntries().add(new KeyValueEntry(k, v)));
+        keyValueMap.forEach((k,v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownKey(k), v)));
         return (BUILDERTYPE) this;
     }
 
@@ -39,23 +41,23 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addKeyValueEntry(String key, Entry value) {
+    public BUILDERTYPE addKeyValueEntry(StringKey key, Entry value) {
         report.getEntries().add(new KeyValueEntry(key, value));
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addKeyValueEntry(String key, String value) {
+    public BUILDERTYPE addKeyValueEntry(StringKey key, String value) {
         report.getEntries().add(new KeyValueEntry(key, value));
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addKeyValueEntry(String key, int value) {
+    public BUILDERTYPE addKeyValueEntry(StringKey key, int value) {
         addKeyValueEntry(key, String.valueOf(value));
         return (BUILDERTYPE) this;
     }
 
     @Override
-    public BUILDERTYPE addKeyValueEntry(String key, boolean value) {
+    public BUILDERTYPE addKeyValueEntry(StringKey key, boolean value) {
         addKeyValueEntry(key, String.valueOf(value));
         return (BUILDERTYPE) this;
     }

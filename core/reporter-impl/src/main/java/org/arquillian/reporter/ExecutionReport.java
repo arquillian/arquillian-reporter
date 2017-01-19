@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.arquillian.reporter.api.builder.ReportBuilder;
 import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.UnknownKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionSection;
@@ -21,7 +22,7 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
 
 
     public ExecutionReport() {
-        super("execution");
+        super(new UnknownKey("execution"));
         this.executionSection = new ExecutionSection(this);
         sectionTree = new SectionTree(executionSection.identifyYourself(), this);
     }

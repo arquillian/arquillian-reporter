@@ -2,6 +2,7 @@ package org.arquillian.reporter.api.builder;
 
 import org.arquillian.reporter.api.builder.impl.FireReportImpl;
 import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.Report;
 
@@ -10,7 +11,7 @@ import org.arquillian.reporter.api.model.report.Report;
  */
 public class Reporter {
 
-    public static ReportBuilder createReport(String name){
+    public static ReportBuilder createReport(StringKey name){
         return new ReportBuilderImpl(new Report(name));
     }
 

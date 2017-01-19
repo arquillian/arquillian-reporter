@@ -3,6 +3,7 @@ package org.arquillian.reporter.api.builder;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 
@@ -21,13 +22,13 @@ public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? e
 
     BUILDERTYPE addReport(REPORTTYPE report);
 
-    BUILDERTYPE addKeyValueEntry(String key, Entry value);
+    BUILDERTYPE addKeyValueEntry(StringKey key, Entry value);
 
-    BUILDERTYPE addKeyValueEntry(String key, String value);
+    BUILDERTYPE addKeyValueEntry(StringKey key, String value);
 
-    BUILDERTYPE addKeyValueEntry(String key, int value);
+    BUILDERTYPE addKeyValueEntry(StringKey key, int value);
 
-    BUILDERTYPE addKeyValueEntry(String key, boolean runAsClient);
+    BUILDERTYPE addKeyValueEntry(StringKey key, boolean runAsClient);
 
     <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSection<REPORTTYPE, SECTIONTYPE> inSection(
         SECTIONTYPE event);

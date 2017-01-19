@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.arquillian.reporter.api.builder.Validate;
+import org.arquillian.reporter.api.builder.impl.UnknownKey;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.AbstractReport;
@@ -127,7 +128,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
             // from created dummy section get class of payload and create an instance
             AbstractReport dummyReport = (AbstractReport) dummySection.getReportTypeClass().newInstance();
             // set name of dummy report to the section id specified in identifier
-            dummyReport.setName(rootIdentifierSubtreeToMerge.getSectionId());
+            dummyReport.setName(new UnknownKey(rootIdentifierSubtreeToMerge.getSectionId()));
             // set dummy report as an associated report
             subtreeToMerge.setAssociatedReport(dummyReport);
             // and also into the current report structure
@@ -138,6 +139,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
             getSubtrees().add(dummyTree);
             // and merge the subtree with the dummy tree
             dummyTree.merge(subtreeToMerge);
+
         } catch (InstantiationException e) {
             e.printStackTrace();
             // todo

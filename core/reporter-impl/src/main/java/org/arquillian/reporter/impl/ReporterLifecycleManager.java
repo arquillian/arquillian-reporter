@@ -2,6 +2,8 @@ package org.arquillian.reporter.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,12 +16,15 @@ import org.arquillian.reporter.api.event.TestMethodFailureSection;
 import org.arquillian.reporter.api.event.TestMethodSection;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
+import org.arquillian.reporter.api.model.StringKey;
+import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.api.event.ManagerStarted;
 import org.jboss.arquillian.core.api.event.ManagerStopping;
+import org.jboss.arquillian.core.spi.ServiceLoader;
 
 import static org.arquillian.reporter.impl.SectionEventManager.processEvent;
 
@@ -32,12 +37,31 @@ public class ReporterLifecycleManager {
     @ApplicationScoped
     private InstanceProducer<ExecutionReport> report;
 
+    @Inject
+    private Instance<ServiceLoader> serviceLoader;
+
 
     public void observeFirstEvent(@Observes ManagerStarted event) {
         if (report.get() == null) {
             ExecutionReport executionReport = new ExecutionReport();
             report.set(executionReport);
         }
+
+        Collection<StringKey> allStringKeys = serviceLoader.get().all(StringKey.class);
+        allStringKeys.stream().forEach(stringKey -> buildStringKey(stringKey));
+    }
+
+    private void buildStringKey(StringKey stringKey) {
+        String stringKeyClassName = stringKey.getClass().getName().toString();
+        InputStream stringKeyPropFile =
+            getClass().getClassLoader().getResourceAsStream("META-INF/services/" + stringKeyClassName + ".properties");
+
+//        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(stringKeyPropFile))) {
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     public void observeEventsForAllSections(@Observes(precedence = -100) SectionEvent event) {

@@ -3,6 +3,7 @@ package org.arquillian.reporter.api.model.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.builder.ReportBuilder;
 
@@ -11,7 +12,7 @@ import org.arquillian.reporter.api.builder.ReportBuilder;
  */
 public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends ReportBuilder> {
 
-    private String name;
+    private StringKey name;
 
     private List<Entry> entries = new ArrayList<>();
 
@@ -20,15 +21,15 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
     public AbstractReport(){
     }
 
-    public AbstractReport(String name) {
+    public AbstractReport(StringKey name) {
         this.name = name;
     }
 
-    public String getName() {
+    public StringKey getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(StringKey name) {
         this.name = name;
     }
 

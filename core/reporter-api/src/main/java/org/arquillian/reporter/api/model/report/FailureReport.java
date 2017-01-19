@@ -2,6 +2,7 @@ package org.arquillian.reporter.api.model.report;
 
 import org.arquillian.reporter.api.builder.ReportBuilder;
 import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.model.StringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -11,7 +12,7 @@ public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> 
     public FailureReport() {
     }
 
-    public FailureReport(String name) {
+    public FailureReport(StringKey name) {
         super(name);
     }
 

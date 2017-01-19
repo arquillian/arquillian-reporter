@@ -1,6 +1,7 @@
 package org.arquillian.reporter.api.model.report;
 
 import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.model.StringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -10,7 +11,7 @@ public class Report extends AbstractReport<Report,ReportBuilderImpl> {
     public Report() {
     }
 
-    public Report(String name) {
+    public Report(StringKey name) {
         super(name);
     }
 
