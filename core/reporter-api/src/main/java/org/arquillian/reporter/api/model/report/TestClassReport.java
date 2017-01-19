@@ -13,15 +13,18 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
 
     private String start = Utils.getCurrentDate();
     private String stop;
-    private List<ConfigurationReport> configurations = new ArrayList<>();
+    private ConfigurationReport configuration = new ConfigurationReport("Configuration");
     private List<TestMethodReport> testMethodReports = new ArrayList<>();
+
+    public TestClassReport() {
+    }
 
     public TestClassReport(String name) {
         super(name);
     }
 
-    public List<ConfigurationReport> getConfigurations() {
-        return configurations;
+    public ConfigurationReport getConfiguration() {
+        return configuration;
     }
 
     public String getStop() {
@@ -57,22 +60,26 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
             setStop(newReport.getStop());
         }
 
-        getConfigurations().addAll(newReport.getConfigurations());
+        getConfiguration().merge(newReport.getConfiguration());
 
         return this;
     }
 
     @Override
-    public TestClassReport addNewReport(AbstractReport newReport) {
+    public AbstractReport addNewReport(AbstractReport newReport) {
         Class<? extends AbstractReport> newReportClass = newReport.getClass();
+
         if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
-            getConfigurations().add((ConfigurationReport) newReport);
+            return getConfiguration().addNewReport((ConfigurationReport) newReport);
+
         } else if (TestMethodReport.class.isAssignableFrom(newReportClass)){
             getTestMethodReports().add((TestMethodReport) newReport);
+            return newReport;
+
         } else {
             getSubreports().add(newReport);
+            return newReport;
         }
-        return this;
     }
 
     @Override

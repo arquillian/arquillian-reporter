@@ -1,5 +1,6 @@
 package org.arquillian.reporter.api.event;
 
+import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 
 /**
@@ -7,23 +8,24 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
  */
 public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE , REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent> {
 
-    private String sectionName;
     private REPORT_TYPE report;
     private String sectionId;
-//    private PARENT_TYPE parentSection;
     private boolean processed = false;
+
+    public SectionEvent() {
+    }
 
     public SectionEvent(REPORT_TYPE report) {
         this.report = report;
     }
 
-    public SectionEvent(String sectionId) {
-        this.sectionId = sectionId;
+    public SectionEvent(String... sectionIdParams) {
+        sectionId = Utils.buildId(sectionIdParams);
     }
 
-    public SectionEvent(REPORT_TYPE report, String sectionId) {
+    public SectionEvent(REPORT_TYPE report, String... sectionIdParams) {
         this.report = report;
-        this.sectionId = sectionId;
+        sectionId = Utils.buildId(sectionIdParams);
     }
 
     public REPORT_TYPE getReport() {
@@ -52,7 +54,7 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE 
 
     public abstract PARENT_TYPE getParentSectionThisSectionBelongsTo();
 
-//    public abstract String getSectionName();
+    public abstract Class<REPORT_TYPE> getReportTypeClass();
 
     public Identifier<SECTIONTYPE> identifyYourself(){
         return new Identifier<SECTIONTYPE>((Class<SECTIONTYPE>) this.getClass(), getSectionId());

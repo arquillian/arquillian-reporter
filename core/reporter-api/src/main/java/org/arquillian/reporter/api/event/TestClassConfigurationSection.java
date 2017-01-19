@@ -9,13 +9,16 @@ public class TestClassConfigurationSection extends SectionEvent<TestClassConfigu
 
     private Class<?> testClass;
 
-    public TestClassConfigurationSection(Class<?> testClass) {
-        super(testClass.getCanonicalName());
+    public TestClassConfigurationSection() {
+    }
+
+    public TestClassConfigurationSection(Class<?> testClass, String configurationId) {
+        super(testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
     }
 
-    public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass) {
-        super(configuration, testClass.getCanonicalName());
+    public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass, String configurationId) {
+        super(configuration, testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
     }
 
@@ -24,11 +27,8 @@ public class TestClassConfigurationSection extends SectionEvent<TestClassConfigu
         return new TestClassSection(testClass);
     }
 
-//    @Override
-//    public Identifier<TestClassConfigurationSection> identifyYourself() {
-//        if (testClass != null) {
-//            return new Identifier<>(TestClassConfigurationSection.class, testClass.getCanonicalName());
-//        }
-//        return null;
-//    }
+    @Override
+    public Class<ConfigurationReport> getReportTypeClass() {
+        return ConfigurationReport.class;
+    }
 }

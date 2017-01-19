@@ -17,6 +17,9 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
 
     private List<AbstractReport> subreports = new ArrayList<>();
 
+    public AbstractReport(){
+    }
+
     public AbstractReport(String name) {
         this.name = name;
     }
@@ -57,5 +60,5 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
 
     public abstract TYPE merge(TYPE newReport);
 
-    public abstract TYPE addNewReport(AbstractReport newReport);
+    public abstract AbstractReport addNewReport(AbstractReport newReport);
 }

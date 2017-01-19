@@ -12,13 +12,16 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
 
 private Method testMethod;
 
-    public TestMethodFailureSection(Method testMethod) {
-        super(Utils.getTestMethodId(testMethod));
+    public TestMethodFailureSection() {
+    }
+
+    public TestMethodFailureSection(Method testMethod, String failureId) {
+        super(Utils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
     }
 
-    public TestMethodFailureSection(FailureReport failureReport, Method testMethod) {
-        super(failureReport, Utils.getTestMethodId(testMethod));
+    public TestMethodFailureSection(FailureReport failureReport, Method testMethod, String failureId) {
+        super(failureReport, Utils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
     }
 
@@ -27,8 +30,8 @@ private Method testMethod;
         return new TestMethodSection(testMethod);
     }
 
-//    @Override
-//    public Identifier<TestMethodFailureSection> identifyYourself() {
-//        return null;
-//    }
+    @Override
+    public Class<FailureReport> getReportTypeClass() {
+        return FailureReport.class;
+    }
 }

@@ -1,10 +1,9 @@
 package org.arquillian.reporter.impl;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,26 +51,30 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         this.associatedReport = associatedReport;
     }
 
+    public SectionTree<SECTIONTYPE, PAYLOAD_TYPE> getCloneWithoutSubtrees(){
+        return new SectionTree<>(getRootIdentifier(), associatedReport);
+    }
+
     public void merge(SectionTree<SECTIONTYPE, PAYLOAD_TYPE> treeToMerge) {
         associatedReport.merge(treeToMerge.getAssociatedReport());
 
         if (!treeToMerge.getSubtrees().isEmpty()) {
 
             SectionTree subtreeToMerge = treeToMerge.getSubtrees().get(0);
-            Identifier rootIdentifierOfEventTree = subtreeToMerge.getRootIdentifier();
+            Identifier rootIdentifierSubtreeToMerge = subtreeToMerge.getRootIdentifier();
             SectionTree matchedTree = null;
 
             if (!getSubtrees().isEmpty()) {
-                if (Validate.isNotEmpty(rootIdentifierOfEventTree.getSectionId())) {
+                if (Validate.isNotEmpty(rootIdentifierSubtreeToMerge.getSectionId())) {
                     List<SectionTree> filtered = getSubtrees()
                         .stream()
-                        .filter(tree -> tree.getRootIdentifier().equals(rootIdentifierOfEventTree))
+                        .filter(tree -> tree.getRootIdentifier().equals(rootIdentifierSubtreeToMerge))
                         .collect(Collectors.toList());
                     if (filtered != null && !filtered.isEmpty()) {
                         matchedTree = filtered.get(0);
                     }
                 } else {
-                    Class sectionClassFromEventTree = rootIdentifierOfEventTree.getSectionEventClass();
+                    Class sectionClassFromEventTree = rootIdentifierSubtreeToMerge.getSectionEventClass();
                     Optional<SectionTree> lastTreeOfType = getSubtrees()
                         .stream()
                         .filter(tree -> tree.getRootIdentifier().getSectionEventClass() == sectionClassFromEventTree)
@@ -85,67 +88,43 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
             }
 
             if (matchedTree == null) {
-                if (subtreeToMerge.getAssociatedReport() != null) {
-                    getAssociatedReport().addNewReport(subtreeToMerge.getAssociatedReport());
+                AbstractReport reportToAssociate;
+                if (subtreeToMerge.getAssociatedReport() == null) {
+                    try {
+                        Class subTreeSectionClass = rootIdentifierSubtreeToMerge.getSectionEventClass();
+                        Constructor[] constructors = subTreeSectionClass.getConstructors();
+                        Optional<Constructor> oneParamConstructor =
+                            Arrays.stream(constructors).filter(c -> c.getParameters().length == 1).findFirst();
+                        SectionEvent section;
+                        if (oneParamConstructor.isPresent()) {
+                             section = (SectionEvent) oneParamConstructor.get().newInstance(null);
+                        } else {
+                            section = (SectionEvent) subTreeSectionClass.newInstance();
+                        }
+                        AbstractReport dummyReport = (AbstractReport) section.getReportTypeClass().newInstance();
+                        dummyReport.setName(rootIdentifierSubtreeToMerge.getSectionId());
+                        subtreeToMerge.setAssociatedReport(dummyReport);
+                        SectionTree dummyTree = subtreeToMerge.getCloneWithoutSubtrees();
+                        reportToAssociate = getAssociatedReport().addNewReport(dummyReport);
+                        getSubtrees().add(dummyTree);
+                        dummyTree.merge(subtreeToMerge);
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    // todo log
+                }else {
+                    reportToAssociate = getAssociatedReport().addNewReport(subtreeToMerge.getAssociatedReport());
+                    subtreeToMerge.setAssociatedReport(reportToAssociate);
                     getSubtrees().add(subtreeToMerge);
-
-//                    Class<? extends AbstractReport> payloadClassToMerge =
-//                        subtreeToMerge.getAssociatedReport().getClass();
-//
-//                    Method[] methods = getAssociatedReport().getClass().getMethods();
-//
-//                    List<Method> methodsToGetList =
-//                        Arrays.stream(methods)
-//                            .filter(
-//                                method -> checkReturnListType(method, payloadClassToMerge))
-//                            .collect(Collectors.toList());
-//                    if (methodsToGetList != null && !methodsToGetList.isEmpty()) {
-//                        getSectionList(getAssociatedReport(), methodsToGetList.get(0))
-//                            .add(subtreeToMerge.getAssociatedReport());
-//                    } else {
-//                        getAssociatedReport().getSubreports().add(subtreeToMerge.getAssociatedReport());
-//                    }
-
-                    //                matchedTree = new SectionTree(rootIdentifierOfEventTree, subtreeOfEventTree.getAssociatedReport());
-                    //                sectionTree.getSubtrees().add(matchedTree);
-                } else {
-                    // todo
                 }
             } else {
                 matchedTree.merge(subtreeToMerge);
             }
         }
 
-    }
-
-    private List<AbstractReport> getSectionList(AbstractReport parentSectionReport, Method method) {
-        try {
-            return (List<AbstractReport>) method.invoke(parentSectionReport);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            throw new IllegalStateException(e);
-        }
-
-    }
-
-    private static boolean checkReturnListType(Method method, Class<?> expectedClass) {
-        if (method.getReturnType().isAssignableFrom(List.class)) {
-
-            Type genericReturnType = method.getGenericReturnType();
-            if (genericReturnType != null) {
-
-                if (genericReturnType instanceof ParameterizedType) {
-
-                    Type[] parameters = ((ParameterizedType) genericReturnType).getActualTypeArguments();
-                    if (parameters.length == 1) {
-                        return parameters[0].getTypeName().equals(expectedClass.getTypeName());
-                    }
-                }
-            }
-        }
-        return false;
     }
 }

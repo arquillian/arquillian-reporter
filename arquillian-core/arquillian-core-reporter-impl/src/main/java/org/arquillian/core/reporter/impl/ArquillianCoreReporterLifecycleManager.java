@@ -56,10 +56,10 @@ public class ArquillianCoreReporterLifecycleManager {
     public void reportContainer(@Observes Container event) {
         Map<String, String> containerProperties = event.getContainerConfiguration().getContainerProperties();
 
-        Reporter
-            .createReport(new ConfigurationReport("Containers"))
-            .inSection(new TestSuiteConfigurationSection(TEST_SUITE_NAME))
-            .fire(config);
+//        Reporter
+//            .createReport(new ConfigurationReport("Containers"))
+//            .inSection(new TestSuiteConfigurationSection(TEST_SUITE_NAME, "containers"))
+//            .fire(config);
 
         String containerId = event.getContainerConfiguration().isDefault() ? "_DEFAULT_" : event.getName();
 
@@ -100,7 +100,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .createReport(testClassReport)
             .addKeyValueEntry("Report message", reportMessage)
 
-            .inSection(new TestClassSection(testClass.getJavaClass(), "TEST_SUITE_NAME"))
+            .inSection(new TestClassSection(testClass.getJavaClass(), TEST_SUITE_NAME))
             .fire(reportEvent);
     }
 

@@ -20,4 +20,9 @@ public class ExecutionSection extends SectionEvent<ExecutionSection, ExecutionRe
     public SectionEvent getParentSectionThisSectionBelongsTo() {
         return null;
     }
+
+    @Override
+    public Class<ExecutionReport> getReportTypeClass() {
+        return ExecutionReport.class;
+    }
 }

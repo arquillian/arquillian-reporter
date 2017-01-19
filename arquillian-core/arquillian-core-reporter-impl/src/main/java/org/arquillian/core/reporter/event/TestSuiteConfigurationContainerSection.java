@@ -11,6 +11,9 @@ public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSui
 
     private String testSuiteId;
 
+    public TestSuiteConfigurationContainerSection() {
+    }
+
     public TestSuiteConfigurationContainerSection(String containerId, String testSuiteId) {
         super(containerId);
         this.testSuiteId = testSuiteId;
@@ -23,7 +26,12 @@ public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSui
 
     @Override
     public TestSuiteConfigurationSection getParentSectionThisSectionBelongsTo() {
-        return new TestSuiteConfigurationSection(testSuiteId);
+        return new TestSuiteConfigurationSection(testSuiteId, "containers");
+    }
+
+    @Override
+    public Class<Report> getReportTypeClass() {
+        return Report.class;
     }
 
     // todo support multiple test suites

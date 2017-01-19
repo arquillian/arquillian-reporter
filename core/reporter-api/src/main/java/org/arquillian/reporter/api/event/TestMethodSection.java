@@ -12,6 +12,9 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
 
     private Method method;
 
+    public TestMethodSection() {
+    }
+
     public TestMethodSection(Method method) {
         super(Utils.getTestMethodId(method));
         this.method = method;
@@ -28,8 +31,8 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
         return new TestClassSection(method.getDeclaringClass());
     }
 
-//    @Override
-//    public Identifier<TestMethodSection> identifyYourself() {
-//        return new Identifier<>();
-//    }
+    @Override
+    public Class<TestMethodReport> getReportTypeClass() {
+        return TestMethodReport.class;
+    }
 }

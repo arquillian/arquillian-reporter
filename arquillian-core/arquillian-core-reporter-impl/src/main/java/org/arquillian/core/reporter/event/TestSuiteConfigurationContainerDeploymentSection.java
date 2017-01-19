@@ -12,6 +12,8 @@ public class TestSuiteConfigurationContainerDeploymentSection extends
     private String containerId;
     private String testSuiteId;
 
+    public TestSuiteConfigurationContainerDeploymentSection() {
+    }
 
     public TestSuiteConfigurationContainerDeploymentSection(String deploymentId, String containerId) {
         super(deploymentId);
@@ -33,5 +35,10 @@ public class TestSuiteConfigurationContainerDeploymentSection extends
     @Override
     public TestSuiteConfigurationContainerSection getParentSectionThisSectionBelongsTo() {
         return new TestSuiteConfigurationContainerSection(containerId, testSuiteId);
+    }
+
+    @Override
+    public Class<Report> getReportTypeClass() {
+        return Report.class;
     }
 }

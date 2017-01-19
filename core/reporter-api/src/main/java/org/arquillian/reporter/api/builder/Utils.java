@@ -18,6 +18,24 @@ public class Utils {
     }
 
     public static String getTestMethodId(Method method){
-        return String.format("%s#%s", method.getDeclaringClass(), method.getName());
+        if (method != null) {
+            return buildId(method.getDeclaringClass().toString(), method.getName());
+        }
+        return null;
+    }
+
+    public static String buildId(String... sectionIdParams) {
+        StringBuffer id = new StringBuffer();
+        for (String sectionIdParam : sectionIdParams) {
+            if (sectionIdParam != null) {
+                if (!id.toString().isEmpty()) {
+                    id.append("#");
+                }
+                id.append(sectionIdParam);
+            } else {
+                return null;
+            }
+        }
+        return id.toString();
     }
 }

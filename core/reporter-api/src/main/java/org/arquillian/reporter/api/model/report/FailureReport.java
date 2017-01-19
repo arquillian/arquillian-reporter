@@ -7,6 +7,10 @@ import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> {
+
+    public FailureReport() {
+    }
+
     public FailureReport(String name) {
         super(name);
     }
@@ -23,8 +27,8 @@ public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> 
     }
 
     @Override
-    public FailureReport addNewReport(AbstractReport newReport) {
+    public AbstractReport addNewReport(AbstractReport newReport) {
         getSubreports().add(newReport);
-        return this;
+        return newReport;
     }
 }

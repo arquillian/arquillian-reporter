@@ -38,7 +38,7 @@ public class TestMethodReportBuilderImpl extends
             String stackTrace = getStackTrace(result.getThrowable());
             FailureReport failureReport = new FailureReport("Test failure");
             Reporter.createReport(failureReport).addKeyValueEntry("stacktrace", stackTrace);
-            getReport().getFailureReports().add(failureReport);
+            getReport().setFailureReport(failureReport);
         }
         getReport().setStatus(result.getStatus());
         return this;

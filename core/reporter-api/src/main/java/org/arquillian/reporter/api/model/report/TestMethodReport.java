@@ -1,8 +1,5 @@
 package org.arquillian.reporter.api.model.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestMethodReportBuilderImpl;
 import org.jboss.arquillian.test.spi.TestResult;
@@ -15,19 +12,22 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
     private String start = Utils.getCurrentDate();
     private String stop;
     private TestResult.Status status;
-    private List<FailureReport> failureReports = new ArrayList<>();
-    private List<ConfigurationReport> configurations = new ArrayList<>();
+    private FailureReport failureReport = new FailureReport("Failure report");
+    private ConfigurationReport configuration = new ConfigurationReport("config");
+
+    public TestMethodReport() {
+    }
 
     public TestMethodReport(String name) {
         super(name);
     }
 
-    public List<ConfigurationReport> getConfigurations() {
-        return configurations;
+    public ConfigurationReport getConfiguration() {
+        return configuration;
     }
 
-    public void setConfigurations(List<ConfigurationReport> configurations) {
-        this.configurations = configurations;
+    public void setConfiguration(ConfigurationReport configuration) {
+        this.configuration = configuration;
     }
 
     public TestResult.Status getStatus() {
@@ -38,12 +38,12 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
         this.status = status;
     }
 
-    public List<FailureReport> getFailureReports() {
-        return failureReports;
+    public FailureReport getFailureReport() {
+        return failureReport;
     }
 
-    public void setFailureReports(List<FailureReport> failureReports) {
-        this.failureReports = failureReports;
+    public void setFailureReport(FailureReport failureReport) {
+        this.failureReport = failureReport;
     }
 
     public String getStop() {
@@ -73,31 +73,33 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
             setStop(newReport.getStop());
         }
 
-        getConfigurations().addAll(newReport.getConfigurations());
-        getFailureReports().addAll(newReport.getFailureReports());
+        getConfiguration().merge(newReport.getConfiguration());
+        getFailureReport().merge(newReport.getFailureReport());
 
         if (newReport.getStatus() != null){
             setStatus(newReport.getStatus());
         }
-
         return this;
     }
 
-    @Override public TestMethodReport addNewReport(AbstractReport newReport) {
+    @Override
+    public AbstractReport addNewReport(AbstractReport newReport) {
         Class<? extends AbstractReport> newReportClass = newReport.getClass();
+
         if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
-            getConfigurations().add((ConfigurationReport) newReport);
+            return getConfiguration().addNewReport((ConfigurationReport) newReport);
+
         } else if (FailureReport.class.isAssignableFrom(newReportClass)){
-            getFailureReports().add((FailureReport) newReport);
+            return getFailureReport().addNewReport((FailureReport) newReport);
+
         } else {
             getSubreports().add(newReport);
+            return newReport;
         }
-        return this;
     }
 
     @Override
     public TestMethodReportBuilderImpl getReportBuilderClass() {
         return new TestMethodReportBuilderImpl(this);
     }
-
 }

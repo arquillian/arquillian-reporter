@@ -7,6 +7,8 @@ import org.arquillian.reporter.api.model.report.TestSuiteReport;
  */
 public class TestSuiteSection extends SectionEvent<TestSuiteSection, TestSuiteReport, SectionEvent> {
 
+    public TestSuiteSection() {
+    }
 
     public TestSuiteSection(String testSuiteId) {
         super(testSuiteId);
@@ -19,6 +21,11 @@ public class TestSuiteSection extends SectionEvent<TestSuiteSection, TestSuiteRe
     @Override
     public SectionEvent getParentSectionThisSectionBelongsTo() {
         return null;
+    }
+
+    @Override
+    public Class<TestSuiteReport> getReportTypeClass() {
+        return TestSuiteReport.class;
     }
 
     @Override

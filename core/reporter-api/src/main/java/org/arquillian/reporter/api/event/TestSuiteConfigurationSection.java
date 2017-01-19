@@ -10,18 +10,25 @@ public class TestSuiteConfigurationSection
 
     private String testSuiteId;
 
-    public TestSuiteConfigurationSection(String testSuiteId) {
-        super(testSuiteId);
+    public TestSuiteConfigurationSection() {
+    }
+
+    public TestSuiteConfigurationSection(String testSuiteId, String configurationId) {
+        super(configurationId);
         this.testSuiteId = testSuiteId;
     }
 
-    public TestSuiteConfigurationSection(ConfigurationReport section, String testSuiteId) {
-        super(section, testSuiteId);
+    public TestSuiteConfigurationSection(ConfigurationReport section, String testSuiteId, String configurationId) {
+        super(section, configurationId);
         this.testSuiteId = testSuiteId;
     }
 
     @Override
     public TestSuiteSection getParentSectionThisSectionBelongsTo() {
         return new TestSuiteSection(testSuiteId);
+    }
+
+    @Override public Class<ConfigurationReport> getReportTypeClass() {
+        return ConfigurationReport.class;
     }
 }

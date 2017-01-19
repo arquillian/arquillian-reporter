@@ -8,6 +8,9 @@ import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
  */
 public class ConfigurationReport extends AbstractReport<ConfigurationReport, ReportBuilder> {
 
+    public ConfigurationReport() {
+    }
+
     public ConfigurationReport(String name) {
         super(name);
     }
@@ -24,8 +27,8 @@ public class ConfigurationReport extends AbstractReport<ConfigurationReport, Rep
     }
 
     @Override
-    public ConfigurationReport addNewReport(AbstractReport newReport) {
+    public AbstractReport addNewReport(AbstractReport newReport) {
         getSubreports().add(newReport);
-        return this;
+        return newReport;
     }
 }

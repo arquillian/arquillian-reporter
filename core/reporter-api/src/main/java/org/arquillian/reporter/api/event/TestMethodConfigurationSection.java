@@ -13,13 +13,16 @@ public class TestMethodConfigurationSection
 
     private Method testMethod;
 
-    public TestMethodConfigurationSection(Method testMethod) {
-        super(Utils.getTestMethodId(testMethod));
+    public TestMethodConfigurationSection() {
+    }
+
+    public TestMethodConfigurationSection(Method testMethod, String configurationId) {
+        super(Utils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
     }
 
-    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod) {
-        super(configuration, Utils.getTestMethodId(testMethod));
+    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod, String configurationId) {
+        super(configuration, Utils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
     }
 
@@ -27,5 +30,10 @@ public class TestMethodConfigurationSection
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
         return new TestMethodSection(testMethod);
+    }
+
+    @Override
+    public Class<ConfigurationReport> getReportTypeClass() {
+        return ConfigurationReport.class;
     }
 }
