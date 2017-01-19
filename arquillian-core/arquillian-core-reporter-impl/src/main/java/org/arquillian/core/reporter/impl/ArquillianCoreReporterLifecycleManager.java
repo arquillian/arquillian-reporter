@@ -133,10 +133,6 @@ public class ArquillianCoreReporterLifecycleManager {
             .addKeyValueEntry("Report message", reportMessage)
             .inSection(new TestMethodSection(testMethod))
             .fire(reportEvent);
-
-        //            inTestResourceReportEvent.fire(new InTestResourceReport());
-        //            reporter.get().setReporterCursor(new ReporterCursor(reporter.get().getLastTestClassReport()));
-        //            fire(event, descriptor.get());
     }
 
     public void stopTestClass(@Observes(precedence = Integer.MIN_VALUE) AfterClass event) {
@@ -146,9 +142,6 @@ public class ArquillianCoreReporterLifecycleManager {
             .stop()
             .inSection(new TestClassSection(event.getTestClass().getJavaClass(), TEST_SUITE_NAME))
             .fire(reportEvent);
-
-        //        reporter.get().setReporterCursor(new ReporterCursor(reporter.get().getLastTestSuiteReport()));
-        //        fire(event, descriptor.get());
     }
 
     public void stopTestSuite(@Observes(precedence = Integer.MIN_VALUE) AfterSuite event) {
@@ -158,35 +151,8 @@ public class ArquillianCoreReporterLifecycleManager {
             .stop()
             .inSection(new TestSuiteSection(TEST_SUITE_NAME))
             .fire(reportEvent);
-
-        //        exportReportEvent.fire(new ExportReport(reporter.get().getReport()));
     }
 
-//    public void observeReportEvent(@Observes PropertyReportEvent event) {
-//        reporter.get().getReporterCursor().getCursor().getPropertyEntries().add(event.getPropertyEntry());
-//    }
-//
-//    private void fire(org.jboss.arquillian.core.spi.event.Event event, ArquillianDescriptor descriptor) {
-//        if (shouldReport(event, configuration.get().getReportAfterEvery())) {
-//            List<ExtensionReport> extensionReports = reporter.get().getReport().getExtensionReports();
-//            if (extensionReports.isEmpty()) {
-//                extensionReports.addAll(getExtensionReports(descriptor));
-//            }
-//
-//            reporter.get().getLastTestClassReport().setStop(new Date(System.currentTimeMillis()));
-//            reporter.get().getLastTestSuiteReport().setStop(new Date(System.currentTimeMillis()));
-//
-    //            exportReportEvent.fire(new ExportReport(reporter.get().getReport()));
-//        }
-//    }
-//
-//    private boolean shouldReport(org.jboss.arquillian.core.spi.event.Event event, String frequency) {
-//        if (event instanceof AfterClass && ReportFrequency.CLASS.toString().equals(frequency)
-//            || (event instanceof After && ReportFrequency.METHOD.toString().equals(frequency))) {
-//            return true;
-//        }
-//        return false;
-//    }
 //
 //    private Collection<? extends ExtensionReport> getExtensionReports(ArquillianDescriptor descriptor) {
 //        List<ExtensionReport> extensionReports = new ArrayList<ExtensionReport>();

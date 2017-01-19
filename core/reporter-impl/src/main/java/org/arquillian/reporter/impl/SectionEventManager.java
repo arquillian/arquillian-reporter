@@ -1,0 +1,47 @@
+package org.arquillian.reporter.impl;
+
+import org.arquillian.reporter.ExecutionReport;
+import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.event.TestSuiteSection;
+import org.arquillian.reporter.api.model.report.AbstractReport;
+
+/**
+ * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
+ */
+public class SectionEventManager {
+
+    public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
+    void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionReport executionReport) {
+
+        if (event.isProcessed()) {
+            return;
+        }
+        SectionTree eventTree = createTreeRecursively(event, null);
+        executionReport.getSectionTree().merge(eventTree);
+        event.setProcessed(true);
+    }
+
+    private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, ? extends SectionEvent>, REPORT_TYPE extends AbstractReport>
+    SectionTree<SECTIONTYPE, REPORT_TYPE> createTreeRecursively(
+        SectionEvent<SECTIONTYPE, REPORT_TYPE, ? extends SectionEvent> sectionEvent,
+        SectionTree<SECTIONTYPE, REPORT_TYPE> subtree) {
+
+        if (sectionEvent == null) {
+            return subtree;
+        }
+
+        SectionTree<SECTIONTYPE, REPORT_TYPE> sectionTree =
+            new SectionTree<>(sectionEvent.identifyYourself(), sectionEvent.getReport());
+        if (subtree != null) {
+            sectionTree.getSubtrees().add(subtree);
+        }
+
+        SectionEvent parentSectionThisSectionBelongsTo = sectionEvent.getParentSectionThisSectionBelongsTo();
+        if (parentSectionThisSectionBelongsTo == null && sectionEvent.getClass() == TestSuiteSection.class) {
+            parentSectionThisSectionBelongsTo = new ExecutionSection();
+        }
+
+        return createTreeRecursively(parentSectionThisSectionBelongsTo, sectionTree);
+    }
+
+}
