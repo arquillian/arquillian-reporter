@@ -32,5 +32,4 @@ public class ArquillianCoreKeys extends AbstractStringKey {
     public static final StringKey TEST_METHOD_OPERATES_ON_DEPLOYMENT = new ArquillianCoreKeys();
     public static final StringKey TEST_METHOD_RUNS_AS_CLIENT = new ArquillianCoreKeys();
     public static final StringKey TEST_METHOD_REPORT_MESSAGE = new ArquillianCoreKeys();
-    ;
 }

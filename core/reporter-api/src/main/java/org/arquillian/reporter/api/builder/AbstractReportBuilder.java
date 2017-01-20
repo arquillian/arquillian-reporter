@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.builder.impl.ReportInSectionImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownKey;
+import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
@@ -27,7 +27,7 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
     }
 
     public BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap) {
-        keyValueMap.forEach((k,v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownKey(k), v)));
+        keyValueMap.forEach((k,v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownStringKey(k), v)));
         return (BUILDERTYPE) this;
     }
 

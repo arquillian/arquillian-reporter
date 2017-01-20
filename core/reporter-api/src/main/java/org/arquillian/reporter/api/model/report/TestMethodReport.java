@@ -2,7 +2,7 @@ package org.arquillian.reporter.api.model.report;
 
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestMethodReportBuilderImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownKey;
+import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.jboss.arquillian.test.spi.TestResult;
 
@@ -28,7 +28,7 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
     }
 
     public TestMethodReport(String name) {
-        super(new UnknownKey(name));
+        super(new UnknownStringKey(name));
     }
 
     public ConfigurationReport getConfiguration() {

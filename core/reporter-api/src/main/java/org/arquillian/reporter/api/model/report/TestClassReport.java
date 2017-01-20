@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.builder.impl.TestClassReportBuilderImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownKey;
+import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_CLASS_CONFIGURATION_REPORT;
@@ -28,7 +28,7 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
     }
 
     public TestClassReport(String name) {
-        super(new UnknownKey(name));
+        super(new UnknownStringKey(name));
     }
 
     public ConfigurationReport getConfiguration() {
