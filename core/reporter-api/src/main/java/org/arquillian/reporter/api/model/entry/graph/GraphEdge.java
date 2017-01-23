@@ -3,7 +3,10 @@ package org.arquillian.reporter.api.model.entry.graph;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public enum GraphEdge {
+public interface GraphEdge {
 
-    DIRECTIONAL, NON_DIRECTIONAL;
+    enum GraphEdgeType{
+        DIRECTIONAL, NON_DIRECTIONAL;
+    }
+
 }

@@ -2,6 +2,7 @@ package org.arquillian.reporter.api.builder;
 
 import org.arquillian.reporter.api.builder.impl.FireReportImpl;
 import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.builder.impl.TableBuilderImpl;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.Report;
@@ -21,6 +22,14 @@ public class Reporter {
 
     public static FireReport reportSection(Report sectionReport){
         return new FireReportImpl(sectionReport);
+    }
+
+    public static TableBuilder createTable(String name) {
+        return new TableBuilderImpl(name);
+    }
+
+    public static TableBuilder createTable(StringKey name) {
+        return new TableBuilderImpl(name);
     }
 
 //    public static CreateNode createNode(ReportNodeEvent reportNodeEvent){
