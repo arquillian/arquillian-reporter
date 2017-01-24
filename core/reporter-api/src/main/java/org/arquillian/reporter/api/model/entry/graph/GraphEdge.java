@@ -5,7 +5,7 @@ package org.arquillian.reporter.api.model.entry.graph;
  */
 public interface GraphEdge {
 
-    enum GraphEdgeType{
+    enum GraphEdgeType {
         DIRECTIONAL, NON_DIRECTIONAL;
     }
 

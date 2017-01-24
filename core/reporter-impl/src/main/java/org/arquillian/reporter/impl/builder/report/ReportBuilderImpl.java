@@ -1,7 +1,7 @@
-package org.arquillian.reporter.impl.builder;
+package org.arquillian.reporter.impl.builder.report;
 
-import org.arquillian.reporter.api.builder.AbstractReportBuilder;
-import org.arquillian.reporter.api.builder.ReportBuilder;
+import org.arquillian.reporter.api.builder.report.AbstractReportBuilder;
+import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 
 /**

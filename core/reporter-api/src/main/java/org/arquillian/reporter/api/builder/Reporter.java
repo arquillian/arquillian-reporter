@@ -6,7 +6,10 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
+import java.util.Optional;
 
+import org.arquillian.reporter.api.builder.entry.TableBuilder;
+import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.Report;
@@ -16,34 +19,28 @@ import org.arquillian.reporter.api.model.report.Report;
  */
 public class Reporter {
 
-    public static ReportBuilder createReport(StringKey name){
+    public static ReportBuilder createReport(StringKey name) {
         return usingBuilder(ReportBuilder.class, new Report(name));
     }
 
-    public static <T extends ReportBuilder<? extends AbstractReport,T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(S report) {
+    public static <T extends ReportBuilder<? extends AbstractReport, T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(
+        S report) {
         return usingBuilder(report.getReportBuilderClass(), report);
     }
 
-    public static <T extends Builder> T usingBuilder(Class<T> builderClass, Object... constructParams){
+    public static <T extends Builder> T usingBuilder(Class<T> builderClass, Object... constructParams) {
         String implementationForBuilder = BuilderRegistry.getImplementationForBuilder(builderClass.getCanonicalName());
-        if (implementationForBuilder != null) {
-            Class<?>[] classes = Arrays.stream(constructParams).map(param -> param.getClass()).toArray(Class<?>[]::new);
-            Class<T> implClass = (Class<T>) loadClass(implementationForBuilder);
-            Constructor<?>[] constructors = implClass.getConstructors();
-            if (constructors.length == 1){
-                classes = constructors[0].getParameterTypes();
-            }
 
-            return newInstance(implementationForBuilder, classes, constructParams, builderClass);
+        if (implementationForBuilder != null) {
+            Class<T> implClass = (Class<T>) loadClass(implementationForBuilder);
+            Class<?>[] classes = getConstructorParametersTypes(implClass, constructParams);
+            return newInstance(implClass, classes, constructParams);
         } else {
             // todo
-            throw  new IllegalArgumentException("There is no implementation registered for the builder: " + builderClass.getCanonicalName());
+            throw new IllegalArgumentException(
+                "There is no implementation registered for the builder: " + builderClass.getCanonicalName());
         }
     }
-
-//    public static FireReport reportSection(Report sectionReport){
-//        return new FireReportImpl(sectionReport);
-//    }
 
     public static TableBuilder createTable(String name) {
         return usingBuilder(TableBuilder.class, name);
@@ -53,79 +50,66 @@ public class Reporter {
         return usingBuilder(TableBuilder.class, name);
     }
 
-//    public static CreateNode createNode(ReportNodeEvent reportNodeEvent){
-//        return new CreateNode()
-//    }
+    //    public static CreateNode createNode(ReportNodeEvent reportNodeEvent){
+    //        return new CreateNode()
+    //    }
+
+    // security actions
+
+    private static Class<?>[] getConstructorParametersTypes(Class<?> implClass, Object... constructParams) {
+        Constructor<?>[] constructors = implClass.getConstructors();
+
+        if (constructors.length == 1) {
+            return constructors[0].getParameterTypes();
+        } else {
+            Class<?>[] expectedClasses =
+                Arrays.stream(constructParams).map(param -> param.getClass()).toArray(Class<?>[]::new);
+            Optional<Constructor<?>> firstMathedConstr = getFirstMathedConstructor(constructors, expectedClasses);
+            if (firstMathedConstr.isPresent()) {
+                return firstMathedConstr.get().getParameterTypes();
+            } else {
+                // todo throw an exception?
+                return expectedClasses;
+            }
+        }
+    }
+
+    private static Optional<Constructor<?>> getFirstMathedConstructor(Constructor<?>[] constructors,
+        Class<?>[] expectedClasses) {
+        return Arrays
+            .stream(constructors)
+            .filter(constr -> {
+                if (constr.getParameterCount() != expectedClasses.length) {
+                    return false;
+                }
+                Class<?>[] actualParams = constr.getParameterTypes();
+                for (int i = 0; i < actualParams.length; i++) {
+                    if (!actualParams[i].isAssignableFrom(expectedClasses[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            })
+            .findFirst();
+
+    }
 
     /**
      * Obtains the Thread Context ClassLoader
      */
-    static ClassLoader getThreadContextClassLoader()
-    {
+    private static ClassLoader getThreadContextClassLoader() {
         return AccessController.doPrivileged(GetTcclAction.INSTANCE);
     }
 
-    static boolean isClassPresent(String name)
-    {
-        try
-        {
-            loadClass(name);
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-    }
-
-    static Class<?> loadClass(String className)
-    {
-        try
-        {
+    private static Class<?> loadClass(String className) {
+        try {
             return Class.forName(className, true, getThreadContextClassLoader());
-        }
-        catch (ClassNotFoundException e)
-        {
-            try
-            {
+        } catch (ClassNotFoundException e) {
+            try {
                 return Class.forName(className, true, Reporter.class.getClassLoader());
-            }
-            catch (ClassNotFoundException e2)
-            {
+            } catch (ClassNotFoundException e2) {
                 throw new RuntimeException("Could not load class " + className, e2);
             }
-        }
-    }
-
-    static <T> T newInstance(final String className, final Class<?>[] argumentTypes, final Object[] arguments, final Class<T> expectedType)
-    {
-        @SuppressWarnings("unchecked")
-        Class<T> implClass = (Class<T>) loadClass(className);
-        if (!expectedType.isAssignableFrom(implClass)) {
-            throw new RuntimeException("Loaded class " + className + " is not of expected type " + expectedType);
-        }
-        return newInstance(implClass, argumentTypes, arguments);
-    }
-
-    static <T> T newInstance(final String className, final Class<?>[] argumentTypes, final Object[] arguments, final Class<T> expectedType, ClassLoader classLoader)
-    {
-        Class<?> clazz = null;
-        try
-        {
-            clazz = Class.forName(className, false, classLoader);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Could not load class " + className, e);
-        }
-        Object obj = newInstance(clazz, argumentTypes, arguments);
-        try
-        {
-            return expectedType.cast(obj);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Loaded class " + className + " is not of expected type " + expectedType, e);
         }
     }
 
@@ -133,34 +117,30 @@ public class Reporter {
      * Create a new instance by finding a constructor that matches the argumentTypes signature
      * using the arguments for instantiation.
      *
-     * @param implClass Full classname of class to create
+     * @param implClass     Full classname of class to create
      * @param argumentTypes The constructor argument types
-     * @param arguments The constructor arguments
+     * @param arguments     The constructor arguments
      * @return a new instance
      * @throws IllegalArgumentException if className, argumentTypes, or arguments are null
-     * @throws RuntimeException if any exceptions during creation
+     * @throws RuntimeException         if any exceptions during creation
      * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
      * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
      */
-    static <T> T newInstance(final Class<T> implClass, final Class<?>[] argumentTypes, final Object[] arguments)
-    {
-        if (implClass == null)
-        {
+    private static <T> T newInstance(final Class<T> implClass, final Class<?>[] argumentTypes,
+        final Object[] arguments) {
+        if (implClass == null) {
             throw new IllegalArgumentException("ImplClass must be specified");
         }
-        if (argumentTypes == null)
-        {
+        if (argumentTypes == null) {
             throw new IllegalArgumentException("ArgumentTypes must be specified. Use empty array if no arguments");
         }
-        if (arguments == null)
-        {
+        if (arguments == null) {
             throw new IllegalArgumentException("Arguments must be specified. Use empty array if no arguments");
         }
         final T obj;
-        try
-        {
+        try {
             final Constructor<T> constructor = getConstructor(implClass, argumentTypes);
-            if(!constructor.isAccessible()) {
+            if (!constructor.isAccessible()) {
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     public Void run() {
                         constructor.setAccessible(true);
@@ -169,9 +149,7 @@ public class Reporter {
                 });
             }
             obj = constructor.newInstance(arguments);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException("Could not create new instance of " + implClass, e);
         }
 
@@ -180,43 +158,34 @@ public class Reporter {
 
     /**
      * Obtains the Constructor specified from the given Class and argument types
+     *
      * @param clazz
      * @param argumentTypes
      * @return
      * @throws NoSuchMethodException
      */
-    static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... argumentTypes)
-        throws NoSuchMethodException
-    {
-        try
-        {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>()
-            {
-                public Constructor<T> run() throws NoSuchMethodException
-                {
+    private static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... argumentTypes)
+        throws NoSuchMethodException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>() {
+                public Constructor<T> run() throws NoSuchMethodException {
                     return clazz.getDeclaredConstructor(argumentTypes);
                 }
             });
         }
         // Unwrap
-        catch (final PrivilegedActionException pae)
-        {
+        catch (final PrivilegedActionException pae) {
             final Throwable t = pae.getCause();
             // Rethrow
-            if (t instanceof NoSuchMethodException)
-            {
+            if (t instanceof NoSuchMethodException) {
                 throw (NoSuchMethodException) t;
-            }
-            else
-            {
+            } else {
                 // No other checked Exception thrown by Class.getConstructor
-                try
-                {
+                try {
                     throw (RuntimeException) t;
                 }
                 // Just in case we've really messed up
-                catch (final ClassCastException cce)
-                {
+                catch (final ClassCastException cce) {
                     throw new RuntimeException("Obtained unchecked Exception; this code should never be reached", t);
                 }
             }
@@ -229,8 +198,7 @@ public class Reporter {
     private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
         INSTANCE;
 
-        public ClassLoader run()
-        {
+        public ClassLoader run() {
             return Thread.currentThread().getContextClassLoader();
         }
 

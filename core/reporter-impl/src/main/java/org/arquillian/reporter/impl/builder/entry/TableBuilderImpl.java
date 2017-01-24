@@ -1,9 +1,9 @@
-package org.arquillian.reporter.impl.builder;
+package org.arquillian.reporter.impl.builder.entry;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.arquillian.reporter.api.builder.TableBuilder;
+import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;

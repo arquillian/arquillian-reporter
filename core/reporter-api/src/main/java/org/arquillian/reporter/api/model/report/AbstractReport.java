@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.builder.ReportBuilder;
+import org.arquillian.reporter.api.builder.report.ReportBuilder;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

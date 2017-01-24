@@ -1,4 +1,4 @@
-package org.arquillian.reporter.api.builder;
+package org.arquillian.reporter.api.builder.report;
 
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.jboss.arquillian.test.spi.TestResult;

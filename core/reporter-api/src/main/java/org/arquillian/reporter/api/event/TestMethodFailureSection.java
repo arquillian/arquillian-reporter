@@ -2,7 +2,7 @@ package org.arquillian.reporter.api.event;
 
 import java.lang.reflect.Method;
 
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.report.FailureReport;
 
 /**
@@ -10,18 +10,18 @@ import org.arquillian.reporter.api.model.report.FailureReport;
  */
 public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSection, FailureReport, TestMethodSection> {
 
-private Method testMethod;
+    private Method testMethod;
 
     public TestMethodFailureSection() {
     }
 
     public TestMethodFailureSection(Method testMethod, String failureId) {
-        super(Utils.getTestMethodId(testMethod), failureId);
+        super(ReporterUtils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
     }
 
     public TestMethodFailureSection(FailureReport failureReport, Method testMethod, String failureId) {
-        super(failureReport, Utils.getTestMethodId(testMethod), failureId);
+        super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
     }
 

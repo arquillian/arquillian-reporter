@@ -1,8 +1,8 @@
-package org.arquillian.reporter.impl.builder;
+package org.arquillian.reporter.impl.builder.report;
 
-import org.arquillian.reporter.api.builder.AbstractReportBuilder;
-import org.arquillian.reporter.api.builder.TestClassReportBuilder;
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.builder.report.AbstractReportBuilder;
+import org.arquillian.reporter.api.builder.report.TestClassReportBuilder;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 
 /**
@@ -16,7 +16,7 @@ public class TestClassReportBuilderImpl extends AbstractReportBuilder<TestClassR
     }
 
     public TestClassReportBuilderImpl stop() {
-        getReport().setStop(Utils.getCurrentDate());
+        getReport().setStop(ReporterUtils.getCurrentDate());
         return this;
     }
 }

@@ -1,7 +1,7 @@
 package org.arquillian.reporter.api.model.report;
 
-import org.arquillian.reporter.api.builder.TestMethodReportBuilder;
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.builder.report.TestMethodReportBuilder;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.jboss.arquillian.test.spi.TestResult;
@@ -14,7 +14,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_ME
  */
 public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethodReportBuilder> {
 
-    private String start = Utils.getCurrentDate();
+    private String start = ReporterUtils.getCurrentDate();
     private String stop;
     private TestResult.Status status;
     private FailureReport failureReport = new FailureReport(GENERAL_METHOD_FAILURE_REPORT);

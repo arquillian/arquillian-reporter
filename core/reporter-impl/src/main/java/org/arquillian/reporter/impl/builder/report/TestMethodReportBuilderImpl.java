@@ -1,9 +1,9 @@
-package org.arquillian.reporter.impl.builder;
+package org.arquillian.reporter.impl.builder.report;
 
-import org.arquillian.reporter.api.builder.AbstractReportBuilder;
+import org.arquillian.reporter.api.builder.report.AbstractReportBuilder;
 import org.arquillian.reporter.api.builder.Reporter;
-import org.arquillian.reporter.api.builder.TestMethodReportBuilder;
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.builder.report.TestMethodReportBuilder;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.jboss.arquillian.test.spi.TestResult;
@@ -23,7 +23,7 @@ public class TestMethodReportBuilderImpl extends AbstractReportBuilder<TestMetho
     }
 
     public TestMethodReportBuilderImpl stop(){
-        getReport().setStop(Utils.getCurrentDate());
+        getReport().setStop(ReporterUtils.getCurrentDate());
         return this;
     }
 

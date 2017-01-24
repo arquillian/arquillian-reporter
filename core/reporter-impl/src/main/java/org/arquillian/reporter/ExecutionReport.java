@@ -3,7 +3,7 @@ package org.arquillian.reporter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.arquillian.reporter.api.builder.ReportBuilder;
+import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;

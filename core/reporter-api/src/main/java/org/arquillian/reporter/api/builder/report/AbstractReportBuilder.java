@@ -1,9 +1,10 @@
-package org.arquillian.reporter.api.builder;
+package org.arquillian.reporter.api.builder.report;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
@@ -14,19 +15,18 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE,? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
+public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
     implements ReportBuilder<REPORTTYPE, BUILDERTYPE> {
 
     private final REPORTTYPE report;
     private List<BUILDERTYPE> reportBuilders = new ArrayList<>();
-
 
     public AbstractReportBuilder(REPORTTYPE report) {
         this.report = report;
     }
 
     public BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap) {
-        keyValueMap.forEach((k,v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownStringKey(k), v)));
+        keyValueMap.forEach((k, v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownStringKey(k), v)));
         return (BUILDERTYPE) this;
     }
 
@@ -71,13 +71,13 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
         return (BUILDERTYPE) this;
     }
 
-    public REPORTTYPE build(){
+    public REPORTTYPE build() {
         reportBuilders.forEach(builder -> addReport(builder.build()));
         return report;
     }
 
     public <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
-        SECTIONTYPE event){
+        SECTIONTYPE event) {
         return Reporter.usingBuilder(ReportInSectionBuilder.class, build(), event);
     }
 

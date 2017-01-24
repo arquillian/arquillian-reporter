@@ -1,6 +1,6 @@
-package org.arquillian.reporter.impl.builder;
+package org.arquillian.reporter.impl.builder.report;
 
-import org.arquillian.reporter.api.builder.ReportInSectionBuilder;
+import org.arquillian.reporter.api.builder.report.ReportInSectionBuilder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.jboss.arquillian.core.api.Event;

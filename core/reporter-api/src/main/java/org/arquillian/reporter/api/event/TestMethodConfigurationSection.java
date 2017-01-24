@@ -2,7 +2,7 @@ package org.arquillian.reporter.api.event;
 
 import java.lang.reflect.Method;
 
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 
 /**
@@ -17,15 +17,15 @@ public class TestMethodConfigurationSection
     }
 
     public TestMethodConfigurationSection(Method testMethod, String configurationId) {
-        super(Utils.getTestMethodId(testMethod), configurationId);
+        super(ReporterUtils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
     }
 
-    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod, String configurationId) {
-        super(configuration, Utils.getTestMethodId(testMethod), configurationId);
+    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod,
+        String configurationId) {
+        super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
     }
-
 
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {

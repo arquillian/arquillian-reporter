@@ -1,4 +1,4 @@
-package org.arquillian.reporter.api.builder;
+package org.arquillian.reporter.api.utils;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

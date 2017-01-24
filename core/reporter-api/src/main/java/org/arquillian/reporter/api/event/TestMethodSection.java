@@ -2,7 +2,7 @@ package org.arquillian.reporter.api.event;
 
 import java.lang.reflect.Method;
 
-import org.arquillian.reporter.api.builder.Utils;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 
 /**
@@ -16,15 +16,14 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
     }
 
     public TestMethodSection(Method method) {
-        super(Utils.getTestMethodId(method));
+        super(ReporterUtils.getTestMethodId(method));
         this.method = method;
     }
 
     public TestMethodSection(TestMethodReport testMethodReport, Method method) {
-        super(testMethodReport, Utils.getTestMethodId(method));
+        super(testMethodReport, ReporterUtils.getTestMethodId(method));
         this.method = method;
     }
-
 
     @Override
     public TestClassSection getParentSectionThisSectionBelongsTo() {

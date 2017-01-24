@@ -16,7 +16,6 @@
  */
 package org.arquillian.reporter.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -124,7 +123,11 @@ final class SecurityActions
          throw new RuntimeException("Loaded class " + className + " is not of expected type " + expectedType, e);
       }
    }
-   
+
+   static <T> T newInstance(final Class<T> implClass){
+      return newInstance(implClass, new Class<?>[] {}, new Object[] {});
+   }
+
    /**
     * Create a new instance by finding a constructor that matches the argumentTypes signature 
     * using the arguments for instantiation.
@@ -270,7 +273,7 @@ final class SecurityActions
       }
    }
 
-   public static List<Field> getFieldsWithAnnotation(final Class<?> source, final Class<? extends Annotation> annotationClass) 
+   public static List<Field> getFields(final Class<?> source)
    {
       List<Field> declaredAccessableFields = AccessController.doPrivileged(new PrivilegedAction<List<Field>>()
       {
@@ -281,14 +284,11 @@ final class SecurityActions
             while (nextSource != Object.class) {
                for(Field field : nextSource.getDeclaredFields())
                {
-                  if(field.isAnnotationPresent(annotationClass))
+                  if(!field.isAccessible())
                   {
-                     if(!field.isAccessible()) 
-                     {
-                        field.setAccessible(true);
-                     }
-                     foundFields.add(field);
+                     field.setAccessible(true);
                   }
+                  foundFields.add(field);
                }
                nextSource = nextSource.getSuperclass();
             }
@@ -298,34 +298,6 @@ final class SecurityActions
       return declaredAccessableFields;
    }
 
-   public static List<Method> getMethodsWithAnnotation(final Class<?> source, final Class<? extends Annotation> annotationClass) 
-   {
-      List<Method> declaredAccessableMethods = AccessController.doPrivileged(new PrivilegedAction<List<Method>>()
-      {
-         public List<Method> run()
-         {
-            List<Method> foundMethods = new ArrayList<Method>();
-            Class<?> nextSource = source;
-            while (nextSource != Object.class) {
-               for(Method method : filterBridgeMethods(nextSource.getDeclaredMethods()))
-               {
-                  if(method.isAnnotationPresent(annotationClass))
-                  {
-                     if(!method.isAccessible()) 
-                     {
-                        method.setAccessible(true);
-                     }
-                     foundMethods.add(method);
-                  }
-               }
-               nextSource = nextSource.getSuperclass();
-            }
-            return foundMethods;
-         }
-      });
-      return declaredAccessableMethods;
-   }
-   
    static String getProperty(final String key) {
       try {
           String value = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {

@@ -10,16 +10,17 @@ import java.util.Map;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class BuilderRegistry {
+class BuilderRegistry {
 
     private static Map<String, String> builderRegistry = null;
-    private static final String BUILDER_IMPLEMENTATION_MAPPER_FILE = "META-INF/services/org.arquillian.reporter.Builder";
+    private static final String BUILDER_IMPLEMENTATION_MAPPER_FILE =
+        "META-INF/services/org.arquillian.reporter.Builder";
 
     private BuilderRegistry() {
 
     }
 
-    static String getImplementationForBuilder(String builder) {
+    static synchronized String getImplementationForBuilder(String builder) {
         if (builderRegistry == null) {
             loadFromFile();
         }
@@ -31,11 +32,11 @@ public class BuilderRegistry {
         InputStream builderImplMap =
             BuilderRegistry.class.getClassLoader().getResourceAsStream(BUILDER_IMPLEMENTATION_MAPPER_FILE);
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(builderImplMap))) {
-            buffer.lines().forEach(line ->{
+            buffer.lines().forEach(line -> {
                 String[] interfaceAndImpl = line.split("=");
                 if (interfaceAndImpl.length == 2) {
                     builderRegistry.put(interfaceAndImpl[0].trim(), interfaceAndImpl[1].trim());
-                }else{
+                } else {
                     // todo
                 }
             });

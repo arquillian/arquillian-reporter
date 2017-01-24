@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.arquillian.reporter.api.builder.Validate;
+import org.arquillian.reporter.api.utils.Validate;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
@@ -49,7 +49,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         this.associatedReport = associatedReport;
     }
 
-    public SectionTree<SECTIONTYPE, PAYLOAD_TYPE> getCloneWithoutSubtrees(){
+    public SectionTree<SECTIONTYPE, PAYLOAD_TYPE> getCloneWithoutSubtrees() {
         return new SectionTree<>(getRootIdentifier(), associatedReport);
     }
 
@@ -78,7 +78,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
                     // if not it means that there was expected that this tree should already exist, so the tree has to be created
                     createMissingSubtreeAndMergeIt(rootIdentifierSubtreeToMerge, subtreeToMerge);
 
-                }else {
+                } else {
                     // if yes then the associated report is the one that has been reported, so please add it into the report associated with this tree
                     AbstractReport reportToAssociate =
                         getAssociatedReport().addNewReport(subtreeToMerge.getAssociatedReport());
@@ -120,33 +120,25 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
     }
 
     private void createMissingSubtreeAndMergeIt(Identifier rootIdentifierSubtreeToMerge, SectionTree subtreeToMerge) {
-        try {
-            // get class of the missing section
-            Class subTreeSectionClass = rootIdentifierSubtreeToMerge.getSectionEventClass();
-            // and use non-parametric constructor to construct
-            SectionEvent dummySection = (SectionEvent) subTreeSectionClass.newInstance();
-            // from created dummy section get class of payload and create an instance
-            AbstractReport dummyReport = (AbstractReport) dummySection.getReportTypeClass().newInstance();
-            // set name of dummy report to the section id specified in identifier
-            dummyReport.setName(new UnknownStringKey(rootIdentifierSubtreeToMerge.getSectionId()));
-            // set dummy report as an associated report
-            subtreeToMerge.setAssociatedReport(dummyReport);
-            // and also into the current report structure
-            getAssociatedReport().addNewReport(dummyReport);
-            // crated a clone of the missing tree without any subtree
-            SectionTree dummyTree = subtreeToMerge.getCloneWithoutSubtrees();
-            // add the dummy tree
-            getSubtrees().add(dummyTree);
-            // and merge the subtree with the dummy tree
-            dummyTree.merge(subtreeToMerge);
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            // todo
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            // todo
-        }
+        // get class of the missing section
+        Class subTreeSectionClass = rootIdentifierSubtreeToMerge.getSectionEventClass();
+        // and use non-parametric constructor to construct
+        SectionEvent dummySection = (SectionEvent) SecurityActions.newInstance(subTreeSectionClass);
+        // from created dummy section get class of payload and create an instance
+        AbstractReport dummyReport =
+            (AbstractReport) SecurityActions.newInstance(dummySection.getReportTypeClass());
+        // set name of dummy report to the section id specified in identifier
+        dummyReport.setName(new UnknownStringKey(rootIdentifierSubtreeToMerge.getSectionId()));
+        // set dummy report as an associated report
+        subtreeToMerge.setAssociatedReport(dummyReport);
+        // and also into the current report structure
+        getAssociatedReport().addNewReport(dummyReport);
+        // crated a clone of the missing tree without any subtree
+        SectionTree dummyTree = subtreeToMerge.getCloneWithoutSubtrees();
+        // add the dummy tree
+        getSubtrees().add(dummyTree);
+        // and merge the subtree with the dummy tree
+        dummyTree.merge(subtreeToMerge);
         // todo log
     }
 }

@@ -1,7 +1,8 @@
-package org.arquillian.reporter.api.builder;
+package org.arquillian.reporter.api.builder.report;
 
 import java.util.Map;
 
+import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
@@ -10,7 +11,8 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder> extends Builder{
+public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
+    extends Builder {
 
     REPORTTYPE build();
 

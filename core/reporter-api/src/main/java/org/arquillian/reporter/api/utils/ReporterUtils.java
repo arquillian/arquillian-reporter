@@ -1,4 +1,4 @@
-package org.arquillian.reporter.api.builder;
+package org.arquillian.reporter.api.utils;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class Utils {
+public class ReporterUtils {
 
     public static String getDateFormat(){
         return "yyyy-MM-dd HH:mm:ss.S";
