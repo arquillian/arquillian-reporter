@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.arquillian.reporter.api.builder.ReportBuilder;
-import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionSection;
@@ -36,8 +35,8 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     }
 
     @Override
-    public ReportBuilderImpl getReportBuilderClass() {
-        return new ReportBuilderImpl(this);
+    public Class<ReportBuilder> getReportBuilderClass() {
+        return ReportBuilder.class;
     }
 
     @Override

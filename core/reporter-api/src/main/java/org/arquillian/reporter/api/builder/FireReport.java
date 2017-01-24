@@ -7,5 +7,5 @@ import org.arquillian.reporter.api.event.SectionEvent;
  */
 public interface FireReport {
 
-    ReportInSection usingEvent(SectionEvent event);
+    ReportInSectionBuilder usingEvent(SectionEvent event);
 }

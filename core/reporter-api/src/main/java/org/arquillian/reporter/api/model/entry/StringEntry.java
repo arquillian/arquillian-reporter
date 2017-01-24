@@ -1,6 +1,6 @@
 package org.arquillian.reporter.api.model.entry;
 
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
 
 /**

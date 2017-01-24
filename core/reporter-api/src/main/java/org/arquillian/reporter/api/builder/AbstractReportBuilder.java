@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.arquillian.reporter.api.builder.impl.ReportInSectionImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
-import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
+import org.arquillian.reporter.api.model.report.AbstractReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -51,6 +50,11 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
         return (BUILDERTYPE) this;
     }
 
+    public BUILDERTYPE addKeyValueEntry(String key, String value) {
+        report.getEntries().add(new KeyValueEntry(new UnknownStringKey(key), value));
+        return (BUILDERTYPE) this;
+    }
+
     public BUILDERTYPE addKeyValueEntry(StringKey key, int value) {
         addKeyValueEntry(key, String.valueOf(value));
         return (BUILDERTYPE) this;
@@ -63,7 +67,6 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
     }
 
     public BUILDERTYPE addReport(AbstractReport report) {
-        // todo should we take care of merging?
         this.report.getSubreports().add(report);
         return (BUILDERTYPE) this;
     }
@@ -73,9 +76,9 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
         return report;
     }
 
-    public <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSection<REPORTTYPE, SECTIONTYPE> inSection(
+    public <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
         SECTIONTYPE event){
-        return new ReportInSectionImpl<>(build(), event);
+        return Reporter.usingBuilder(ReportInSectionBuilder.class, build(), event);
     }
 
     protected List<BUILDERTYPE> getReportBuilders() {

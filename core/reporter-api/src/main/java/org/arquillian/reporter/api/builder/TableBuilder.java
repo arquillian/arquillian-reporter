@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.entry.table.TableRow;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface TableBuilder {
+public interface TableBuilder extends Builder{
 
     TableBuilder addHeaderRows(TableRow... rows);
     TableBuilder addHeaderRow(Entry... entries);

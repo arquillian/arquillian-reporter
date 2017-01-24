@@ -1,7 +1,7 @@
-package org.arquillian.reporter.api.builder.impl;
+package org.arquillian.reporter.impl.builder;
 
 import org.arquillian.reporter.api.builder.FireReport;
-import org.arquillian.reporter.api.builder.ReportInSection;
+import org.arquillian.reporter.api.builder.ReportInSectionBuilder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.Report;
 
@@ -17,7 +17,7 @@ public class FireReportImpl implements FireReport {
     }
 
     @Override
-    public ReportInSection usingEvent(SectionEvent event) {
-        return new ReportInSectionImpl(sectionReport, event);
+    public ReportInSectionBuilder usingEvent(SectionEvent event) {
+        return new ReportInSectionBuilderImpl(sectionReport, event);
     }
 }

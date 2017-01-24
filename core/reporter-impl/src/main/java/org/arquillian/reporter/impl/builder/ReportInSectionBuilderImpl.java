@@ -1,6 +1,6 @@
-package org.arquillian.reporter.api.builder.impl;
+package org.arquillian.reporter.impl.builder;
 
-import org.arquillian.reporter.api.builder.ReportInSection;
+import org.arquillian.reporter.api.builder.ReportInSectionBuilder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.jboss.arquillian.core.api.Event;
@@ -8,13 +8,13 @@ import org.jboss.arquillian.core.api.Event;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportInSectionImpl<REPORTTYPE extends AbstractReport, SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>>
-    implements ReportInSection<REPORTTYPE, SECTIONTYPE> {
+public class ReportInSectionBuilderImpl<REPORTTYPE extends AbstractReport, SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>>
+    implements ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> {
 
     private REPORTTYPE sectionReport;
     private SECTIONTYPE reportNodeEvent;
 
-    public ReportInSectionImpl(REPORTTYPE sectionReport, SECTIONTYPE reportNodeEvent) {
+    public ReportInSectionBuilderImpl(REPORTTYPE sectionReport, SECTIONTYPE reportNodeEvent) {
         this.sectionReport = sectionReport;
         this.reportNodeEvent = reportNodeEvent;
     }

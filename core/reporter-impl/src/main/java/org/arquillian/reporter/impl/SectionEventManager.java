@@ -16,6 +16,16 @@ public class SectionEventManager {
         if (event.isProcessed()) {
             return;
         }
+
+        // check if the expected payload type is same the actual one
+        Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
+        if (!expectedPayload.isAssignableFrom(event.getReport().getClass())){
+            // if not, then create a report class that will be a wrapper of the actual report
+            REPORT_TYPE wrapper = SecurityActions.newInstance(expectedPayload, new Class[] {}, new Object[] {});
+            wrapper.addNewReport(event.getReport());
+            event.setReport((REPORT_TYPE) wrapper);
+        }
+
         SectionTree eventTree = createTreeRecursively(event, null);
         executionReport.getSectionTree().merge(eventTree);
         event.setProcessed(true);

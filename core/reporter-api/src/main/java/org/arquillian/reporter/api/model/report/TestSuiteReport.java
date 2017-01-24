@@ -3,17 +3,17 @@ package org.arquillian.reporter.api.model.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.arquillian.reporter.api.builder.TestSuiteReportBuilder;
 import org.arquillian.reporter.api.builder.Utils;
-import org.arquillian.reporter.api.builder.impl.TestSuiteReportBuilderImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_SUITE_CONFIGURATION_REPORT;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReport extends AbstractReport<TestSuiteReport,TestSuiteReportBuilderImpl> {
+public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteReportBuilder> {
 
     private String start = Utils.getCurrentDate();
     private String stop;
@@ -91,7 +91,7 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport,TestSuiteRep
     }
 
     @Override
-    public TestSuiteReportBuilderImpl getReportBuilderClass() {
-        return new TestSuiteReportBuilderImpl(this);
+    public Class<TestSuiteReportBuilder> getReportBuilderClass() {
+        return TestSuiteReportBuilder.class;
     }
 }

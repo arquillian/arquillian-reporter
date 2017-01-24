@@ -57,7 +57,7 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
         getSubreports().addAll(newReport.getSubreports());
     }
 
-    public abstract UTILS getReportBuilderClass();
+    public abstract Class<UTILS> getReportBuilderClass();
 
     public abstract TYPE merge(TYPE newReport);
 

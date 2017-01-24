@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.ExecutionReport;
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.event.TestClassConfigurationSection;
 import org.arquillian.reporter.api.event.TestClassSection;
 import org.arquillian.reporter.api.event.TestMethodConfigurationSection;
 import org.arquillian.reporter.api.event.TestMethodFailureSection;
@@ -65,6 +66,10 @@ public class ReporterLifecycleManager {
 
     public void observeEventsForTestClassSection(@Observes TestClassSection event) {
             processEvent(event, report.get());
+    }
+
+    public void observeEventsForTestClassSection(@Observes TestClassConfigurationSection event) {
+        processEvent(event, report.get());
     }
 
     public void observeEventsForTestClassConfigurationSection(@Observes TestSuiteConfigurationSection event) {

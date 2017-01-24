@@ -10,7 +10,7 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder> {
+public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder> extends Builder{
 
     REPORTTYPE build();
 
@@ -26,10 +26,12 @@ public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? e
 
     BUILDERTYPE addKeyValueEntry(StringKey key, String value);
 
+    BUILDERTYPE addKeyValueEntry(String key, String value);
+
     BUILDERTYPE addKeyValueEntry(StringKey key, int value);
 
     BUILDERTYPE addKeyValueEntry(StringKey key, boolean runAsClient);
 
-    <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSection<REPORTTYPE, SECTIONTYPE> inSection(
+    <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
         SECTIONTYPE event);
 }

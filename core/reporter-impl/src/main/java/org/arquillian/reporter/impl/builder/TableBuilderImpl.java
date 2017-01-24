@@ -1,10 +1,11 @@
-package org.arquillian.reporter.api.builder.impl;
+package org.arquillian.reporter.impl.builder;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.arquillian.reporter.api.builder.TableBuilder;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.StringEntry;
 import org.arquillian.reporter.api.model.entry.table.TableCell;

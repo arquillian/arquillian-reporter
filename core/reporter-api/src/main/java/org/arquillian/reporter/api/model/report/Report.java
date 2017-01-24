@@ -1,18 +1,23 @@
 package org.arquillian.reporter.api.model.report;
 
-import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
+import org.arquillian.reporter.api.builder.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class Report extends AbstractReport<Report,ReportBuilderImpl> {
+public class Report extends AbstractReport<Report,ReportBuilder> {
 
     public Report() {
     }
 
     public Report(StringKey name) {
         super(name);
+    }
+
+    public Report(String name) {
+        super(new UnknownStringKey(name));
     }
 
     public Report merge(Report newReport) {
@@ -26,8 +31,7 @@ public class Report extends AbstractReport<Report,ReportBuilderImpl> {
         return newReport;
     }
 
-    public ReportBuilderImpl getReportBuilderClass() {
-        return new ReportBuilderImpl(this);
+    public Class<ReportBuilder> getReportBuilderClass() {
+        return ReportBuilder.class;
     }
-
 }

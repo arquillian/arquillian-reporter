@@ -1,7 +1,6 @@
 package org.arquillian.reporter.api.model.report;
 
 import org.arquillian.reporter.api.builder.ReportBuilder;
-import org.arquillian.reporter.api.builder.impl.ReportBuilderImpl;
 import org.arquillian.reporter.api.model.StringKey;
 
 /**
@@ -17,8 +16,8 @@ public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> 
     }
 
     @Override
-    public ReportBuilder getReportBuilderClass() {
-        return new ReportBuilderImpl(this);
+    public Class<ReportBuilder> getReportBuilderClass() {
+        return ReportBuilder.class;
     }
 
     @Override

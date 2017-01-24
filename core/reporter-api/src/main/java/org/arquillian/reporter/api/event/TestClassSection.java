@@ -13,7 +13,7 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
     }
 
     public TestClassSection(Class<?> testClass) {
-        super(testClass.getCanonicalName());
+        super(testClass != null ? testClass.getCanonicalName() : null);
     }
 
     public TestClassSection(Class<?> testClass, String testSuiteId) {

@@ -1,7 +1,8 @@
-package org.arquillian.reporter.api.builder.impl;
+package org.arquillian.reporter.impl.builder;
 
 import org.arquillian.reporter.api.builder.AbstractReportBuilder;
 import org.arquillian.reporter.api.builder.Reporter;
+import org.arquillian.reporter.api.builder.TestMethodReportBuilder;
 import org.arquillian.reporter.api.builder.Utils;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
@@ -13,8 +14,8 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.METHOD_FAILURE_
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReportBuilderImpl extends
-    AbstractReportBuilder<TestMethodReport, TestMethodReportBuilderImpl> {
+public class TestMethodReportBuilderImpl extends AbstractReportBuilder<TestMethodReport, TestMethodReportBuilder>
+    implements TestMethodReportBuilder {
 
 
     public TestMethodReportBuilderImpl(TestMethodReport sectionReport) {
@@ -25,16 +26,6 @@ public class TestMethodReportBuilderImpl extends
         getReport().setStop(Utils.getCurrentDate());
         return this;
     }
-
-//    public TestMethodSectionBuilderImpl setFailure(Failure failure){
-//        setFailure(failure);
-//        return this;
-//    }
-//
-//    public TestMethodSectionBuilderImpl setStatus(TestResult.Status failure){
-//        setStatus(failure);
-//        return this;
-//    }
 
     public TestMethodReportBuilderImpl setResult(TestResult result){
         if (result.getStatus() == TestResult.Status.FAILED && result.getThrowable() != null) {

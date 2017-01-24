@@ -1,4 +1,4 @@
-package org.arquillian.reporter.api.builder.impl;
+package org.arquillian.reporter.impl.builder;
 
 import org.arquillian.reporter.api.builder.AbstractReportBuilder;
 import org.arquillian.reporter.api.builder.ReportBuilder;

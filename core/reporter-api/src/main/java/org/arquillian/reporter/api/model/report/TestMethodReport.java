@@ -1,9 +1,9 @@
 package org.arquillian.reporter.api.model.report;
 
+import org.arquillian.reporter.api.builder.TestMethodReportBuilder;
 import org.arquillian.reporter.api.builder.Utils;
-import org.arquillian.reporter.api.builder.impl.TestMethodReportBuilderImpl;
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.jboss.arquillian.test.spi.TestResult;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_METHOD_FAILURE_REPORT;
@@ -12,7 +12,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_ME
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethodReportBuilderImpl> {
+public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethodReportBuilder> {
 
     private String start = Utils.getCurrentDate();
     private String stop;
@@ -108,7 +108,7 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
     }
 
     @Override
-    public TestMethodReportBuilderImpl getReportBuilderClass() {
-        return new TestMethodReportBuilderImpl(this);
+    public Class<TestMethodReportBuilder> getReportBuilderClass() {
+        return TestMethodReportBuilder.class;
     }
 }

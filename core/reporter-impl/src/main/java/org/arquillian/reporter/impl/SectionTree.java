@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.arquillian.reporter.api.builder.Validate;
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.AbstractReport;

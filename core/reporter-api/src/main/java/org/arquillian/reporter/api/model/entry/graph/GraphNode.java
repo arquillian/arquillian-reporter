@@ -2,7 +2,7 @@ package org.arquillian.reporter.api.model.entry.graph;
 
 import java.util.Map;
 
-import org.arquillian.reporter.api.builder.impl.UnknownStringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.StringKey;
 
 /**
