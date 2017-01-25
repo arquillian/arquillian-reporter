@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.ExecutionReport;
+import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestClassConfigurationSection;
 import org.arquillian.reporter.api.event.TestClassSection;
@@ -41,15 +42,16 @@ public class ReporterLifecycleManager {
     @Inject
     private Instance<ServiceLoader> serviceLoader;
 
-
     public void observeFirstEvent(@Observes ManagerStarted event) {
         if (report.get() == null) {
             ExecutionReport executionReport = new ExecutionReport();
             report.set(executionReport);
-        }
 
-        Collection<StringKey> allStringKeys = serviceLoader.get().all(StringKey.class);
-        allStringKeys.stream().forEach(stringKey -> buildStringKey(stringKey));
+            BuilderLoader.load();
+
+            Collection<StringKey> allStringKeys = serviceLoader.get().all(StringKey.class);
+            allStringKeys.stream().forEach(stringKey -> buildStringKey(stringKey));
+        }
     }
 
     public void observeEventsForAllSections(@Observes(precedence = -100) SectionEvent event) {
@@ -65,7 +67,7 @@ public class ReporterLifecycleManager {
     }
 
     public void observeEventsForTestClassSection(@Observes TestClassSection event) {
-            processEvent(event, report.get());
+        processEvent(event, report.get());
     }
 
     public void observeEventsForTestClassSection(@Observes TestClassConfigurationSection event) {

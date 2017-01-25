@@ -29,10 +29,9 @@ public class Reporter {
     }
 
     public static <T extends Builder> T usingBuilder(Class<T> builderClass, Object... constructParams) {
-        String implementationForBuilder = BuilderRegistry.getImplementationForBuilder(builderClass.getCanonicalName());
+        Class<T> implClass = BuilderRegistry.getImplementationForBuilder(builderClass);
 
-        if (implementationForBuilder != null) {
-            Class<T> implClass = (Class<T>) loadClass(implementationForBuilder);
+        if (implClass != null) {
             Class<?>[] classes = getConstructorParametersTypes(implClass, constructParams);
             return newInstance(implClass, classes, constructParams);
         } else {
@@ -64,7 +63,7 @@ public class Reporter {
         } else {
             Class<?>[] expectedClasses =
                 Arrays.stream(constructParams).map(param -> param.getClass()).toArray(Class<?>[]::new);
-            Optional<Constructor<?>> firstMathedConstr = getFirstMathedConstructor(constructors, expectedClasses);
+            Optional<Constructor<?>> firstMathedConstr = getFirstMatchedConstructor(constructors, expectedClasses);
             if (firstMathedConstr.isPresent()) {
                 return firstMathedConstr.get().getParameterTypes();
             } else {
@@ -74,7 +73,7 @@ public class Reporter {
         }
     }
 
-    private static Optional<Constructor<?>> getFirstMathedConstructor(Constructor<?>[] constructors,
+    private static Optional<Constructor<?>> getFirstMatchedConstructor(Constructor<?>[] constructors,
         Class<?>[] expectedClasses) {
         return Arrays
             .stream(constructors)
@@ -99,18 +98,6 @@ public class Reporter {
      */
     private static ClassLoader getThreadContextClassLoader() {
         return AccessController.doPrivileged(GetTcclAction.INSTANCE);
-    }
-
-    private static Class<?> loadClass(String className) {
-        try {
-            return Class.forName(className, true, getThreadContextClassLoader());
-        } catch (ClassNotFoundException e) {
-            try {
-                return Class.forName(className, true, Reporter.class.getClassLoader());
-            } catch (ClassNotFoundException e2) {
-                throw new RuntimeException("Could not load class " + className, e2);
-            }
-        }
     }
 
     /**

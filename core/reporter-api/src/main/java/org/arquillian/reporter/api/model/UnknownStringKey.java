@@ -5,17 +5,17 @@ package org.arquillian.reporter.api.model;
  */
 public class UnknownStringKey extends AbstractStringKey {
 
-    private String keyValue;
+    private String stringValue;
 
-    public UnknownStringKey(String keyValue) {
-        this.keyValue = keyValue;
+    public UnknownStringKey(String stringValue) {
+        this.stringValue = stringValue;
     }
 
-    public String getKeyValue() {
-        return keyValue;
+    public String getStringValue() {
+        return stringValue;
     }
 
-    public void setKeyValue(String keyValue) {
-        this.keyValue = keyValue;
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
     }
 }

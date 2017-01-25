@@ -17,7 +17,7 @@ class StringKeysBuilder {
     static void buildStringKey(StringKey stringKeyClass) {
         String stringKeyClassName = stringKeyClass.getClass().getName().toString();
         InputStream stringKeyPropFile = StringKeysBuilder.class.getClassLoader()
-            .getResourceAsStream("META-INF/services/" + stringKeyClassName + ".properties");
+            .getResourceAsStream(stringKeyClassName + ".properties");
 
         if (stringKeyPropFile != null)
             try {
