@@ -7,7 +7,6 @@ import java.util.Collection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
-import org.arquillian.reporter.ExecutionReport;
 import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestClassConfigurationSection;

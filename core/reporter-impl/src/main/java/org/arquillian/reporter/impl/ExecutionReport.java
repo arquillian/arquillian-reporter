@@ -1,4 +1,4 @@
-package org.arquillian.reporter;
+package org.arquillian.reporter.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,6 @@ import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.impl.ExecutionSection;
-import org.arquillian.reporter.impl.SectionTree;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -18,10 +16,10 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     private final List<TestSuiteReport> testSuiteReports = new ArrayList<>();
     private final ExecutionSection executionSection;
     private final SectionTree sectionTree;
-
+    public static final String EXECUTION_REPORT_NAME = "execution";
 
     public ExecutionReport() {
-        super(new UnknownStringKey("execution"));
+        super(new UnknownStringKey(EXECUTION_REPORT_NAME));
         this.executionSection = new ExecutionSection(this);
         sectionTree = new SectionTree(executionSection.identifyYourself(), this);
     }
@@ -42,6 +40,7 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     @Override
     public ExecutionReport merge(ExecutionReport newReport) {
         if (newReport != null) {
+            defaultMerge(newReport);
             getTestSuiteReports().addAll(newReport.getTestSuiteReports());
         }
         return this;
@@ -53,7 +52,7 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
         if (TestSuiteReport.class.isAssignableFrom(newReportClass)) {
             getTestSuiteReports().add((TestSuiteReport) newReport);
         } else {
-            getSubreports().add(newReport);
+            getSubReports().add(newReport);
         }
         return newReport;
     }

@@ -28,7 +28,7 @@ public class ConfigurationReport extends AbstractReport<ConfigurationReport, Rep
 
     @Override
     public AbstractReport addNewReport(AbstractReport newReport) {
-        getSubreports().add(newReport);
+        getSubReports().add(newReport);
         return newReport;
     }
 }

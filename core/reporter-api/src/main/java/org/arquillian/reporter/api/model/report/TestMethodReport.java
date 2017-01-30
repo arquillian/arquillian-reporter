@@ -102,7 +102,7 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
             return getFailureReport().addNewReport((FailureReport) newReport);
 
         } else {
-            getSubreports().add(newReport);
+            getSubReports().add(newReport);
             return newReport;
         }
     }

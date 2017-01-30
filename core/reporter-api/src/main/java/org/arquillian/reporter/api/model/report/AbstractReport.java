@@ -16,7 +16,7 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
 
     private List<Entry> entries = new ArrayList<>();
 
-    private List<AbstractReport> subreports = new ArrayList<>();
+    private List<AbstractReport> subReports = new ArrayList<>();
 
     public AbstractReport(){
     }
@@ -41,12 +41,12 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
         this.entries = entries;
     }
 
-    public List<AbstractReport> getSubreports() {
-        return subreports;
+    public List<AbstractReport> getSubReports() {
+        return subReports;
     }
 
-    public void setSubreports(List<AbstractReport> subreports) {
-        this.subreports = subreports;
+    public void setSubReports(List<AbstractReport> subReports) {
+        this.subReports = subReports;
     }
 
     public void defaultMerge(TYPE newReport){
@@ -54,7 +54,7 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
             return;
         }
         getEntries().addAll(newReport.getEntries());
-        getSubreports().addAll(newReport.getSubreports());
+        getSubReports().addAll(newReport.getSubReports());
     }
 
     public abstract Class<UTILS> getReportBuilderClass();

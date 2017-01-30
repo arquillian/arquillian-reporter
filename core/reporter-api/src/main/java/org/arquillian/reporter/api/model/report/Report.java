@@ -27,11 +27,38 @@ public class Report extends AbstractReport<Report,ReportBuilder> {
 
     @Override
     public AbstractReport addNewReport(AbstractReport newReport) {
-        getSubreports().add(newReport);
+        getSubReports().add(newReport);
         return newReport;
     }
 
     public Class<ReportBuilder> getReportBuilderClass() {
         return ReportBuilder.class;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Report that = (Report) o;
+
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null)
+            return false;
+        if (getEntries() != null ? !getEntries().equals(that.getEntries()) : that.getEntries() != null)
+            return false;
+        if (getSubReports() != null ? !getSubReports().equals(that.getSubReports()) : that.getSubReports() != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getEntries() != null ? getEntries().hashCode() : 0);
+        result = 31 * result + (getSubReports() != null ? getSubReports().hashCode() : 0);
+        return result;
     }
 }

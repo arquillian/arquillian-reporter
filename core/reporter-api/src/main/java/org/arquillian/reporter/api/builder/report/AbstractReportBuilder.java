@@ -67,7 +67,7 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
     }
 
     public BUILDERTYPE addReport(AbstractReport report) {
-        this.report.getSubreports().add(report);
+        this.report.getSubReports().add(report);
         return (BUILDERTYPE) this;
     }
 

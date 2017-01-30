@@ -90,7 +90,7 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
             return newReport;
 
         } else {
-            getSubreports().add(newReport);
+            getSubReports().add(newReport);
             return newReport;
         }
     }

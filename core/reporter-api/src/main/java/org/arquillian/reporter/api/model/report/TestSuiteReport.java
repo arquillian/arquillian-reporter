@@ -85,7 +85,7 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteRe
             return newReport;
 
         } else {
-            getSubreports().add(newReport);
+            getSubReports().add(newReport);
             return newReport;
         }
     }

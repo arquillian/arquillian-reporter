@@ -1,6 +1,5 @@
 package org.arquillian.reporter.impl;
 
-import org.arquillian.reporter.ExecutionReport;
 import org.arquillian.reporter.api.event.SectionEvent;
 
 /**
@@ -8,12 +7,14 @@ import org.arquillian.reporter.api.event.SectionEvent;
  */
 public class ExecutionSection extends SectionEvent<ExecutionSection, ExecutionReport, SectionEvent> {
 
+    public static final String EXECUTION_SECTION_ID = "executionId";
+
     public ExecutionSection() {
-        super("executionId");
+        super(EXECUTION_SECTION_ID);
     }
 
     public ExecutionSection(ExecutionReport report) {
-        super(report, "executionId");
+        super(report, EXECUTION_SECTION_ID);
     }
 
     @Override

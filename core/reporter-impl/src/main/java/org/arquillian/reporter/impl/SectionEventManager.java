@@ -1,6 +1,5 @@
 package org.arquillian.reporter.impl;
 
-import org.arquillian.reporter.ExecutionReport;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.AbstractReport;
