@@ -62,4 +62,5 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
     public abstract TYPE merge(TYPE newReport);
 
     public abstract AbstractReport addNewReport(AbstractReport newReport);
+
 }

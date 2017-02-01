@@ -11,6 +11,7 @@ import org.arquillian.reporter.api.model.report.TestMethodReport;
 public class TestMethodSection extends SectionEvent<TestMethodSection, TestMethodReport, TestClassSection> {
 
     private Method method;
+    private String testSuiteId;
 
     public TestMethodSection() {
     }
@@ -27,11 +28,32 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
 
     @Override
     public TestClassSection getParentSectionThisSectionBelongsTo() {
-        return new TestClassSection(method.getDeclaringClass());
+        if (testSuiteId == null) {
+            return new TestClassSection(method.getDeclaringClass());
+        } else {
+            return new TestClassSection(method.getDeclaringClass(), testSuiteId);
+        }
     }
 
     @Override
     public Class<TestMethodReport> getReportTypeClass() {
         return TestMethodReport.class;
+    }
+
+    // todo add into builder or into constructor
+    public void setTestSuiteId(String testSuiteId) {
+        this.testSuiteId = testSuiteId;
+    }
+
+    public String getTestSuiteId() {
+        return testSuiteId;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }

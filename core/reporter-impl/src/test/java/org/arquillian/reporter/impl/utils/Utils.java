@@ -16,19 +16,23 @@ import org.arquillian.reporter.api.model.report.Report;
  */
 public class Utils {
 
+    public static final int DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD = 1;
+    public static final int DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD = 10;
+
     public static void feedReportWithData(AbstractReport report, int startIndex, int endIndex) {
-            report.getEntries().addAll(getSetOfEntries(startIndex, endIndex));
-            report.getSubReports().addAll(getSetOfReports(startIndex, endIndex));
+        report.getEntries().addAll(getSetOfEntries(startIndex, endIndex));
+        report.getSubReports().addAll(getSetOfReports(startIndex, endIndex));
     }
 
     public static List<Report> getSetOfReports(int startIndex, int endIndex) {
-        return IntStream.range(startIndex, endIndex).mapToObj(index -> getReportWithIndex(index)).collect(Collectors.toList());
+        return IntStream.range(startIndex, endIndex).mapToObj(index -> getReportWithIndex(index))
+            .collect(Collectors.toList());
     }
 
     public static List<Entry> getSetOfEntries(int startIndex, int endIndex) {
-        return IntStream.range(startIndex, endIndex).mapToObj(index -> getKeyValueEntryWitIndex(index)).collect(Collectors.toList());
+        return IntStream.range(startIndex, endIndex).mapToObj(index -> getKeyValueEntryWitIndex(index))
+            .collect(Collectors.toList());
     }
-
 
     public static KeyValueEntry getKeyValueEntryWitIndex(int index) {
         return new KeyValueEntry(index + ". entry", index + ". cool entry");
@@ -42,7 +46,8 @@ public class Utils {
         return dummyReport;
     }
 
-    public static <T extends AbstractReport> List<T> prepareSetOfReports(Class<T> reportClass, int count, String prefixName, int startIndex,
+    public static <T extends AbstractReport> List<T> prepareSetOfReports(Class<T> reportClass, int count,
+        String prefixName, int startIndex,
         int endIndex) throws IllegalAccessException, InstantiationException {
         return IntStream.range(0, count).mapToObj(index -> {
             try {
@@ -58,6 +63,14 @@ public class Utils {
         return prepareReport(reportClass, new UnknownStringKey(name), startIndex, endIndex);
     }
 
+    public static <T extends AbstractReport> T prepareReportWithDefaults(Class<T> reportClass, String name)
+        throws IllegalAccessException, InstantiationException {
+        return prepareReport(reportClass,
+                             new UnknownStringKey(name),
+                             DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD,
+                             DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD);
+    }
+
     public static <T extends AbstractReport> T prepareReport(Class<T> reportClass, StringKey name, int startIndex,
         int endIndex) throws IllegalAccessException, InstantiationException {
         T report = reportClass.newInstance();
@@ -65,33 +78,5 @@ public class Utils {
         feedReportWithData(report, startIndex, endIndex);
         return report;
     }
-
-//    public static void defaultReportVerificationAfterMerge(AbstractReport report, String name, int startIndex,
-//        int endIndex) {
-//
-//        defaultReportVerificationAfterMerge(report, new UnknownStringKey(name), startIndex, endIndex);
-//    }
-//
-//    public static void defaultReportVerificationAfterMerge(AbstractReport report, String name, int startIndex,
-//        int endIndex, int size) {
-//
-//        defaultReportVerificationAfterMerge(report, new UnknownStringKey(name), startIndex, endIndex, size);
-//
-//    }
-//
-//
-//
-//    public static void defaultReportVerificationAfterMerge(AbstractReport report, StringKey name, int startIndex,
-//        int endIndex) {
-//
-//        defaultReportVerificationAfterMerge(report, name, startIndex, endIndex, endIndex - startIndex);
-//    }
-
-//    public static void defaultTreeVerificationAfterMerge(SectionTree tree, Identifier expectedId, StringKey name,
-//        int startIndex, int endIndex) {
-//
-//        Assertions.assertThat(tree.getRootIdentifier()).isEqualTo(expectedId);
-//        defaultReportVerificationAfterMerge(tree.getAssociatedReport(), name, startIndex, endIndex);
-//    }
 
 }

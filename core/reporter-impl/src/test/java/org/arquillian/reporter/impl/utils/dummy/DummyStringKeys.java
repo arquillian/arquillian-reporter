@@ -1,4 +1,4 @@
-package org.arquillian.reporter.impl.utils;
+package org.arquillian.reporter.impl.utils.dummy;
 
 import org.arquillian.reporter.api.model.AbstractStringKey;
 

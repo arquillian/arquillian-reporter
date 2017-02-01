@@ -11,6 +11,7 @@ import org.arquillian.reporter.api.model.report.FailureReport;
 public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSection, FailureReport, TestMethodSection> {
 
     private Method testMethod;
+    private String testSuiteId;
 
     public TestMethodFailureSection() {
     }
@@ -27,11 +28,22 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
 
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
-        return new TestMethodSection(testMethod);
+        TestMethodSection testMethodSection = new TestMethodSection(testMethod);
+        testMethodSection.setTestSuiteId(testSuiteId);
+        return testMethodSection;
     }
 
     @Override
     public Class<FailureReport> getReportTypeClass() {
         return FailureReport.class;
+    }
+
+    // todo add into builder or into constructor
+    public void setTestSuiteId(String testSuiteId) {
+        this.testSuiteId = testSuiteId;
+    }
+
+    public String getTestSuiteId() {
+        return testSuiteId;
     }
 }

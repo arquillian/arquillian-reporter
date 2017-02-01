@@ -4,16 +4,19 @@ import java.util.List;
 
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.api.event.Identifier;
-import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.utils.Utils;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.ExecutionReport.EXECUTION_REPORT_NAME;
 import static org.arquillian.reporter.impl.ExecutionSection.EXECUTION_SECTION_ID;
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThat;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.SectionAssert.assertThatSection;
+import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -41,25 +44,28 @@ public class ExecutionReportTest {
         executionReport.addNewReport(firstTestSuiteReportToAdd);
 
         // verify
-        assertThat(executionReport).hasNumberOfSubreports(5)
-            
-//            .subReportsDoesNotContain()
-        assertThat(executionReport.getSubReports())
-            .doesNotContain(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd);
-        assertThat(executionReport.getSubReports()).last().isEqualTo(basicReport);
-        assertThat(executionReport.getTestSuiteReports())
-            .containsExactly(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd, firstTestSuiteReportToAdd);
-        assertThat(executionReport.getName()).isEqualTo(new UnknownStringKey(EXECUTION_REPORT_NAME));
-        Utils.defaultReportVerificationAfterMerge(executionReport, EXECUTION_REPORT_NAME, 1, 5, 5);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(executionReport)
+                .hasName(EXECUTION_REPORT_NAME)
+                .hasNumberOfSubreports(5)
+                .hasSubReportsEndingWith(basicReport)
+                .hasSubReportsWithout(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd)
+                .hasGeneratedSubreportsAndEntries(1, 5)
+                .hasNumberOfEntries(4);
+
+            assertThat(executionReport.getTestSuiteReports())
+                .containsExactly(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd, firstTestSuiteReportToAdd);
+        });
     }
 
     @Test
     public void testNewExecutionReportShouldContainSectionWithTheSameReportItself() {
         ExecutionReport executionReport = new ExecutionReport();
 
-        assertThat(executionReport.getExecutionSection().getSectionId()).isEqualTo(EXECUTION_SECTION_ID);
-        assertThat(executionReport.getExecutionSection().getReportTypeClass()).isAssignableFrom(ExecutionReport.class);
-        assertThat(executionReport.getExecutionSection().getReport()).isEqualTo(executionReport);
+        assertThatSection(executionReport.getExecutionSection())
+            .hasSectionId(EXECUTION_SECTION_ID)
+            .hasReportOfTypeThatIsAssignableFrom(ExecutionReport.class)
+            .hasReportEqualTo(executionReport);
     }
 
     @Test
@@ -67,8 +73,9 @@ public class ExecutionReportTest {
         ExecutionReport executionReport = new ExecutionReport();
         Identifier identifier = new Identifier<>(ExecutionSection.class, EXECUTION_SECTION_ID);
 
-        assertThat(executionReport.getSectionTree().getRootIdentifier()).isEqualTo(identifier);
-        assertThat(executionReport.getSectionTree().getAssociatedReport()).isEqualTo(executionReport);
+        assertThatSectionTree(executionReport.getSectionTree())
+            .hasRootIdentifier(identifier)
+            .hasAssociatedReport(executionReport);
 
     }
 
@@ -86,14 +93,25 @@ public class ExecutionReportTest {
         mainExecutionReport.merge(executionReportToMerge);
 
         // the report that has been merged is still same
-        assertThat(executionReportToMerge.getTestSuiteReports())
-            .containsExactly(secondTestSuites.stream().toArray(TestSuiteReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(executionReportToMerge, "to merge", 5, 10);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(executionReportToMerge)
+                .hasName("to merge")
+                .hasGeneratedSubreportsAndEntries(5, 10)
+                .hasNumberOfSubreportsAndEntries(5);
+
+            assertThat(executionReportToMerge.getTestSuiteReports()).isEqualTo(secondTestSuites);
+        });
 
         // the main report should contain all information
         firstTestSuites.addAll(secondTestSuites);
-        assertThat(mainExecutionReport.getTestSuiteReports())
-            .containsExactly(firstTestSuites.stream().toArray(TestSuiteReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(mainExecutionReport, EXECUTION_REPORT_NAME, 1, 10);
+        // verify
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(mainExecutionReport)
+                .hasName(EXECUTION_REPORT_NAME)
+                .hasGeneratedSubreportsAndEntries(1, 10)
+                .hasNumberOfSubreportsAndEntries(9);
+
+            assertThat(mainExecutionReport.getTestSuiteReports()).isEqualTo(firstTestSuites);
+        });
     }
 }

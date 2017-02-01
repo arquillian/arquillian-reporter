@@ -12,6 +12,7 @@ public class TestMethodConfigurationSection
     extends SectionEvent<TestMethodConfigurationSection, ConfigurationReport, TestMethodSection> {
 
     private Method testMethod;
+    private String testSuiteId;
 
     public TestMethodConfigurationSection() {
     }
@@ -29,11 +30,23 @@ public class TestMethodConfigurationSection
 
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
-        return new TestMethodSection(testMethod);
+        TestMethodSection testMethodSection = new TestMethodSection(testMethod);
+        testMethodSection.setTestSuiteId(testSuiteId);
+        return testMethodSection;
     }
 
     @Override
     public Class<ConfigurationReport> getReportTypeClass() {
         return ConfigurationReport.class;
+    }
+
+
+    // todo add into builder or into constructor
+    public void setTestSuiteId(String testSuiteId) {
+        this.testSuiteId = testSuiteId;
+    }
+
+    public String getTestSuiteId() {
+        return testSuiteId;
     }
 }

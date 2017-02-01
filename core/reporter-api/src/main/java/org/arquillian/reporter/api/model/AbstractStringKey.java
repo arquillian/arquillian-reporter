@@ -67,4 +67,12 @@ public class AbstractStringKey implements StringKey {
         result = 31 * result + (getIcon() != null ? getIcon().hashCode() : 0);
         return result;
     }
+
+    @Override public String toString() {
+        return "AbstractStringKey{" +
+            "value='" + value + '\'' +
+            ", description='" + description + '\'' +
+            ", icon='" + icon + '\'' +
+            '}';
+    }
 }

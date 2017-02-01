@@ -35,4 +35,12 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
     public Class<TestClassReport> getReportTypeClass() {
         return TestClassReport.class;
     }
+
+    public String getTestSuiteId() {
+        return testSuiteId;
+    }
+
+    public void setTestSuiteId(String testSuiteId) {
+        this.testSuiteId = testSuiteId;
+    }
 }

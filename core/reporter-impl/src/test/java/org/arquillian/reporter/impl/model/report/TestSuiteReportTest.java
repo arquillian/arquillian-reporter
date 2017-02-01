@@ -10,10 +10,12 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.utils.Utils;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.utils.DummyStringKeys.TEST_CLASS_NAME;
-import static org.arquillian.reporter.impl.utils.DummyStringKeys.TEST_SUITE_NAME;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.TEST_CLASS_NAME;
+import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.TEST_SUITE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -49,13 +51,19 @@ public class TestSuiteReportTest {
         testSuiteReport.addNewReport(testClassReportToAdd);
 
         // verify
-        assertThat(testSuiteReport.getSubReports())
-            .doesNotContain(testClassReportToAdd, configurationReportToAdd, secondTestClassReportToAdd);
-        assertThat(testSuiteReport.getSubReports()).last().isEqualTo(basicReport);
-        assertThat(testSuiteReport.getConfiguration().getSubReports()).containsExactly(configurationReportToAdd);
-        assertThat(testSuiteReport.getTestClassReports())
-            .containsExactly(testClassReportToAdd, secondTestClassReportToAdd, testClassReportToAdd);
-        Utils.defaultReportVerificationAfterMerge(testSuiteReport, TEST_SUITE_NAME, 1, 5, 5);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(testSuiteReport)
+                .hasName(TEST_SUITE_NAME)
+                .hasSubReportsWithout(testClassReportToAdd, configurationReportToAdd, secondTestClassReportToAdd)
+                .hasSubReportsEndingWith(basicReport)
+                .hasGeneratedSubreportsAndEntries(1, 5)
+                .hasNumberOfSubreports(5)
+                .hasNumberOfEntries(4);
+
+            assertThat(testSuiteReport.getConfiguration().getSubReports()).containsExactly(configurationReportToAdd);
+            assertThat(testSuiteReport.getTestClassReports())
+                .containsExactly(testClassReportToAdd, secondTestClassReportToAdd, testClassReportToAdd);
+        });
     }
 
     @Test
@@ -110,19 +118,29 @@ public class TestSuiteReportTest {
         mainTestSuiteReport.merge(testSuiteReportToMerge);
 
         // the report that has been merged is still same
-        assertThat(testSuiteReportToMerge.getTestClassReports())
-            .containsExactly(classesToMerge.stream().toArray(TestClassReport[]::new));
-        assertThat(testSuiteReportToMerge.getConfiguration().getSubReports())
-            .containsExactly(configsToMerge.stream().toArray(ConfigurationReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(testSuiteReportToMerge, "to merge", 5, 10);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(testSuiteReportToMerge)
+                .hasName("to merge")
+                .hasGeneratedSubreportsAndEntries(5, 10)
+                .hasNumberOfSubreportsAndEntries(5);
+
+            assertThat(testSuiteReportToMerge.getTestClassReports()).isEqualTo(classesToMerge);
+            assertThat(testSuiteReportToMerge.getConfiguration().getSubReports()).isEqualTo(configsToMerge);
+        });
 
         // the main report should contain all information
         firstTestClasses.addAll(classesToMerge);
         firstConfigs.addAll(configsToMerge);
-        assertThat(mainTestSuiteReport.getTestClassReports())
-            .containsExactly(firstTestClasses.stream().toArray(TestClassReport[]::new));
-        assertThat(mainTestSuiteReport.getConfiguration().getSubReports())
-            .containsExactly(firstConfigs.stream().toArray(ConfigurationReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(mainTestSuiteReport, "main test suite", 1, 10);
+
+        // verify
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(mainTestSuiteReport)
+                .hasName("main test suite")
+                .hasGeneratedSubreportsAndEntries(1, 10)
+                .hasNumberOfSubreportsAndEntries(9);
+
+            assertThat(mainTestSuiteReport.getTestClassReports()).isEqualTo(firstTestClasses);
+            assertThat(mainTestSuiteReport.getConfiguration().getSubReports()).isEqualTo(firstConfigs);
+        });
     }
 }

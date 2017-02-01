@@ -7,8 +7,8 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.utils.DummyStringKeys.FAILURE_REPORT_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.FAILURE_REPORT_NAME;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -24,16 +24,21 @@ public class FailureReportTest {
         failureReport.addNewReport(basicReport);
 
         // verify
-        assertThat(failureReport.getSubReports()).last().isEqualTo(basicReport);
-        assertThat(failureReport.getSubReports()).hasSize(5);
+        assertThatReport(failureReport)
+            .hasSubReportsEndingWith(basicReport)
+            .hasNumberOfSubreports(5);
 
         // add failure report - should be added into List of subReports
         FailureReport failureToAdd = Utils.prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 5, 10);
         failureReport.addNewReport(failureToAdd);
 
         // verify
-        assertThat(failureReport.getSubReports()).endsWith(basicReport, failureToAdd);
-        Utils.defaultReportVerificationAfterMerge(failureReport, FAILURE_REPORT_NAME, 1, 5, 6);
+        assertThatReport(failureReport)
+            .hasName(FAILURE_REPORT_NAME)
+            .hasGeneratedSubreportsAndEntries(1, 5)
+            .hasNumberOfSubreports(6)
+            .hasNumberOfEntries(4)
+            .hasSubReportsEndingWith(basicReport, failureToAdd);
     }
 
     @Test
@@ -50,14 +55,20 @@ public class FailureReportTest {
         mainFailureReport.merge(failureToMerge);
 
         // the report that has been merged is still same
-        assertThat(failureToMerge.getSubReports()).endsWith(secondFailure.stream().toArray(FailureReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(failureToMerge, "to merge", 5, 10, 10);
+        assertThatReport(failureToMerge)
+            .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
+            .hasName("to merge")
+            .hasGeneratedSubreportsAndEntries(5, 10)
+            .hasNumberOfSubreports(10)
+            .hasNumberOfEntries(5);
 
-        // the main report should contain all information
-        assertThat(mainFailureReport.getSubReports())
-            .contains(firstFailure.stream().toArray(FailureReport[]::new));
-        assertThat(mainFailureReport.getSubReports())
-            .endsWith(secondFailure.stream().toArray(FailureReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(mainFailureReport, FAILURE_REPORT_NAME, 1, 10, 19);
+        // verify that the main report should contain all information
+        assertThatReport(mainFailureReport)
+            .hassSubReportsContaining(firstFailure.stream().toArray(FailureReport[]::new))
+            .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
+            .hasName(FAILURE_REPORT_NAME)
+            .hasGeneratedSubreportsAndEntries(1, 10)
+            .hasNumberOfSubreports(19)
+            .hasNumberOfEntries(9);
     }
 }

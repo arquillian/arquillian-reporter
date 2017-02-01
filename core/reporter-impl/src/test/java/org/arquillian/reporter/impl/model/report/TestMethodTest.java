@@ -10,9 +10,11 @@ import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.impl.utils.Utils;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.utils.DummyStringKeys.TEST_METHOD_NAME;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.TEST_METHOD_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -38,11 +40,18 @@ public class TestMethodTest {
         testMethodReport.addNewReport(basicReport);
 
         // verify
-        assertThat(testMethodReport.getSubReports()).doesNotContain(configurationReportToAdd, failureReportToAdd);
-        assertThat(testMethodReport.getSubReports()).last().isEqualTo(basicReport);
-        assertThat(testMethodReport.getConfiguration().getSubReports()).containsExactly(configurationReportToAdd);
-        assertThat(testMethodReport.getFailureReport().getSubReports()).containsExactly(failureReportToAdd);
-        Utils.defaultReportVerificationAfterMerge(testMethodReport, TEST_METHOD_NAME, 1, 5, 5);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(testMethodReport)
+                .hasName(TEST_METHOD_NAME)
+                .hasSubReportsWithout(configurationReportToAdd, failureReportToAdd)
+                .hasSubReportsEndingWith(basicReport)
+                .hasGeneratedSubreportsAndEntries(1, 5)
+                .hasNumberOfSubreports(5)
+                .hasNumberOfEntries(4);
+
+            assertThat(testMethodReport.getConfiguration().getSubReports()).containsExactly(configurationReportToAdd);
+            assertThat(testMethodReport.getFailureReport().getSubReports()).containsExactly(failureReportToAdd);
+        });
     }
 
     @Test
@@ -96,20 +105,30 @@ public class TestMethodTest {
         mainTestMethodReport.merge(testMethodToMerge);
 
         // the report that has been merged is still same
-        assertThat(testMethodToMerge.getFailureReport().getSubReports())
-            .containsExactly(failuresToMerge.stream().toArray(FailureReport[]::new));
-        assertThat(testMethodToMerge.getConfiguration().getSubReports())
-            .containsExactly(configsToMerge.stream().toArray(ConfigurationReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(testMethodToMerge, "to merge", 5, 10);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(testMethodToMerge)
+                .hasName("to merge")
+                .hasGeneratedSubreportsAndEntries(5, 10)
+                .hasNumberOfSubreportsAndEntries(5);
+
+            assertThat(testMethodToMerge.getFailureReport().getSubReports()).isEqualTo(failuresToMerge);
+            assertThat(testMethodToMerge.getConfiguration().getSubReports()).isEqualTo(configsToMerge);
+        });
 
         // the main report should contain all information
         firstFailure.addAll(failuresToMerge);
         firstConfigs.addAll(configsToMerge);
-        assertThat(mainTestMethodReport.getFailureReport().getSubReports())
-            .containsExactly(firstFailure.stream().toArray(FailureReport[]::new));
-        assertThat(mainTestMethodReport.getConfiguration().getSubReports())
-            .containsExactly(firstConfigs.stream().toArray(ConfigurationReport[]::new));
-        Utils.defaultReportVerificationAfterMerge(mainTestMethodReport, TEST_METHOD_NAME, 1, 10);
+
+        //verify
+        SoftAssertions.assertSoftly(softly -> {
+            assertThatReport(mainTestMethodReport)
+                .hasName(TEST_METHOD_NAME)
+                .hasGeneratedSubreportsAndEntries(1, 10)
+                .hasNumberOfSubreportsAndEntries(9);
+
+            assertThat(mainTestMethodReport.getFailureReport().getSubReports()).isEqualTo(firstFailure);
+            assertThat(mainTestMethodReport.getConfiguration().getSubReports()).isEqualTo(firstConfigs);
+        });
     }
 
 }

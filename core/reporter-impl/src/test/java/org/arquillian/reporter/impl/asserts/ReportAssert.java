@@ -1,21 +1,27 @@
 package org.arquillian.reporter.impl.asserts;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.AbstractStringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.impl.ExecutionReport;
+import org.arquillian.reporter.impl.ExecutionSection;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ListAssert;
 
+import static org.arquillian.reporter.impl.ExecutionReport.EXECUTION_REPORT_NAME;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getParentSectionsOfSomeType;
 import static org.arquillian.reporter.impl.utils.Utils.getKeyValueEntryWitIndex;
 import static org.arquillian.reporter.impl.utils.Utils.getReportWithIndex;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -26,21 +32,13 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
         super(actual, ReportAssert.class);
     }
 
-    public static ReportAssert assertThat(AbstractReport actual) {
+    public static ReportAssert assertThatReport(AbstractReport actual) {
         return new ReportAssert(actual);
     }
-
-    //    public StringKeyAssert name(){
-    //        return new StringKeyAssert(actual.getName());
-    //    }
 
     public ListAssert<Entry> entries() {
         return new ListAssert<>(actual.getEntries());
 
-    }
-
-    public ListAssert<AbstractReport> subReports() {
-        return new ListAssert<>(actual.getSubReports());
     }
 
     public ReportAssert hasName(AbstractStringKey name) {
@@ -66,10 +64,28 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
         return this;
     }
 
+    public ReportAssert hasNumberOfSubreportsAndEntries(int number) {
+        hasNumberOfSubreports(number);
+        hasNumberOfEntries(number);
+        return this;
+    }
+
+    public ReportAssert hasNumberOfEntries(int number) {
+        isNotNull();
+
+        if (actual.getEntries().size() != number) {
+            failWithMessage("Expected number of entries of the report should be <%s> but was <%s>", number,
+                            actual.getEntries().size());
+        }
+        return this;
+    }
+
     public ReportAssert hassSubReportsContaining(AbstractReport... expectedReports) {
         isNotNull();
 
-        Assertions.assertThat(actual.getSubReports()).as("The report should contain the expected set of sub-reports")
+        assertThat(actual.getSubReports())
+            .usingRecursiveFieldByFieldElementComparator()
+            .as("The report should contain the expected set of sub-reports")
             .contains(expectedReports);
         return this;
     }
@@ -77,7 +93,9 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
     public ReportAssert hassSubReportsContaining(List<AbstractReport> expectedReports) {
         isNotNull();
 
-        Assertions.assertThat(actual.getSubReports()).as("The report should contain the expected set of sub-reports")
+        assertThat(actual.getSubReports())
+            .usingRecursiveFieldByFieldElementComparator()
+            .as("The report should contain the expected set of sub-reports")
             .contains(expectedReports);
         return this;
     }
@@ -85,7 +103,9 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
     public ReportAssert hasEntriesContaining(Entry... expectedEntries) {
         isNotNull();
 
-        Assertions.assertThat(actual.getEntries()).as("The report should contain the expected set of entries")
+        assertThat(actual.getEntries())
+            .usingRecursiveFieldByFieldElementComparator()
+            .as("The report should contain the expected set of entries")
             .contains(expectedEntries);
         return this;
     }
@@ -93,11 +113,12 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
     public ReportAssert hasEntriesContaining(List<Entry> expectedEntries) {
         isNotNull();
 
-        Assertions.assertThat(actual.getEntries()).as("The report should contain the expected set of entries")
+        assertThat(actual.getEntries())
+            .usingRecursiveFieldByFieldElementComparator()
+            .as("The report should contain the expected set of entries")
             .contains(expectedEntries);
         return this;
     }
-
 
     public ReportAssert hasGeneratedSubreportsAndEntries(int startIndex, int endIndex) {
 
@@ -114,10 +135,53 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
         return this;
     }
 
-    public ReportAssert hasSubReportsEndingWith(AbstractReport... report) {
+    public ReportAssert hasSubReportsEndingWith(AbstractReport... reports) {
 
-        Assertions.assertThat(actual.getSubReports()).as("The sub-reports of the report should be ending with %s", report)
-            .endsWith(report);
+        assertThat(actual.getSubReports())
+            .as("The sub-reports of the report should be ending with %s", reports)
+            .endsWith(reports);
+
+        return this;
+    }
+
+    public ReportAssert hasSubReportsWithout(AbstractReport... reports) {
+
+        assertThat(actual.getSubReports())
+            .as("The sub-reports should not contain any report from the set %s", reports)
+            .doesNotContain(reports);
+
+        return this;
+    }
+
+    public ReportAssert hasSubReportsThatContainsExactly(AbstractReport reports) {
+        assertThat(actual.getSubReports())
+            .as("The list of sub-reports of the report should contain exactly %s", reports).containsExactly(reports);
+        return this;
+    }
+
+    public ReportAssert wholeExecutionReportTreeConsistOf(
+        Map<SectionEvent, List<? extends SectionEvent>> mapOfParentsAndListsOfChildren) {
+
+        if (!(actual instanceof ExecutionReport)) {
+            throw new IllegalArgumentException(
+                "the assert method wholeExecutionReportTreeConsistOf is applicable only for execution reports");
+        }
+
+        List<SectionEvent> parentSectionsOfSomeType =
+            getParentSectionsOfSomeType(ExecutionSection.class, mapOfParentsAndListsOfChildren);
+
+        assertThat(parentSectionsOfSomeType).as("In the tree can be only one Execution section").hasSize(1);
+
+        SectionEvent executionSection = parentSectionsOfSomeType.get(0);
+
+        List<? extends SectionEvent> subSectionEvents = mapOfParentsAndListsOfChildren.get(executionSection);
+
+        assertThatReport(actual)
+            .isEqualTo(executionSection.getReport())
+            .hasName(EXECUTION_REPORT_NAME);
+
+
+        assertThat(((ExecutionReport) actual).getTestSuiteReports()).hasSize(subSectionEvents.size());
 
         return this;
     }

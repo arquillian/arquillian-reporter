@@ -53,4 +53,11 @@ public class Identifier<SECTIONTYPE extends SectionEvent> {
         result = 31 * result + (getSectionId() != null ? getSectionId().hashCode() : 0);
         return result;
     }
+
+    @Override public String toString() {
+        return "Identifier{" +
+            "sectionEventClass=" + sectionEventClass +
+            ", sectionId='" + sectionId + '\'' +
+            '}';
+    }
 }

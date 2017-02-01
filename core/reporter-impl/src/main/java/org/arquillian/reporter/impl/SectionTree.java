@@ -141,4 +141,12 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         dummyTree.merge(subtreeToMerge);
         // todo log
     }
+
+    @Override public String toString() {
+        return "SectionTree{" +
+            "rootIdentifier=" + rootIdentifier +
+            ", subtrees=" + subtrees +
+            ", associatedReport=" + associatedReport +
+            '}';
+    }
 }

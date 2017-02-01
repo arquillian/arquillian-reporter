@@ -7,8 +7,8 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThat;
-import static org.arquillian.reporter.impl.utils.DummyStringKeys.CONFIG_NAME;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.CONFIG_NAME;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -24,7 +24,7 @@ public class ConfigurationReportTest {
         configurationReport.addNewReport(basicReport);
 
         // verify
-        assertThat(configurationReport)
+        assertThatReport(configurationReport)
             .hasSubReportsEndingWith(basicReport)
             .hasNumberOfSubreports(5);
 
@@ -33,10 +33,11 @@ public class ConfigurationReportTest {
         configurationReport.addNewReport(configToAdd);
 
         // verify
-        assertThat(configurationReport)
+        assertThatReport(configurationReport)
             .hasSubReportsEndingWith(configToAdd)
             .hasName("any config")
             .hasNumberOfSubreports(6)
+            .hasNumberOfEntries(4)
             .hasGeneratedSubreportsAndEntries(1, 5);
     }
 
@@ -55,18 +56,20 @@ public class ConfigurationReportTest {
         mainConfigReport.merge(configToMerge);
 
         // the report that has been merged is still same
-        assertThat(configToMerge)
+        assertThatReport(configToMerge)
             .hasSubReportsEndingWith(secondConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasName("to merge")
             .hasNumberOfSubreports(10)
+            .hasNumberOfEntries(5)
             .hasGeneratedSubreportsAndEntries(5,10);
 
         // the main report should contain all information
-        assertThat(mainConfigReport)
+        assertThatReport(mainConfigReport)
             .hassSubReportsContaining(firstConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasSubReportsEndingWith(secondConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasName(CONFIG_NAME)
             .hasNumberOfSubreports(19)
+            .hasNumberOfEntries(9)
             .hasGeneratedSubreportsAndEntries(1,10);
     }
 }

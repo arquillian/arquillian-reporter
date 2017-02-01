@@ -6,7 +6,7 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -22,8 +22,12 @@ public class ReportTest {
         report.addNewReport(basicReport);
 
         // verify
-        assertThat(report.getSubReports()).last().isEqualTo(basicReport);
-        Utils.defaultReportVerificationAfterMerge(report, "report name", 1, 5, 5);
+        assertThatReport(report)
+            .hasSubReportsEndingWith(basicReport)
+            .hasName("report name")
+            .hasGeneratedSubreportsAndEntries(1, 5)
+            .hasNumberOfEntries(4)
+            .hasNumberOfSubreports(5);
 
     }
 
@@ -41,12 +45,20 @@ public class ReportTest {
         mainReport.merge(reportToMerge);
 
         // the report that has been merged is still same
-        assertThat(reportToMerge.getSubReports()).endsWith(secondReports.stream().toArray(Report[]::new));
-        Utils.defaultReportVerificationAfterMerge(reportToMerge, "to merge", 5, 10, 10);
+        assertThatReport(reportToMerge)
+            .hasSubReportsEndingWith(secondReports.stream().toArray(Report[]::new))
+            .hasName("to merge")
+            .hasGeneratedSubreportsAndEntries(5, 10)
+            .hasNumberOfSubreports(10)
+            .hasNumberOfEntries(5);
 
         // the main report should contain all information
-        assertThat(mainReport.getSubReports()).contains(firstReports.stream().toArray(Report[]::new));
-        assertThat(mainReport.getSubReports()).endsWith(secondReports.stream().toArray(Report[]::new));
-        Utils.defaultReportVerificationAfterMerge(mainReport, "report", 1, 10, 19);
+        assertThatReport(mainReport)
+            .hassSubReportsContaining(firstReports.stream().toArray(Report[]::new))
+            .hasSubReportsEndingWith(secondReports.stream().toArray(Report[]::new))
+            .hasName("report")
+            .hasGeneratedSubreportsAndEntries(1, 10)
+            .hasNumberOfSubreports(19)
+            .hasNumberOfEntries(9);
     }
 }
