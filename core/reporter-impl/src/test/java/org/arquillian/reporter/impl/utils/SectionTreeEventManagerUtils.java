@@ -19,6 +19,7 @@ import org.arquillian.reporter.api.event.TestMethodSection;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
@@ -359,29 +360,12 @@ public class SectionTreeEventManagerUtils {
 
     }
 
-    //    public static void replaceAllReportsWithDummyOnesOfSectionType(
-    //        Map<SectionEvent, List<? extends SectionEvent>> sections,
-    //        Class<? extends SectionEvent>... sectionTypes) {
-    //
-    //        sections.keySet().forEach(parent -> {
-    //            checkIfSameAndReplaceWithDummyReport(parent, sectionTypes);
-    //            sections.get(parent).forEach(child -> checkIfSameAndReplaceWithDummyReport(child, sectionTypes));
-    //        });
-    //    }
-    //
-    //    private static void checkIfSameAndReplaceWithDummyReport(SectionEvent section,
-    //        Class<? extends SectionEvent>... sectionTypes) {
-    //
-    //        if (Arrays.asList(sectionTypes).contains(section.getClass())) {
-    //            try {
-    //                AbstractReport dummyReport = (AbstractReport) section.getReportTypeClass().newInstance();
-    //                dummyReport.setName(new UnknownStringKey(section.getSectionId()));
-    //                section.setReport(dummyReport);
-    //            } catch (Exception e) {
-    //                e.printStackTrace();
-    //            }
-    //        }
-    //    }
+    public static Optional<SectionTree> getTreeWithIdAndReportNameFromWholeTree(SectionTree tree,
+        Identifier identifier, String name) {
+        List<SectionTree> listOfTrees = new ArrayList<>();
+        collectAllTrees(tree, listOfTrees);
+        return getTreeWithIdAndReportNameFromList(listOfTrees, identifier, new UnknownStringKey(name));
+    }
 
     public static Optional<SectionTree> getTreeWithIdAndReportNameFromList(List<SectionTree> list,
         Identifier identifier, StringKey name) {

@@ -1,8 +1,10 @@
 package org.arquillian.reporter.impl.asserts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.arquillian.reporter.api.model.AbstractStringKey;
@@ -34,6 +36,8 @@ import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.ge
 import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteNameSuffix;
 import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteReportName;
 import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteSectionName;
+import static org.arquillian.reporter.impl.utils.Utils.DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
+import static org.arquillian.reporter.impl.utils.Utils.DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
 import static org.arquillian.reporter.impl.utils.Utils.getKeyValueEntryWitIndex;
 import static org.arquillian.reporter.impl.utils.Utils.getReportWithIndex;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -135,6 +139,11 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
         return this;
     }
 
+    public ReportAssert hasGeneratedSubreportsAndEntriesWithDefaults() {
+        return hasGeneratedSubreportsAndEntries(DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD,
+                                                DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD);
+    }
+
     public ReportAssert hasGeneratedSubreportsAndEntries(int startIndex, int endIndex) {
 
         KeyValueEntry[] expectedEntries = IntStream
@@ -174,37 +183,73 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
         return this;
     }
 
-    public ReportAssert wholeExecutionReportTreeConsistOfGeneratedReports(
-        Class<? extends Report>... reportTypes) {
-        return wholeExecutionReportTreeConsistOfGeneratedReports(null, null, null, reportTypes);
+    public ReportAssert wholeExecutionReportTreeConsistOfAllGeneratedReports() {
+        return wholeExecutionReportTreeConsistOfAllGeneratedReports(new ArrayList<Report>());
+    }
+
+    public ReportAssert wholeExecutionReportTreeConsistOfAllGeneratedReports(Report merged) {
+        return wholeExecutionReportTreeConsistOfAllGeneratedReports(Arrays.asList(merged));
+    }
+
+    public ReportAssert wholeExecutionReportTreeConsistOfAllGeneratedReports(List<Report> merged) {
+        return wholeExecutionReportTreeConsistOfGeneratedReports(
+            null,
+            null,
+            null,
+            merged,
+            TestSuiteReport.class,
+            ConfigurationReport.class,
+            TestClassReport.class,
+            ConfigurationReport.class,
+            TestMethodReport.class,
+            ConfigurationReport.class,
+            FailureReport.class);
+    }
+
+    public ReportAssert wholeExecutionReportTreeConsistOfGeneratedReports(Class<? extends Report>... reportTypes) {
+        return wholeExecutionReportTreeConsistOfGeneratedReports(null, null, null, new ArrayList<Report>(),
+                                                                 reportTypes);
     }
 
     public ReportAssert wholeExecutionReportTreeConsistOfGeneratedReports(
         String parentSectionTestSuiteName,
         String parentSectionTestClassName,
         String parentSectionTestMethodName,
+        List<Report> merged,
         Class<? extends Report>... reportTypes) {
 
         List<Class<? extends Report>> types = Arrays.asList(reportTypes);
 
         if (actual instanceof ExecutionReport && types.contains(TestSuiteReport.class)) {
             List<TestSuiteReport> testSuiteReports = ((ExecutionReport) actual).getTestSuiteReports();
+            List<Report> mergedReports = getReportsOfType(merged, TestSuiteReport.class);
+
             assertThat(testSuiteReports)
                 .hasSize(EXPECTED_NUMBER_OF_SECTIONS);
 
             IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
                 TestSuiteReport reportOnIndex = testSuiteReports.get(index);
 
+                if (mergedReports.contains(reportOnIndex)) {
+                    mergedReports.remove(reportOnIndex);
+                } else {
+                    assertThatReport(reportOnIndex)
+                        .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                        .hasNumberOfSubreportsAndEntries(9);
+
+                }
                 assertThatReport(reportOnIndex)
                     .hasName(getTestSuiteReportName(index))
-                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
                     .wholeExecutionReportTreeConsistOfGeneratedReports(getTestSuiteSectionName(index), null, null,
+                                                                       merged,
                                                                        reportTypes);
-
             });
+            assertThat(mergedReports).isEmpty();
 
         } else if (actual instanceof TestSuiteReport) {
             TestSuiteReport actualReport = (TestSuiteReport) actual;
+            List<Report> mergedReports = getReportsOfType(merged, TestClassReport.class);
+
             if (types.contains(TestClassReport.class)) {
                 List<TestClassReport> testClassReports = actualReport.getTestClassReports();
                 assertThat(testClassReports)
@@ -213,19 +258,28 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
                 int index = 0;
                 TestClassReport reportOnIndex = testClassReports.get(index);
 
+                if (mergedReports.contains(reportOnIndex)) {
+                    mergedReports.remove(reportOnIndex);
+                } else {
+                    assertThatReport(reportOnIndex)
+                        .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                        .hasNumberOfSubreportsAndEntries(9 * EXPECTED_NUMBER_OF_SECTIONS);
+                }
                 assertThatReport(reportOnIndex)
                     .hasName(getTestClassReportName(index, parentSectionTestSuiteName))
-                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
                     .wholeExecutionReportTreeConsistOfGeneratedReports(parentSectionTestSuiteName,
                                                                        DummyTestClass.class.getCanonicalName(),
-                                                                       null, reportTypes);
+                                                                       null, merged, reportTypes);
             }
+            assertThat(mergedReports).isEmpty();
             if (shouldBeVerified(ConfigurationReport.class, TestSuiteReport.class, types)) {
                 verifyConfigReports(actualReport.getConfiguration(),
-                                    getTestSuiteNameSuffix(parentSectionTestSuiteName));
+                                    getTestSuiteNameSuffix(parentSectionTestSuiteName), merged);
             }
         } else if (actual instanceof TestClassReport) {
             TestClassReport actualReport = (TestClassReport) actual;
+            List<Report> mergedReports = getReportsOfType(merged, TestClassReport.class);
+
             if (types.contains(TestMethodReport.class)) {
                 List<TestMethodReport> testMethodReports = actualReport.getTestMethodReports();
                 assertThat(testMethodReports)
@@ -234,20 +288,28 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
                 IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
                     TestMethodReport reportOnIndex = testMethodReports.get(index);
 
+                    if (mergedReports.contains(reportOnIndex)) {
+                        mergedReports.remove(reportOnIndex);
+                    } else {
+                        assertThatReport(reportOnIndex)
+                            .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                            .hasNumberOfSubreportsAndEntries(9);
+                    }
                     assertThatReport(reportOnIndex)
                         .hasName(getTestMethodReportName(index, parentSectionTestSuiteName, parentSectionTestClassName))
-                        .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
-                        .hasNumberOfSubreportsAndEntries(9)
                         .wholeExecutionReportTreeConsistOfGeneratedReports(parentSectionTestSuiteName,
                                                                            DummyTestClass.class.getCanonicalName(),
                                                                            ReporterUtils.getTestMethodId(
                                                                                getTestMethodSectionName(index)),
+                                                                           merged,
                                                                            reportTypes);
                 });
             }
+            assertThat(mergedReports).isEmpty();
             if (shouldBeVerified(ConfigurationReport.class, TestClassReport.class, types)) {
                 verifyConfigReports(actualReport.getConfiguration(),
-                                    getTestClassNameSuffix(parentSectionTestClassName, parentSectionTestSuiteName));
+                                    getTestClassNameSuffix(parentSectionTestClassName, parentSectionTestSuiteName),
+                                    merged);
             }
         } else if (actual instanceof TestMethodReport) {
             TestMethodReport actualReport = (TestMethodReport) actual;
@@ -255,39 +317,59 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
                 getTestMethodNameSuffix(parentSectionTestMethodName, parentSectionTestSuiteName);
 
             if (shouldBeVerified(ConfigurationReport.class, TestMethodReport.class, types)) {
-                verifyConfigReports(actualReport.getConfiguration(), testMethodNameSuffix);
+                verifyConfigReports(actualReport.getConfiguration(), testMethodNameSuffix, merged);
             }
             if (shouldBeVerified(FailureReport.class, TestMethodReport.class, types)) {
-                verifyFailureReports(actualReport.getFailureReport(), testMethodNameSuffix);
+                verifyFailureReports(actualReport.getFailureReport(), testMethodNameSuffix, merged);
             }
         }
         return this;
     }
 
-    private void verifyConfigReports(ConfigurationReport configuration, String nameSuffix) {
+    private List<Report> getReportsOfType(List<Report> reports, Class<? extends Report> reportType) {
+        return reports.stream().filter(report -> report.getClass().equals(reportType)).collect(Collectors.toList());
+    }
+
+    private void verifyConfigReports(ConfigurationReport configuration, String nameSuffix, List<Report> merged) {
         assertThatReport(configuration)
             .hasNumberOfSubreports(EXPECTED_NUMBER_OF_SECTIONS);
+        List<Report> mergedReports = getReportsOfType(merged, TestClassReport.class);
 
         IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
             Report reportOnIndex = configuration.getSubReports().get(index);
 
+            if (mergedReports.contains(reportOnIndex)) {
+                mergedReports.remove(reportOnIndex);
+            } else {
+                assertThatReport(reportOnIndex)
+                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                    .hasNumberOfSubreportsAndEntries(9);
+            }
             assertThatReport(reportOnIndex)
-                .hasName(getConfigReportName(index, nameSuffix))
-                .hasGeneratedSubreportsAndEntries(index + 1, index + 10);
+                .hasName(getConfigReportName(index, nameSuffix));
         });
+        assertThat(mergedReports).isEmpty();
     }
 
-    private void verifyFailureReports(FailureReport failure, String nameSuffix) {
+    private void verifyFailureReports(FailureReport failure, String nameSuffix, List<Report> merged) {
         assertThatReport(failure)
             .hasNumberOfSubreports(EXPECTED_NUMBER_OF_SECTIONS);
+        List<Report> mergedReports = getReportsOfType(merged, TestClassReport.class);
 
         IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
             Report reportOnIndex = failure.getSubReports().get(index);
 
+            if (mergedReports.contains(reportOnIndex)) {
+                mergedReports.remove(reportOnIndex);
+            } else {
+                assertThatReport(reportOnIndex)
+                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                    .hasNumberOfSubreportsAndEntries(9);
+            }
             assertThatReport(reportOnIndex)
-                .hasName(getFailureReportName(index, nameSuffix))
-                .hasGeneratedSubreportsAndEntries(index + 1, index + 10);
+                .hasName(getFailureReportName(index, nameSuffix));
         });
+        assertThat(mergedReports).isEmpty();
     }
 
     private boolean shouldBeVerified(Class<? extends Report> toBeVerifiedClass,
