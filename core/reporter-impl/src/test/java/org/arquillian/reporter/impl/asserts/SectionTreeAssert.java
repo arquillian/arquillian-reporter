@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
-import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.SectionTree;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.groups.Tuple;
@@ -42,7 +42,7 @@ public class SectionTreeAssert extends AbstractAssert<SectionTreeAssert, Section
         return this;
     }
 
-    public SectionTreeAssert hasAssociatedReport(AbstractReport report) {
+    public SectionTreeAssert hasAssociatedReport(Report report) {
         isNotNull();
 
         if (!Objects.equals(actual.getAssociatedReport(), report)) {

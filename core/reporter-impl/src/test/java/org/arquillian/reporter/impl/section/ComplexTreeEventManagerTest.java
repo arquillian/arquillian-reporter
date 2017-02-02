@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.model.report.ConfigurationReport;
+import org.arquillian.reporter.api.model.report.FailureReport;
+import org.arquillian.reporter.api.model.report.TestClassReport;
+import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.junit.Test;
 
@@ -30,7 +35,16 @@ public class ComplexTreeEventManagerTest {
         assertThat(sections).hasSize(PARENT_COUNT_OF_COMPLEX_PREPARED_TREE);
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE);
+            .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
+                                                               ConfigurationReport.class,
+                                                               TestClassReport.class,
+                                                               ConfigurationReport.class,
+                                                               TestMethodReport.class,
+                                                               ConfigurationReport.class,
+                                                               FailureReport.class);
+
         verifyAllSectionsAreProcessed(sections);
     }
 }

@@ -10,15 +10,16 @@ import org.arquillian.reporter.api.builder.report.ReportBuilder;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends ReportBuilder> {
+public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends ReportBuilder>
+    implements Report<TYPE, UTILS> {
 
     private StringKey name;
 
     private List<Entry> entries = new ArrayList<>();
 
-    private List<AbstractReport> subReports = new ArrayList<>();
+    private List<Report> subReports = new ArrayList<>();
 
-    public AbstractReport(){
+    public AbstractReport() {
     }
 
     public AbstractReport(StringKey name) {
@@ -41,26 +42,26 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
         this.entries = entries;
     }
 
-    public List<AbstractReport> getSubReports() {
+    public List<Report> getSubReports() {
         return subReports;
     }
 
-    public void setSubReports(List<AbstractReport> subReports) {
+    public void setSubReports(List<Report> subReports) {
         this.subReports = subReports;
     }
 
-    public void defaultMerge(TYPE newReport){
-        if (newReport == null){
+    public void defaultMerge(TYPE newReport) {
+        if (newReport == null) {
             return;
         }
         getEntries().addAll(newReport.getEntries());
         getSubReports().addAll(newReport.getSubReports());
     }
 
-    public abstract Class<UTILS> getReportBuilderClass();
-
-    public abstract TYPE merge(TYPE newReport);
-
-    public abstract AbstractReport addNewReport(AbstractReport newReport);
+//    public abstract Class<UTILS> getReportBuilderClass();
+//
+//    public abstract TYPE merge(TYPE newReport);
+//
+//    public abstract AbstractReport addNewReport(Report newReport);
 
 }

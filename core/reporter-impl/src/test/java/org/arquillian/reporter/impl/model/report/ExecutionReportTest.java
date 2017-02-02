@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.api.event.Identifier;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.utils.Utils;
@@ -33,7 +33,7 @@ public class ExecutionReportTest {
         executionReport.addNewReport(firstTestSuiteReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        Report basicReport = Utils.prepareReport(Report.class, "report", 5, 10);
+        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
         executionReport.addNewReport(basicReport);
 
         // add another test suite report - should be added into List of test suite reports

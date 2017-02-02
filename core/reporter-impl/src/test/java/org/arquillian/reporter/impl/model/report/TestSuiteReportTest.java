@@ -6,7 +6,7 @@ import java.util.List;
 import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.utils.Utils;
@@ -39,7 +39,7 @@ public class TestSuiteReportTest {
         testSuiteReport.addNewReport(configurationReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        Report basicReport = Utils.prepareReport(Report.class, "report", 5, 10);
+        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
         testSuiteReport.addNewReport(basicReport);
 
         // add another test class report - should be added into List of test class reports

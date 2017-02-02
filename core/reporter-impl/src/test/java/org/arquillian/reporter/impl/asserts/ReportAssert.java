@@ -1,24 +1,39 @@
 package org.arquillian.reporter.impl.asserts;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.AbstractStringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.ConfigurationReport;
+import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.TestClassReport;
+import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.impl.ExecutionReport;
-import org.arquillian.reporter.impl.ExecutionSection;
+import org.arquillian.reporter.impl.utils.dummy.DummyTestClass;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.ListAssert;
 
-import static org.arquillian.reporter.impl.ExecutionReport.EXECUTION_REPORT_NAME;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getParentSectionsOfSomeType;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.EXPECTED_NUMBER_OF_SECTIONS;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getConfigReportName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getFailureReportName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestClassReportName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestClassNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodReportName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodSectionName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteReportName;
+import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteSectionName;
 import static org.arquillian.reporter.impl.utils.Utils.getKeyValueEntryWitIndex;
 import static org.arquillian.reporter.impl.utils.Utils.getReportWithIndex;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +41,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
+public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
 
-    public ReportAssert(AbstractReport actual) {
+    public ReportAssert(Report actual) {
         super(actual, ReportAssert.class);
     }
 
-    public static ReportAssert assertThatReport(AbstractReport actual) {
+    public static ReportAssert assertThatReport(Report actual) {
         return new ReportAssert(actual);
     }
 
@@ -128,7 +143,7 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
 
         AbstractReport[] expectedReports = IntStream
             .range(startIndex, endIndex)
-            .mapToObj(index -> getReportWithIndex(index)).toArray(Report[]::new);
+            .mapToObj(index -> getReportWithIndex(index)).toArray(BasicReport[]::new);
 
         hassSubReportsContaining(expectedReports);
         hasEntriesContaining(expectedEntries);
@@ -159,31 +174,132 @@ public class ReportAssert extends AbstractAssert<ReportAssert, AbstractReport> {
         return this;
     }
 
-    public ReportAssert wholeExecutionReportTreeConsistOf(
-        Map<SectionEvent, List<? extends SectionEvent>> mapOfParentsAndListsOfChildren) {
+    public ReportAssert wholeExecutionReportTreeConsistOfGeneratedReports(
+        Class<? extends Report>... reportTypes) {
+        return wholeExecutionReportTreeConsistOfGeneratedReports(null, null, null, reportTypes);
+    }
 
-        if (!(actual instanceof ExecutionReport)) {
-            throw new IllegalArgumentException(
-                "the assert method wholeExecutionReportTreeConsistOf is applicable only for execution reports");
+    public ReportAssert wholeExecutionReportTreeConsistOfGeneratedReports(
+        String parentSectionTestSuiteName,
+        String parentSectionTestClassName,
+        String parentSectionTestMethodName,
+        Class<? extends Report>... reportTypes) {
+
+        List<Class<? extends Report>> types = Arrays.asList(reportTypes);
+
+        if (actual instanceof ExecutionReport && types.contains(TestSuiteReport.class)) {
+            List<TestSuiteReport> testSuiteReports = ((ExecutionReport) actual).getTestSuiteReports();
+            assertThat(testSuiteReports)
+                .hasSize(EXPECTED_NUMBER_OF_SECTIONS);
+
+            IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
+                TestSuiteReport reportOnIndex = testSuiteReports.get(index);
+
+                assertThatReport(reportOnIndex)
+                    .hasName(getTestSuiteReportName(index))
+                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                    .wholeExecutionReportTreeConsistOfGeneratedReports(getTestSuiteSectionName(index), null, null,
+                                                                       reportTypes);
+
+            });
+
+        } else if (actual instanceof TestSuiteReport) {
+            TestSuiteReport actualReport = (TestSuiteReport) actual;
+            if (types.contains(TestClassReport.class)) {
+                List<TestClassReport> testClassReports = actualReport.getTestClassReports();
+                assertThat(testClassReports)
+                    .hasSize(1);
+
+                int index = 0;
+                TestClassReport reportOnIndex = testClassReports.get(index);
+
+                assertThatReport(reportOnIndex)
+                    .hasName(getTestClassReportName(index, parentSectionTestSuiteName))
+                    .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                    .wholeExecutionReportTreeConsistOfGeneratedReports(parentSectionTestSuiteName,
+                                                                       DummyTestClass.class.getCanonicalName(),
+                                                                       null, reportTypes);
+            }
+            if (shouldBeVerified(ConfigurationReport.class, TestSuiteReport.class, types)) {
+                verifyConfigReports(actualReport.getConfiguration(),
+                                    getTestSuiteNameSuffix(parentSectionTestSuiteName));
+            }
+        } else if (actual instanceof TestClassReport) {
+            TestClassReport actualReport = (TestClassReport) actual;
+            if (types.contains(TestMethodReport.class)) {
+                List<TestMethodReport> testMethodReports = actualReport.getTestMethodReports();
+                assertThat(testMethodReports)
+                    .hasSize(EXPECTED_NUMBER_OF_SECTIONS);
+
+                IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
+                    TestMethodReport reportOnIndex = testMethodReports.get(index);
+
+                    assertThatReport(reportOnIndex)
+                        .hasName(getTestMethodReportName(index, parentSectionTestSuiteName, parentSectionTestClassName))
+                        .hasGeneratedSubreportsAndEntries(index + 1, index + 10)
+                        .hasNumberOfSubreportsAndEntries(9)
+                        .wholeExecutionReportTreeConsistOfGeneratedReports(parentSectionTestSuiteName,
+                                                                           DummyTestClass.class.getCanonicalName(),
+                                                                           ReporterUtils.getTestMethodId(
+                                                                               getTestMethodSectionName(index)),
+                                                                           reportTypes);
+                });
+            }
+            if (shouldBeVerified(ConfigurationReport.class, TestClassReport.class, types)) {
+                verifyConfigReports(actualReport.getConfiguration(),
+                                    getTestClassNameSuffix(parentSectionTestClassName, parentSectionTestSuiteName));
+            }
+        } else if (actual instanceof TestMethodReport) {
+            TestMethodReport actualReport = (TestMethodReport) actual;
+            String testMethodNameSuffix =
+                getTestMethodNameSuffix(parentSectionTestMethodName, parentSectionTestSuiteName);
+
+            if (shouldBeVerified(ConfigurationReport.class, TestMethodReport.class, types)) {
+                verifyConfigReports(actualReport.getConfiguration(), testMethodNameSuffix);
+            }
+            if (shouldBeVerified(FailureReport.class, TestMethodReport.class, types)) {
+                verifyFailureReports(actualReport.getFailureReport(), testMethodNameSuffix);
+            }
         }
-
-        List<SectionEvent> parentSectionsOfSomeType =
-            getParentSectionsOfSomeType(ExecutionSection.class, mapOfParentsAndListsOfChildren);
-
-        assertThat(parentSectionsOfSomeType).as("In the tree can be only one Execution section").hasSize(1);
-
-        SectionEvent executionSection = parentSectionsOfSomeType.get(0);
-
-        List<? extends SectionEvent> subSectionEvents = mapOfParentsAndListsOfChildren.get(executionSection);
-
-        assertThatReport(actual)
-            .isEqualTo(executionSection.getReport())
-            .hasName(EXECUTION_REPORT_NAME);
-
-
-        assertThat(((ExecutionReport) actual).getTestSuiteReports()).hasSize(subSectionEvents.size());
-
         return this;
+    }
+
+    private void verifyConfigReports(ConfigurationReport configuration, String nameSuffix) {
+        assertThatReport(configuration)
+            .hasNumberOfSubreports(EXPECTED_NUMBER_OF_SECTIONS);
+
+        IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
+            Report reportOnIndex = configuration.getSubReports().get(index);
+
+            assertThatReport(reportOnIndex)
+                .hasName(getConfigReportName(index, nameSuffix))
+                .hasGeneratedSubreportsAndEntries(index + 1, index + 10);
+        });
+    }
+
+    private void verifyFailureReports(FailureReport failure, String nameSuffix) {
+        assertThatReport(failure)
+            .hasNumberOfSubreports(EXPECTED_NUMBER_OF_SECTIONS);
+
+        IntStream.range(0, EXPECTED_NUMBER_OF_SECTIONS).forEach(index -> {
+            Report reportOnIndex = failure.getSubReports().get(index);
+
+            assertThatReport(reportOnIndex)
+                .hasName(getFailureReportName(index, nameSuffix))
+                .hasGeneratedSubreportsAndEntries(index + 1, index + 10);
+        });
+    }
+
+    private boolean shouldBeVerified(Class<? extends Report> toBeVerifiedClass,
+        Class<? extends Report> parentReportClass, List<Class<? extends Report>> reportTypes) {
+        if (parentReportClass != null) {
+            int parentIndex = reportTypes.indexOf(parentReportClass);
+            if (reportTypes.size() > parentIndex + 1) {
+                return reportTypes.get(parentIndex + 1).equals(toBeVerifiedClass);
+            }
+            return false;
+        }
+        return reportTypes.contains(toBeVerifiedClass);
     }
 
 }

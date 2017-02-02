@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.utils.Validate;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.event.Identifier;
@@ -14,7 +15,7 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_TYPE, ? extends SectionEvent>, PAYLOAD_TYPE extends AbstractReport> {
+public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_TYPE, ? extends SectionEvent>, PAYLOAD_TYPE extends Report> {
 
     private Identifier<SECTIONTYPE> rootIdentifier;
     private List<SectionTree> subtrees = new ArrayList<>();
@@ -80,7 +81,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
 
                 } else {
                     // if yes then the associated report is the one that has been reported, so please add it into the report associated with this tree
-                    AbstractReport reportToAssociate =
+                    Report reportToAssociate =
                         getAssociatedReport().addNewReport(subtreeToMerge.getAssociatedReport());
                     subtreeToMerge.setAssociatedReport(reportToAssociate);
                     getSubtrees().add(subtreeToMerge);

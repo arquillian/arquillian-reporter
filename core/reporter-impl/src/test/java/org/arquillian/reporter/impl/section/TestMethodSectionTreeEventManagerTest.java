@@ -6,6 +6,11 @@ import java.util.Map;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestClassSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
+import org.arquillian.reporter.api.model.report.ConfigurationReport;
+import org.arquillian.reporter.api.model.report.FailureReport;
+import org.arquillian.reporter.api.model.report.TestClassReport;
+import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils;
@@ -39,7 +44,11 @@ public class TestMethodSectionTreeEventManagerTest {
 
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(treeNodesCount);
+            .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
+                                                               TestClassReport.class,
+                                                               TestMethodReport.class);
 
         SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
     }
@@ -58,7 +67,12 @@ public class TestMethodSectionTreeEventManagerTest {
         assertThat(sections).hasSize(parentCount);
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(treeNodesCount);
+            .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
+                                                               TestClassReport.class,
+                                                               TestMethodReport.class,
+                                                               ConfigurationReport.class);
         SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
     }
 
@@ -76,7 +90,12 @@ public class TestMethodSectionTreeEventManagerTest {
         assertThat(sections).hasSize(parentCount);
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(treeNodesCount);
+            .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
+                                                               TestClassReport.class,
+                                                               TestMethodReport.class,
+                                                               FailureReport.class);
         SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
     }
 }

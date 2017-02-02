@@ -7,7 +7,7 @@ import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.assertj.core.api.SoftAssertions;
@@ -36,7 +36,7 @@ public class TestMethodTest {
         testMethodReport.addNewReport(failureReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        Report basicReport = Utils.prepareReport(Report.class, "report", 5, 10);
+        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
         testMethodReport.addNewReport(basicReport);
 
         // verify

@@ -2,7 +2,7 @@ package org.arquillian.reporter.impl.model.report;
 
 import java.util.List;
 
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.junit.Test;
 
@@ -15,10 +15,10 @@ public class ReportTest {
 
     @Test
     public void testAddNewReportToConfigurationReport() throws InstantiationException, IllegalAccessException {
-        Report report = Utils.prepareReport(Report.class, "report name", 1, 5);
+        BasicReport report = Utils.prepareReport(BasicReport.class, "report name", 1, 5);
 
         // add a normal report - should be added into List of subReports
-        Report basicReport = Utils.prepareReport(Report.class, "report", 5, 10);
+        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
         report.addNewReport(basicReport);
 
         // verify
@@ -33,12 +33,12 @@ public class ReportTest {
 
     @Test
     public void testMergeReports() throws InstantiationException, IllegalAccessException {
-        Report mainReport = Utils.prepareReport(Report.class, "report", 1, 5);
-        List<Report> firstReports = Utils.prepareSetOfReports(Report.class, 5, "first", 1, 5);
+        BasicReport mainReport = Utils.prepareReport(BasicReport.class, "report", 1, 5);
+        List<BasicReport> firstReports = Utils.prepareSetOfReports(BasicReport.class, 5, "first", 1, 5);
         mainReport.getSubReports().addAll(firstReports);
 
-        Report reportToMerge = Utils.prepareReport(Report.class, "to merge", 5, 10);
-        List<Report> secondReports = Utils.prepareSetOfReports(Report.class, 5, "second", 5, 10);
+        BasicReport reportToMerge = Utils.prepareReport(BasicReport.class, "to merge", 5, 10);
+        List<BasicReport> secondReports = Utils.prepareSetOfReports(BasicReport.class, 5, "second", 5, 10);
         reportToMerge.getSubReports().addAll(secondReports);
 
         //merge
@@ -46,7 +46,7 @@ public class ReportTest {
 
         // the report that has been merged is still same
         assertThatReport(reportToMerge)
-            .hasSubReportsEndingWith(secondReports.stream().toArray(Report[]::new))
+            .hasSubReportsEndingWith(secondReports.stream().toArray(BasicReport[]::new))
             .hasName("to merge")
             .hasGeneratedSubreportsAndEntries(5, 10)
             .hasNumberOfSubreports(10)
@@ -54,8 +54,8 @@ public class ReportTest {
 
         // the main report should contain all information
         assertThatReport(mainReport)
-            .hassSubReportsContaining(firstReports.stream().toArray(Report[]::new))
-            .hasSubReportsEndingWith(secondReports.stream().toArray(Report[]::new))
+            .hassSubReportsContaining(firstReports.stream().toArray(BasicReport[]::new))
+            .hasSubReportsEndingWith(secondReports.stream().toArray(BasicReport[]::new))
             .hasName("report")
             .hasGeneratedSubreportsAndEntries(1, 10)
             .hasNumberOfSubreports(19)

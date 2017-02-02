@@ -2,12 +2,12 @@ package org.arquillian.core.reporter.event;
 
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSuiteConfigurationContainerSection, Report, TestSuiteConfigurationSection> {
+public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSuiteConfigurationContainerSection, BasicReport, TestSuiteConfigurationSection> {
 
     private String testSuiteId;
 
@@ -19,7 +19,7 @@ public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSui
         this.testSuiteId = testSuiteId;
     }
 
-    public TestSuiteConfigurationContainerSection(Report sectionReport, String containerId, String testSuiteId) {
+    public TestSuiteConfigurationContainerSection(BasicReport sectionReport, String containerId, String testSuiteId) {
         super(sectionReport, containerId);
         this.testSuiteId = testSuiteId;
     }
@@ -30,8 +30,8 @@ public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSui
     }
 
     @Override
-    public Class<Report> getReportTypeClass() {
-        return Report.class;
+    public Class<BasicReport> getReportTypeClass() {
+        return BasicReport.class;
     }
 
     // todo support multiple test suites

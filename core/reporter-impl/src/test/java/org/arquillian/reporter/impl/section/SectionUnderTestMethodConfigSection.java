@@ -2,12 +2,12 @@ package org.arquillian.reporter.impl.section;
 
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestMethodConfigurationSection;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class SectionUnderTestMethodConfigSection extends SectionEvent<SectionUnderTestMethodConfigSection, Report, TestMethodConfigurationSection> {
+public class SectionUnderTestMethodConfigSection extends SectionEvent<SectionUnderTestMethodConfigSection, BasicReport, TestMethodConfigurationSection> {
 
     public SectionUnderTestMethodConfigSection(){
     }
@@ -19,7 +19,7 @@ public class SectionUnderTestMethodConfigSection extends SectionEvent<SectionUnd
     }
 
     @Override
-    public Class<Report> getReportTypeClass() {
+    public Class<BasicReport> getReportTypeClass() {
         return null;
     }
 }

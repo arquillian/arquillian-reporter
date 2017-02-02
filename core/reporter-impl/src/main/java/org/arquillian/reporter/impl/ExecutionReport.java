@@ -6,6 +6,7 @@ import java.util.List;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 
 /**
@@ -47,8 +48,8 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     }
 
     @Override
-    public AbstractReport addNewReport(AbstractReport newReport) {
-        Class<? extends AbstractReport> newReportClass = newReport.getClass();
+    public Report addNewReport(Report newReport) {
+        Class<? extends Report> newReportClass = newReport.getClass();
         if (TestSuiteReport.class.isAssignableFrom(newReportClass)) {
             getTestSuiteReports().add((TestSuiteReport) newReport);
         } else {

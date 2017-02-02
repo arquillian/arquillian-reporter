@@ -12,7 +12,7 @@ import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -20,7 +20,7 @@ import org.arquillian.reporter.api.model.report.Report;
 public class Reporter {
 
     public static ReportBuilder createReport(StringKey name) {
-        return usingBuilder(ReportBuilder.class, new Report(name));
+        return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
     public static <T extends ReportBuilder<? extends AbstractReport, T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(

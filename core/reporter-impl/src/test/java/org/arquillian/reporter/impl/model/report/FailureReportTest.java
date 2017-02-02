@@ -3,7 +3,7 @@ package org.arquillian.reporter.impl.model.report;
 import java.util.List;
 
 import org.arquillian.reporter.api.model.report.FailureReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.impl.utils.Utils;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class FailureReportTest {
         FailureReport failureReport = Utils.prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 1, 5);
 
         // add a normal report - should be added into List of subReports
-        Report basicReport = Utils.prepareReport(Report.class, "report", 5, 10);
+        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
         failureReport.addNewReport(basicReport);
 
         // verify

@@ -74,8 +74,8 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
     }
 
     @Override
-    public AbstractReport addNewReport(AbstractReport newReport) {
-        Class<? extends AbstractReport> newReportClass = newReport.getClass();
+    public Report addNewReport(Report newReport) {
+        Class<? extends Report> newReportClass = newReport.getClass();
 
         if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
             if (newReport.getName() == null) {

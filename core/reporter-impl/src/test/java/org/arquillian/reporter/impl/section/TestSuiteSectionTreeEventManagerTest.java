@@ -8,13 +8,13 @@ import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.SectionEventManager;
 import org.arquillian.reporter.impl.SectionTree;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
 import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
 import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE;
@@ -41,10 +41,12 @@ public class TestSuiteSectionTreeEventManagerTest {
         assertThat(sections).hasSize(1);
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(1 + EXPECTED_NUMBER_OF_SECTIONS);
+            .wholeTreeHasNumberOfTreeNodes(1 + EXPECTED_NUMBER_OF_SECTIONS)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class);
+
         verifyAllSectionsAreProcessed(sections);
 
-        assertThatReport(executionReport).wholeExecutionReportTreeConsistOf(sections);
     }
 
     @Test
@@ -60,7 +62,9 @@ public class TestSuiteSectionTreeEventManagerTest {
         assertThat(sections).hasSize(parentCount);
         assertThatSectionTree(executionReport.getSectionTree())
             .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(treeNodesCount);
+            .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
+            .associatedReport()
+            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class, ConfigurationReport.class);
         verifyAllSectionsAreProcessed(sections);
     }
 

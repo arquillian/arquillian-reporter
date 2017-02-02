@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.AbstractReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -24,7 +24,7 @@ public class Utils {
         report.getSubReports().addAll(getSetOfReports(startIndex, endIndex));
     }
 
-    public static List<Report> getSetOfReports(int startIndex, int endIndex) {
+    public static List<BasicReport> getSetOfReports(int startIndex, int endIndex) {
         return IntStream.range(startIndex, endIndex).mapToObj(index -> getReportWithIndex(index))
             .collect(Collectors.toList());
     }
@@ -39,11 +39,11 @@ public class Utils {
         // todo add more entries
     }
 
-    public static Report getReportWithIndex(int index) {
-        Report dummyReport = new Report(index + ". report");
-        dummyReport.getEntries().add(getKeyValueEntryWitIndex(index));
+    public static BasicReport getReportWithIndex(int index) {
+        BasicReport dummyBasicReport = new BasicReport(index + ". report");
+        dummyBasicReport.getEntries().add(getKeyValueEntryWitIndex(index));
         // todo add more entries
-        return dummyReport;
+        return dummyBasicReport;
     }
 
     public static <T extends AbstractReport> List<T> prepareSetOfReports(Class<T> reportClass, int count,

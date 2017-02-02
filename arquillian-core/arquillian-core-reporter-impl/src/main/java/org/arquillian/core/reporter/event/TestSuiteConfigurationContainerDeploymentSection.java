@@ -1,13 +1,13 @@
 package org.arquillian.core.reporter.event;
 
 import org.arquillian.reporter.api.event.SectionEvent;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestSuiteConfigurationContainerDeploymentSection extends
-    SectionEvent<TestSuiteConfigurationContainerDeploymentSection, Report, TestSuiteConfigurationContainerSection> {
+    SectionEvent<TestSuiteConfigurationContainerDeploymentSection, BasicReport, TestSuiteConfigurationContainerSection> {
 
     private String containerId;
     private String testSuiteId;
@@ -26,7 +26,7 @@ public class TestSuiteConfigurationContainerDeploymentSection extends
         this.testSuiteId = testSuiteId;
     }
 
-    public TestSuiteConfigurationContainerDeploymentSection(Report sectionReport, String deploymentId,
+    public TestSuiteConfigurationContainerDeploymentSection(BasicReport sectionReport, String deploymentId,
         String containerId) {
         super(sectionReport, deploymentId);
         this.containerId = containerId;
@@ -38,7 +38,7 @@ public class TestSuiteConfigurationContainerDeploymentSection extends
     }
 
     @Override
-    public Class<Report> getReportTypeClass() {
-        return Report.class;
+    public Class<BasicReport> getReportTypeClass() {
+        return BasicReport.class;
     }
 }

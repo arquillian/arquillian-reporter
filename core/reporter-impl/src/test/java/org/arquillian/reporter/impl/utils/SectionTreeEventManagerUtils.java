@@ -1,5 +1,6 @@
 package org.arquillian.reporter.impl.utils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,14 +57,24 @@ public class SectionTreeEventManagerUtils {
         List<TestSuiteSection> testSuiteSections = new SectionGeneratorAndProcessor<TestSuiteSection>() {
             @Override TestSuiteSection createNewInstance(int index) throws Exception {
                 return new TestSuiteSection(
-                    prepareReport(TestSuiteReport.class, "test-suite-name" + index, index + 1,
+                    prepareReport(TestSuiteReport.class,
+                                  getTestSuiteReportName(index),
+                                  index + 1,
                                   index + 10),
-                    "test-suite-section" + index);
+                    getTestSuiteSectionName(index));
             }
         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
 
         sections.put(executionReport.getExecutionSection(), testSuiteSections);
         return sections;
+    }
+
+    public static String getTestSuiteReportName(int index) {
+        return "test-suite-report-" + index;
+    }
+
+    public static String getTestSuiteSectionName(int index) {
+        return "test-suite-section-" + index;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestSuiteConfigurationSections(
@@ -76,19 +87,32 @@ public class SectionTreeEventManagerUtils {
                 new SectionGeneratorAndProcessor<TestSuiteConfigurationSection>() {
                     @Override
                     TestSuiteConfigurationSection createNewInstance(int index) throws Exception {
+                        String suiteId = suite.getSectionId();
                         return new TestSuiteConfigurationSection(
                             prepareReport(ConfigurationReport.class,
-                                          "test-suite-configuration-report-" + index,
+                                          getConfigReportName(index, getTestSuiteNameSuffix(suiteId)),
                                           index + 1,
                                           index + 10),
-                            suite.getSectionId(),
-                            "test-suite-configuration-report-" + index);
+                            suiteId,
+                            getTestSuiteConfigSectionName(index));
                     }
                 }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
             sections.put((TestSuiteSection) suite, testSuiteConfigSections);
         });
 
         return sections;
+    }
+
+    public static String getConfigReportName(int index, String suffix) {
+        return String.format("configuration-report-%s-%s", index, suffix);
+    }
+
+    public static String getTestSuiteNameSuffix(String testSuiteId) {
+        return String.format("in-suite-%s", testSuiteId);
+    }
+
+    public static String getTestSuiteConfigSectionName(int index) {
+        return "test-suite-configuration-section-" + index;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestClassSections(
@@ -100,14 +124,16 @@ public class SectionTreeEventManagerUtils {
             List<TestClassSection> testClassSections = new SectionGeneratorAndProcessor<TestClassSection>() {
                 @Override
                 TestClassSection createNewInstance(int index) throws Exception {
+                    String suiteId = suite.getSectionId();
+
                     return new TestClassSection(
                         prepareReport(
                             TestClassReport.class,
-                            String.format("test-class-report-name-%s-in-section-%s", index, suite.getSectionId()),
+                            getTestClassReportName(index, suiteId),
                             index + 1,
                             index + 10),
                         DummyTestClass.class,
-                        suite.getSectionId());
+                        suiteId);
                 }
             }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
             // add only one test-class section as it is processed using same class, all of them should be merged info one report
@@ -115,6 +141,10 @@ public class SectionTreeEventManagerUtils {
         });
 
         return sections;
+    }
+
+    public static String getTestClassReportName(int index, String suiteId) {
+        return String.format("test-class-report-name-%s-in-suite-%s", index, suiteId);
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestClassConfigurationSections(
@@ -131,12 +161,11 @@ public class SectionTreeEventManagerUtils {
                         TestClassConfigurationSection testClassConfigurationSection = new TestClassConfigurationSection(
                             prepareReport(
                                 ConfigurationReport.class,
-                                String.format("test-class-configuration-report-%s-in-test-class-%s-in-suite-%s",
-                                              index, tc.getSectionId(), testSuiteId),
+                                getConfigReportName(index, getTestClassNameSuffix(tc.getSectionId(), testSuiteId)),
                                 index + 1,
                                 index + 10),
                             DummyTestClass.class,
-                            "test-class-configuration-report-" + index);
+                            getTestClassConfigSectionName(index));
                         testClassConfigurationSection.setTestSuiteId(testSuiteId);
                         return testClassConfigurationSection;
                     }
@@ -144,6 +173,14 @@ public class SectionTreeEventManagerUtils {
         });
 
         return sections;
+    }
+
+    public static String getTestClassNameSuffix(String classId, String suiteId) {
+        return String.format("-in-test-class-%s-in-suite-%s", classId, suiteId);
+    }
+
+    public static String getTestClassConfigSectionName(int index) {
+        return "test-class-configuration-section-" + index;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodSections(
@@ -159,11 +196,10 @@ public class SectionTreeEventManagerUtils {
                     TestMethodSection testMethodSection = new TestMethodSection(
                         prepareReport(
                             TestMethodReport.class,
-                            String.format("test-method-report-name-%s-test-class-%s-in-suite-%s",
-                                          index, tc.getSectionId(), testSuiteId),
+                            getTestMethodReportName(index, testSuiteId, tc.getSectionId()),
                             index + 1,
                             index + 10),
-                        DummyTestClass.class.getMethods()[index]);
+                        getTestMethodSectionName(index));
                     testMethodSection.setTestSuiteId(testSuiteId);
                     return testMethodSection;
                 }
@@ -171,6 +207,15 @@ public class SectionTreeEventManagerUtils {
         });
 
         return sections;
+    }
+
+    public static String getTestMethodReportName(int index, String suiteId, String classId) {
+        return String.format("test-method-report-name-%s-in-test-class-%s-in-suite-%s",
+                             index, classId, suiteId);
+    }
+
+    public static Method getTestMethodSectionName(int index) {
+        return DummyTestClass.class.getDeclaredMethods()[index];
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodConfigurationSections(
@@ -188,13 +233,11 @@ public class SectionTreeEventManagerUtils {
                         new TestMethodConfigurationSection(
                             prepareReport(
                                 ConfigurationReport.class,
-                                String.format(
-                                    "test-method-config-report-name-%s-in-test-method-%s-in-suite-%s",
-                                    index, tm.getSectionId(), testSuiteId),
+                                getConfigReportName(index, getTestMethodNameSuffix(tm.getSectionId(), testSuiteId)),
                                 index + 1,
                                 index + 10),
                             testMethodSection.getMethod(),
-                            "test-method-configuration-report-" + index);
+                            getTestMethodConfigSectionName(index));
                     testMethodConfigSection.setTestSuiteId(testSuiteId);
                     return testMethodConfigSection;
                 }
@@ -202,6 +245,14 @@ public class SectionTreeEventManagerUtils {
         });
 
         return sections;
+    }
+
+    public static String getTestMethodNameSuffix(String methodId, String suiteId) {
+        return String.format("in-test-method-%s-in-suite-%s", methodId, suiteId);
+    }
+
+    public static String getTestMethodConfigSectionName(int index) {
+        return "test-method-configuration-report-" + index;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodFailureSections(
@@ -219,13 +270,11 @@ public class SectionTreeEventManagerUtils {
                         new TestMethodFailureSection(
                             prepareReport(
                                 FailureReport.class,
-                                String.format(
-                                    "test-method-failure-report-name-%s-in-test-method-%s-in-suite-%s",
-                                    index, tm.getSectionId(), testSuiteId),
+                                getFailureReportName(index, getTestMethodNameSuffix(tm.getSectionId(), testSuiteId)),
                                 index + 1,
                                 index + 10),
                             testMethodSection.getMethod(),
-                            "test-method-failure-report-" + index);
+                            getTestMethodFailureSectionName(index));
                     testMethodFailureSection.setTestSuiteId(testSuiteId);
                     return testMethodFailureSection;
                 }
@@ -233,6 +282,14 @@ public class SectionTreeEventManagerUtils {
         });
 
         return sections;
+    }
+
+    public static String getFailureReportName(int index, String suffix) {
+        return String.format("failure-report-%s-%s", index, suffix);
+    }
+
+    public static String getTestMethodFailureSectionName(int index) {
+        return "test-method-failure-report-" + index;
     }
 
     public static List<SectionEvent> getSubsectionsOfSomeSection(Class<? extends SectionEvent> parentClass,
@@ -245,11 +302,11 @@ public class SectionTreeEventManagerUtils {
         }).flatMap(List::stream).collect(Collectors.toList());
     }
 
-    public static List<SectionEvent> getParentSectionsOfSomeType(Class<? extends SectionEvent> sectionClass,
+    public static <T extends SectionEvent> List<T> getParentSectionsOfSomeType(Class<? extends T> sectionClass,
         Map<SectionEvent, List<? extends SectionEvent>> sections) {
         return sections.keySet().stream().map(parent -> {
             if (parent.getClass().equals(sectionClass)) {
-                return parent;
+                return (T) parent;
             }
             return null;
         }).filter(section -> section != null).collect(Collectors.toList());

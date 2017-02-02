@@ -15,7 +15,7 @@ import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
-import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
@@ -39,22 +39,22 @@ public class AllSectionTreeMergeTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { ExecutionSection.class, ExecutionReport.class },
-            { ExecutionSection.class, Report.class },
+            { ExecutionSection.class, BasicReport.class },
             { TestSuiteSection.class, TestSuiteReport.class },
-            { TestSuiteSection.class, Report.class },
+            { TestSuiteSection.class, BasicReport.class },
             { TestSuiteConfigurationSection.class, ConfigurationReport.class },
-            { TestSuiteConfigurationSection.class, Report.class },
+            { TestSuiteConfigurationSection.class, BasicReport.class },
             { TestClassSection.class, TestClassReport.class },
-            { TestClassSection.class, Report.class },
+            { TestClassSection.class, BasicReport.class },
             { TestClassConfigurationSection.class, ConfigurationReport.class },
-            { TestClassConfigurationSection.class, Report.class },
+            { TestClassConfigurationSection.class, BasicReport.class },
             { TestMethodSection.class, TestMethodReport.class },
-            { TestMethodSection.class, Report.class },
+            { TestMethodSection.class, BasicReport.class },
             { TestMethodConfigurationSection.class, ConfigurationReport.class },
-            { TestMethodConfigurationSection.class, Report.class },
+            { TestMethodConfigurationSection.class, BasicReport.class },
             { TestMethodFailureSection.class, FailureReport.class },
-            { TestMethodFailureSection.class, Report.class },
-            { SectionUnderTestMethodConfigSection.class, Report.class }
+            { TestMethodFailureSection.class, BasicReport.class },
+            { SectionUnderTestMethodConfigSection.class, BasicReport.class }
         });
     }
 

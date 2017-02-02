@@ -1,37 +1,32 @@
 package org.arquillian.reporter.api.model.report;
 
+import java.util.List;
+
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
-import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.Entry;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class Report extends AbstractReport<Report,ReportBuilder> {
+public interface Report<TYPE extends Report, UTILS extends ReportBuilder> {
 
-    public Report() {
-    }
+    StringKey getName();
 
-    public Report(StringKey name) {
-        super(name);
-    }
+    void setName(StringKey name);
 
-    public Report(String name) {
-        super(new UnknownStringKey(name));
-    }
+    List<Entry> getEntries();
 
-    public Report merge(Report newReport) {
-        defaultMerge(newReport);
-        return this;
-    }
+    void setEntries(List<Entry> entries);
 
-    @Override
-    public AbstractReport addNewReport(AbstractReport newReport) {
-        getSubReports().add(newReport);
-        return newReport;
-    }
+    List<Report> getSubReports();
 
-    public Class<ReportBuilder> getReportBuilderClass() {
-        return ReportBuilder.class;
-    }
+    void setSubReports(List<Report> subReports);
+
+    Class<UTILS> getReportBuilderClass();
+
+    TYPE merge(TYPE newReport);
+
+    Report addNewReport(Report newReport);
+
 }

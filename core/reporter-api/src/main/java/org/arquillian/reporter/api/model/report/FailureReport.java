@@ -27,7 +27,7 @@ public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> 
     }
 
     @Override
-    public AbstractReport addNewReport(AbstractReport newReport) {
+    public Report addNewReport(Report newReport) {
         getSubReports().add(newReport);
         return newReport;
     }
