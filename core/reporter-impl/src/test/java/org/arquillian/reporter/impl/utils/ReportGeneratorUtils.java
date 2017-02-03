@@ -8,18 +8,18 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
-import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class Utils {
+public class ReportGeneratorUtils {
 
     public static final int DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD = 1;
     public static final int DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD = 10;
 
-    public static void feedReportWithData(AbstractReport report, int startIndex, int endIndex) {
+    public static void feedReportWithData(Report report, int startIndex, int endIndex) {
         report.getEntries().addAll(getSetOfEntries(startIndex, endIndex));
         report.getSubReports().addAll(getSetOfReports(startIndex, endIndex));
     }
@@ -46,7 +46,7 @@ public class Utils {
         return dummyBasicReport;
     }
 
-    public static <T extends AbstractReport> List<T> prepareSetOfReports(Class<T> reportClass, int count,
+    public static <T extends Report> List<T> prepareSetOfReports(Class<T> reportClass, int count,
         String prefixName, int startIndex,
         int endIndex) throws IllegalAccessException, InstantiationException {
         return IntStream.range(0, count).mapToObj(index -> {
@@ -58,12 +58,12 @@ public class Utils {
         }).collect(Collectors.toList());
     }
 
-    public static <T extends AbstractReport> T prepareReport(Class<T> reportClass, String name, int startIndex,
+    public static <T extends Report> T prepareReport(Class<T> reportClass, String name, int startIndex,
         int endIndex) throws IllegalAccessException, InstantiationException {
         return prepareReport(reportClass, new UnknownStringKey(name), startIndex, endIndex);
     }
 
-    public static <T extends AbstractReport> T prepareReportWithDefaults(Class<T> reportClass, String name)
+    public static <T extends Report> T prepareReportWithDefaults(Class<T> reportClass, String name)
         throws IllegalAccessException, InstantiationException {
         return prepareReport(reportClass,
                              new UnknownStringKey(name),
@@ -71,12 +71,13 @@ public class Utils {
                              DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD);
     }
 
-    public static <T extends AbstractReport> T prepareReport(Class<T> reportClass, StringKey name, int startIndex,
+    public static <T extends Report> T prepareReport(Class<T> reportClass, StringKey name, int startIndex,
         int endIndex) throws IllegalAccessException, InstantiationException {
         T report = reportClass.newInstance();
         report.setName(name);
         feedReportWithData(report, startIndex, endIndex);
         return report;
     }
+
 
 }

@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.impl.utils.Utils;
+import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
@@ -26,25 +26,25 @@ public class TestSuiteReportTest {
     @Test
     public void testAddNewReportToTestSuiteReport() throws InstantiationException, IllegalAccessException {
         TestSuiteReport testSuiteReport =
-            Utils.prepareReport(TestSuiteReport.class, TEST_SUITE_NAME, 1, 5);
+            ReportGeneratorUtils.prepareReport(TestSuiteReport.class, TEST_SUITE_NAME, 1, 5);
 
         // add test class report - should be added into List of test class reports
         TestClassReport testClassReportToAdd =
-            Utils.prepareReport(TestClassReport.class, TEST_CLASS_NAME, 3, 8);
+            ReportGeneratorUtils.prepareReport(TestClassReport.class, TEST_CLASS_NAME, 3, 8);
         testSuiteReport.addNewReport(testClassReportToAdd);
 
         // add configuration report - should be added into list of configs
         ConfigurationReport configurationReportToAdd =
-            Utils.prepareReport(ConfigurationReport.class, "test suite config", 1, 5);
+            ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "test suite config", 1, 5);
         testSuiteReport.addNewReport(configurationReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
+        BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
         testSuiteReport.addNewReport(basicReport);
 
         // add another test class report - should be added into List of test class reports
         TestClassReport secondTestClassReportToAdd =
-            Utils.prepareReport(TestClassReport.class, "second test class", 3, 8);
+            ReportGeneratorUtils.prepareReport(TestClassReport.class, "second test class", 3, 8);
         testSuiteReport.addNewReport(secondTestClassReportToAdd);
 
         // add first test class report for the second time - should be added into List of test class reports
@@ -93,25 +93,27 @@ public class TestSuiteReportTest {
     @Test
     public void testMergeReports() throws InstantiationException, IllegalAccessException {
         // prepare main
-        TestSuiteReport mainTestSuiteReport = Utils.prepareReport(TestSuiteReport.class, "main test suite", 1, 5);
+        TestSuiteReport mainTestSuiteReport = ReportGeneratorUtils
+            .prepareReport(TestSuiteReport.class, "main test suite", 1, 5);
         // add test classes
         List<TestClassReport> firstTestClasses =
-            Utils.prepareSetOfReports(TestClassReport.class, 5, "first classes", 1, 5);
+            ReportGeneratorUtils.prepareSetOfReports(TestClassReport.class, 5, "first classes", 1, 5);
         mainTestSuiteReport.getTestClassReports().addAll(firstTestClasses);
         // and config
         List<ConfigurationReport> firstConfigs =
-            Utils.prepareSetOfReports(ConfigurationReport.class, 5, "first config", 1, 5);
+            ReportGeneratorUtils.prepareSetOfReports(ConfigurationReport.class, 5, "first config", 1, 5);
         mainTestSuiteReport.getConfiguration().getSubReports().addAll(firstConfigs);
 
         // prepare report to merge
-        TestSuiteReport testSuiteReportToMerge = Utils.prepareReport(TestSuiteReport.class, "to merge", 5, 10);
+        TestSuiteReport testSuiteReportToMerge = ReportGeneratorUtils
+            .prepareReport(TestSuiteReport.class, "to merge", 5, 10);
         // add test classes
         List<TestClassReport> classesToMerge =
-            Utils.prepareSetOfReports(TestClassReport.class, 5, "second classes", 5, 10);
+            ReportGeneratorUtils.prepareSetOfReports(TestClassReport.class, 5, "second classes", 5, 10);
         testSuiteReportToMerge.getTestClassReports().addAll(classesToMerge);
         // and config
         List<ConfigurationReport> configsToMerge =
-            Utils.prepareSetOfReports(ConfigurationReport.class, 5, "second config", 5, 10);
+            ReportGeneratorUtils.prepareSetOfReports(ConfigurationReport.class, 5, "second config", 5, 10);
         testSuiteReportToMerge.getConfiguration().getSubReports().addAll(configsToMerge);
 
         //merge

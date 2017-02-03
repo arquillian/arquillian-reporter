@@ -3,7 +3,7 @@ package org.arquillian.reporter.impl.model.report;
 import java.util.List;
 
 import org.arquillian.reporter.api.model.report.BasicReport;
-import org.arquillian.reporter.impl.utils.Utils;
+import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
@@ -15,10 +15,10 @@ public class ReportTest {
 
     @Test
     public void testAddNewReportToConfigurationReport() throws InstantiationException, IllegalAccessException {
-        BasicReport report = Utils.prepareReport(BasicReport.class, "report name", 1, 5);
+        BasicReport report = ReportGeneratorUtils.prepareReport(BasicReport.class, "report name", 1, 5);
 
         // add a normal report - should be added into List of subReports
-        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
+        BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
         report.addNewReport(basicReport);
 
         // verify
@@ -33,12 +33,12 @@ public class ReportTest {
 
     @Test
     public void testMergeReports() throws InstantiationException, IllegalAccessException {
-        BasicReport mainReport = Utils.prepareReport(BasicReport.class, "report", 1, 5);
-        List<BasicReport> firstReports = Utils.prepareSetOfReports(BasicReport.class, 5, "first", 1, 5);
+        BasicReport mainReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 1, 5);
+        List<BasicReport> firstReports = ReportGeneratorUtils.prepareSetOfReports(BasicReport.class, 5, "first", 1, 5);
         mainReport.getSubReports().addAll(firstReports);
 
-        BasicReport reportToMerge = Utils.prepareReport(BasicReport.class, "to merge", 5, 10);
-        List<BasicReport> secondReports = Utils.prepareSetOfReports(BasicReport.class, 5, "second", 5, 10);
+        BasicReport reportToMerge = ReportGeneratorUtils.prepareReport(BasicReport.class, "to merge", 5, 10);
+        List<BasicReport> secondReports = ReportGeneratorUtils.prepareSetOfReports(BasicReport.class, 5, "second", 5, 10);
         reportToMerge.getSubReports().addAll(secondReports);
 
         //merge

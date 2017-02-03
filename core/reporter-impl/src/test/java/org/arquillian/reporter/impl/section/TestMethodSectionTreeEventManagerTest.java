@@ -13,17 +13,17 @@ import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
-import org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.EXPECTED_NUMBER_OF_SECTIONS;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.feedWithTestClassSections;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.feedWithTestMethodConfigurationSections;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.feedWithTestMethodFailureSections;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.feedWithTestMethodSections;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.feedWithTestSuiteSections;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getSubsectionsOfSomeSection;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestClassSections;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestMethodConfigurationSections;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestMethodFailureSections;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestMethodSections;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestSuiteSections;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getSubsectionsOfSomeSection;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.verifyAllSectionsAreProcessed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -50,7 +50,7 @@ public class TestMethodSectionTreeEventManagerTest {
                                                                TestClassReport.class,
                                                                TestMethodReport.class);
 
-        SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
+        verifyAllSectionsAreProcessed(sections);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TestMethodSectionTreeEventManagerTest {
                                                                TestClassReport.class,
                                                                TestMethodReport.class,
                                                                ConfigurationReport.class);
-        SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
+        verifyAllSectionsAreProcessed(sections);
     }
 
     @Test
@@ -96,6 +96,6 @@ public class TestMethodSectionTreeEventManagerTest {
                                                                TestClassReport.class,
                                                                TestMethodReport.class,
                                                                FailureReport.class);
-        SectionTreeEventManagerUtils.verifyAllSectionsAreProcessed(sections);
+        verifyAllSectionsAreProcessed(sections);
     }
 }

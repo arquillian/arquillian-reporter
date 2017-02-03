@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.impl.utils.Utils;
+import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
@@ -24,19 +24,21 @@ public class TestMethodTest {
 
     @Test
     public void testAddNewReportToTestMethodReport() throws InstantiationException, IllegalAccessException {
-        TestMethodReport testMethodReport = Utils.prepareReport(TestMethodReport.class, TEST_METHOD_NAME, 1, 5);
+        TestMethodReport testMethodReport = ReportGeneratorUtils
+            .prepareReport(TestMethodReport.class, TEST_METHOD_NAME, 1, 5);
 
         // add configuration report - should be added into list of configs
         ConfigurationReport configurationReportToAdd =
-            Utils.prepareReport(ConfigurationReport.class, "method config", 5, 10);
+            ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "method config", 5, 10);
         testMethodReport.addNewReport(configurationReportToAdd);
 
         // add failur method report - should be added into list of failures
-        FailureReport failureReportToAdd = Utils.prepareReport(FailureReport.class, "test method failure", 3, 8);
+        FailureReport failureReportToAdd = ReportGeneratorUtils
+            .prepareReport(FailureReport.class, "test method failure", 3, 8);
         testMethodReport.addNewReport(failureReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
+        BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
         testMethodReport.addNewReport(basicReport);
 
         // verify
@@ -81,24 +83,27 @@ public class TestMethodTest {
     @Test
     public void testMergeReports() throws InstantiationException, IllegalAccessException {
         // prepare main
-        TestMethodReport mainTestMethodReport = Utils.prepareReport(TestMethodReport.class, TEST_METHOD_NAME, 1, 5);
+        TestMethodReport mainTestMethodReport = ReportGeneratorUtils
+            .prepareReport(TestMethodReport.class, TEST_METHOD_NAME, 1, 5);
         // add failure report
-        List<FailureReport> firstFailure = Utils.prepareSetOfReports(FailureReport.class, 5, "first failure", 1, 5);
+        List<FailureReport> firstFailure = ReportGeneratorUtils
+            .prepareSetOfReports(FailureReport.class, 5, "first failure", 1, 5);
         mainTestMethodReport.getFailureReport().getSubReports().addAll(firstFailure);
         // and config
         List<ConfigurationReport> firstConfigs =
-            Utils.prepareSetOfReports(ConfigurationReport.class, 5, "first config", 1, 5);
+            ReportGeneratorUtils.prepareSetOfReports(ConfigurationReport.class, 5, "first config", 1, 5);
         mainTestMethodReport.getConfiguration().getSubReports().addAll(firstConfigs);
 
         // prepare report to merge
-        TestMethodReport testMethodToMerge = Utils.prepareReport(TestMethodReport.class, "to merge", 5, 10);
+        TestMethodReport testMethodToMerge = ReportGeneratorUtils
+            .prepareReport(TestMethodReport.class, "to merge", 5, 10);
         // add failure reports
         List<FailureReport> failuresToMerge =
-            Utils.prepareSetOfReports(FailureReport.class, 5, "second failure", 5, 10);
+            ReportGeneratorUtils.prepareSetOfReports(FailureReport.class, 5, "second failure", 5, 10);
         testMethodToMerge.getFailureReport().getSubReports().addAll(failuresToMerge);
         // and config
         List<ConfigurationReport> configsToMerge =
-            Utils.prepareSetOfReports(ConfigurationReport.class, 5, "second config", 5, 10);
+            ReportGeneratorUtils.prepareSetOfReports(ConfigurationReport.class, 5, "second config", 5, 10);
         testMethodToMerge.getConfiguration().getSubReports().addAll(configsToMerge);
 
         //merge

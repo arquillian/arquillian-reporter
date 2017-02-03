@@ -25,21 +25,21 @@ import org.arquillian.reporter.impl.utils.dummy.DummyTestClass;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.ListAssert;
 
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.EXPECTED_NUMBER_OF_SECTIONS;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getConfigReportName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getFailureReportName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestClassReportName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestClassNameSuffix;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodReportName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodSectionName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestMethodNameSuffix;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteNameSuffix;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteReportName;
-import static org.arquillian.reporter.impl.utils.SectionTreeEventManagerUtils.getTestSuiteSectionName;
-import static org.arquillian.reporter.impl.utils.Utils.DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
-import static org.arquillian.reporter.impl.utils.Utils.DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
-import static org.arquillian.reporter.impl.utils.Utils.getKeyValueEntryWitIndex;
-import static org.arquillian.reporter.impl.utils.Utils.getReportWithIndex;
+import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
+import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
+import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.getKeyValueEntryWitIndex;
+import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.getReportWithIndex;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getConfigReportName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getFailureReportName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestClassNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestClassReportName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestMethodNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestMethodReportName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestMethodSectionName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestSuiteNameSuffix;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestSuiteReportName;
+import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getTestSuiteSectionName;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

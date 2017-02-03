@@ -1,4 +1,4 @@
-package org.arquillian.reporter.impl.section;
+package org.arquillian.reporter.impl.utils.dummy;
 
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestMethodConfigurationSection;

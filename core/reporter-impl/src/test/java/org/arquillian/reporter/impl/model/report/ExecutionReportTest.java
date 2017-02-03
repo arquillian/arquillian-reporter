@@ -7,7 +7,7 @@ import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionSection;
-import org.arquillian.reporter.impl.utils.Utils;
+import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
@@ -26,18 +26,20 @@ public class ExecutionReportTest {
     @Test
     public void testAddNewReportToExecutionReport() throws InstantiationException, IllegalAccessException {
         ExecutionReport executionReport =
-            Utils.prepareReport(ExecutionReport.class, EXECUTION_REPORT_NAME, 1, 5);
+            ReportGeneratorUtils.prepareReport(ExecutionReport.class, EXECUTION_REPORT_NAME, 1, 5);
 
         // add test suite report - should be added into List of test suite reports
-        TestSuiteReport firstTestSuiteReportToAdd = Utils.prepareReport(TestSuiteReport.class, "first", 5, 10);
+        TestSuiteReport firstTestSuiteReportToAdd = ReportGeneratorUtils
+            .prepareReport(TestSuiteReport.class, "first", 5, 10);
         executionReport.addNewReport(firstTestSuiteReportToAdd);
 
         // add a normal report - should be added into List of subReports
-        BasicReport basicReport = Utils.prepareReport(BasicReport.class, "report", 5, 10);
+        BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
         executionReport.addNewReport(basicReport);
 
         // add another test suite report - should be added into List of test suite reports
-        TestSuiteReport secondTestSuiteReportToAdd = Utils.prepareReport(TestSuiteReport.class, "second", 5, 10);
+        TestSuiteReport secondTestSuiteReportToAdd = ReportGeneratorUtils
+            .prepareReport(TestSuiteReport.class, "second", 5, 10);
         executionReport.addNewReport(secondTestSuiteReportToAdd);
 
         // add first test suite report for the second time - should be added into List of test suite reports
@@ -81,12 +83,16 @@ public class ExecutionReportTest {
 
     @Test
     public void testMergeReports() throws InstantiationException, IllegalAccessException {
-        ExecutionReport mainExecutionReport = Utils.prepareReport(ExecutionReport.class, EXECUTION_REPORT_NAME, 1, 5);
-        List<TestSuiteReport> firstTestSuites = Utils.prepareSetOfReports(TestSuiteReport.class, 5, "first", 1, 5);
+        ExecutionReport mainExecutionReport = ReportGeneratorUtils
+            .prepareReport(ExecutionReport.class, EXECUTION_REPORT_NAME, 1, 5);
+        List<TestSuiteReport> firstTestSuites = ReportGeneratorUtils
+            .prepareSetOfReports(TestSuiteReport.class, 5, "first", 1, 5);
         mainExecutionReport.getTestSuiteReports().addAll(firstTestSuites);
 
-        ExecutionReport executionReportToMerge = Utils.prepareReport(ExecutionReport.class, "to merge", 5, 10);
-        List<TestSuiteReport> secondTestSuites = Utils.prepareSetOfReports(TestSuiteReport.class, 5, "second", 5, 10);
+        ExecutionReport executionReportToMerge = ReportGeneratorUtils
+            .prepareReport(ExecutionReport.class, "to merge", 5, 10);
+        List<TestSuiteReport> secondTestSuites = ReportGeneratorUtils
+            .prepareSetOfReports(TestSuiteReport.class, 5, "second", 5, 10);
         executionReportToMerge.getTestSuiteReports().addAll(secondTestSuites);
 
         //merge

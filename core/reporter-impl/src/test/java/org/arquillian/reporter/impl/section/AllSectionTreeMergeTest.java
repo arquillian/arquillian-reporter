@@ -22,7 +22,8 @@ import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.SectionTree;
-import org.arquillian.reporter.impl.utils.Utils;
+import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
+import org.arquillian.reporter.impl.utils.dummy.SectionUnderTestMethodConfigSection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -74,10 +75,12 @@ public class AllSectionTreeMergeTest {
         Identifier executionSectionId = new Identifier<>(sectionClass, sectionClass.getCanonicalName());
 
         // create first dummy execution report
-        AbstractReport firstExecutionReport = Utils.prepareReport(reportClass, reportClass.getCanonicalName(), 1, 5);
+        AbstractReport firstExecutionReport = ReportGeneratorUtils
+            .prepareReport(reportClass, reportClass.getCanonicalName(), 1, 5);
 
         // create second dummy execution report
-        AbstractReport secondExecutionReport = Utils.prepareReport(reportClass, reportClass.getCanonicalName(), 5, 10);
+        AbstractReport secondExecutionReport = ReportGeneratorUtils
+            .prepareReport(reportClass, reportClass.getCanonicalName(), 5, 10);
 
         // create execution section tree that should consume another tree
         SectionTree originalExecutionTree = new SectionTree<>(executionSectionId, firstExecutionReport);
