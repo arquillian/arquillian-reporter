@@ -7,7 +7,6 @@ import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestClassConfigurationSection;
 import org.arquillian.reporter.api.event.TestClassSection;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
-import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
@@ -28,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AbstractNonExistingTreeSectionTest {
 
     public static final String NON_EXISTING_SECTION_NAME = "non-existing-section";
+    public static final String SECTION_IN_NON_EXISTING_SECTION_NAME = "section-in-non-existing-section";
     public static final String REPORT_NAME_IN_NON_EXISTING_SECTION = "report-in-non-existing-section";
 
     // creation
@@ -42,7 +42,7 @@ public class AbstractNonExistingTreeSectionTest {
         return new TestSuiteConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
             NON_EXISTING_SECTION_NAME,
-            REPORT_NAME_IN_NON_EXISTING_SECTION);
+            SECTION_IN_NON_EXISTING_SECTION_NAME);
     }
 
     protected TestClassSection createTestClassSectionInNonExistingSection()
@@ -55,13 +55,58 @@ public class AbstractNonExistingTreeSectionTest {
 
     protected TestClassConfigurationSection createTestClassConfigSectionInNonExistingSection()
         throws IllegalAccessException, InstantiationException {
-        return new TestClassConfigurationSection(
+        TestClassConfigurationSection testClassConfigurationSection = new TestClassConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
             SecondDummyTestClass.class,
-            NON_EXISTING_SECTION_NAME);
+            SECTION_IN_NON_EXISTING_SECTION_NAME);
+        testClassConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
+        return testClassConfigurationSection;
     }
 
     // verification
+
+    protected SectionTree verifyNonExistingSuiteSectionAddedAndGetTree(
+        SectionTree parentTree,
+        SectionEvent expectedSubsection,
+        int expectedSubtreesNum,
+        int expectedAllTreeNodesNum) {
+
+        SectionEvent subsection = expectedSubsection;
+        try {
+            subsection = expectedSubsection.getClass().newInstance();
+            subsection.setSectionId(NON_EXISTING_SECTION_NAME);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SectionEvent expectedSection = expectedSubsection.getParentSectionThisSectionBelongsTo();
+        if (expectedSection.getSectionId() == null) {
+            expectedSection.setSectionId(NON_EXISTING_SECTION_NAME);
+        }
+        Identifier suiteIdentifier = getSectionIdentifier(expectedSection);
+
+        assertThatSectionTree(parentTree)
+            .hasSubtreeWithIdentifier(suiteIdentifier)
+            .hasNumberOfSubTrees(expectedSubtreesNum)
+            .wholeTreeHasNumberOfTreeNodes(expectedAllTreeNodesNum);
+
+        SectionTree sectionTree =
+            (SectionTree) getTreeWithIdentifierFromList(parentTree.getSubtrees(), suiteIdentifier).get();
+
+        if (expectedSubsection.getReport() != null) {
+            assertThatSectionTree(sectionTree)
+                .hasSubtreeMatchingSection(expectedSubsection);
+        } else {
+            assertThatSectionTree(sectionTree)
+                .hasSubtreeWithIdentifier(getSectionIdentifier(expectedSubsection));
+        }
+        assertThatSectionTree(sectionTree)
+            .hasNumberOfSubTrees(1)
+            .associatedReport()
+            .hasName(expectedSection.getSectionId());
+
+        return sectionTree;
+
+    }
 
     protected <T extends Report> T verifyNonExistingSuiteSectionAddedAndGetReport(
         SectionTree parentTree,
@@ -70,41 +115,18 @@ public class AbstractNonExistingTreeSectionTest {
         int expectedSubtreesNum,
         int expectedAllTreeNodesNum) {
 
-//        SectionTree executionTree = executionReport.getSectionTree();
-        SectionEvent subsection = expectedSubsection;
-        try {
-            subsection = expectedSubsection.getClass().newInstance();
-            subsection.setSectionId(NON_EXISTING_SECTION_NAME);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Identifier suiteIdentifier = getSectionIdentifier(new TestSuiteSection(NON_EXISTING_SECTION_NAME));
-
-        assertThatSectionTree(parentTree)
-            .hasSubtreeWithIdentifier(suiteIdentifier)
-            .hasNumberOfSubTrees(expectedSubtreesNum)
-            .wholeTreeHasNumberOfTreeNodes(expectedAllTreeNodesNum);
-
-        SectionTree suiteTree =
-            (SectionTree) getTreeWithIdentifierFromList(parentTree.getSubtrees(), suiteIdentifier).get();
-
-        if (expectedSubsection != null){
-            assertThatSectionTree(suiteTree)
-                .hasSubtreeMatchingSection(expectedSubsection);
-        }
-        assertThatSectionTree(suiteTree)
-            .hasNumberOfSubTrees(1)
-            .associatedReport()
-            .hasName(NON_EXISTING_SECTION_NAME);
+        SectionTree sectionTree =
+            verifyNonExistingSuiteSectionAddedAndGetTree(parentTree, expectedSubsection, expectedSubtreesNum,
+                                                         expectedAllTreeNodesNum);
 
         return reportsToFilter
             .stream()
-            .filter(section -> section.equals(suiteTree.getAssociatedReport()))
+            .filter(section -> section.equals(sectionTree.getAssociatedReport()))
             .findFirst()
             .get();
     }
 
-    protected void verifyTestClassAddedInNonExistingSection(List<TestClassReport> classReports){
+    protected void verifyTestClassAddedInNonExistingSection(List<TestClassReport> classReports) {
         assertThat(classReports).hasSize(1);
         TestClassReport testClassReport = classReports.get(0);
 
@@ -115,7 +137,7 @@ public class AbstractNonExistingTreeSectionTest {
         assertThatReport(testClassReport.getConfiguration()).hasNumberOfSubreportsAndEntries(0);
     }
 
-    protected void verifyConfigAddedInNonExistingSection(ConfigurationReport configuration){
+    protected void verifyConfigAddedInNonExistingSection(ConfigurationReport configuration) {
 
         assertThatReport(configuration)
             .hasNumberOfSubreports(1);
