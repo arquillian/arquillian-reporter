@@ -9,13 +9,6 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.event.SectionEvent;
-import org.arquillian.reporter.api.event.TestClassConfigurationSection;
-import org.arquillian.reporter.api.event.TestClassSection;
-import org.arquillian.reporter.api.event.TestMethodConfigurationSection;
-import org.arquillian.reporter.api.event.TestMethodFailureSection;
-import org.arquillian.reporter.api.event.TestMethodSection;
-import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
-import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.StringKey;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -53,42 +46,44 @@ public class ReporterLifecycleManager {
         }
     }
 
-    public void observeEventsForAllSections(@Observes(precedence = -100) SectionEvent event) {
+    public void observeEventsForAllSections(SectionEvent event) {
         processEvent(event, report.get());
     }
 
-    public void observeEventsFroTestSuiteSection(@Observes TestSuiteSection event) {
-        processEvent(event, report.get());
-    }
+    // technically, I don't need any more specific observer than the general one...
 
-    public void observeEventsForTestSuiteConfigurationSection(@Observes TestSuiteConfigurationSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestClassSection(@Observes TestClassSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestClassSection(@Observes TestClassConfigurationSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestClassConfigurationSection(@Observes TestSuiteConfigurationSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestMethodSection(@Observes TestMethodSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestMethodConfigurationSection(@Observes TestMethodConfigurationSection event) {
-        processEvent(event, report.get());
-    }
-
-    public void observeEventsForTestMethodFailureSection(@Observes TestMethodFailureSection event) {
-        processEvent(event, report.get());
-    }
-
+    //    public void observeEventsFroTestSuiteSection(@Observes TestSuiteSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestSuiteConfigurationSection(@Observes TestSuiteConfigurationSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestClassSection(@Observes TestClassSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestClassSection(@Observes TestClassConfigurationSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestClassConfigurationSection(@Observes TestSuiteConfigurationSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestMethodSection(@Observes TestMethodSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestMethodConfigurationSection(@Observes TestMethodConfigurationSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
+    //    public void observeEventsForTestMethodFailureSection(@Observes TestMethodFailureSection event) {
+    //        processEvent(event, report.get());
+    //    }
+    //
     public void afterSuite(@Observes ManagerStopping event) throws IOException {
         printJson();
     }
