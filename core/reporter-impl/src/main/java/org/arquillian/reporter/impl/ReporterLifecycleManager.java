@@ -46,7 +46,7 @@ public class ReporterLifecycleManager {
         }
     }
 
-    public void observeEventsForAllSections(SectionEvent event) {
+    public void observeEventsForAllSections(@Observes SectionEvent event) {
         processEvent(event, report.get());
     }
 

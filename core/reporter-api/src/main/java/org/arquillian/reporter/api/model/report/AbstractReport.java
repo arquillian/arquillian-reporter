@@ -57,11 +57,4 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
         getEntries().addAll(newReport.getEntries());
         getSubReports().addAll(newReport.getSubReports());
     }
-
-//    public abstract Class<UTILS> getReportBuilderClass();
-//
-//    public abstract TYPE merge(TYPE newReport);
-//
-//    public abstract AbstractReport addNewReport(Report newReport);
-
 }

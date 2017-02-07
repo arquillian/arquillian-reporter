@@ -14,7 +14,7 @@ import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport
 public class ReportTest {
 
     @Test
-    public void testAddNewReportToConfigurationReport() throws InstantiationException, IllegalAccessException {
+    public void testAddNewReportToConfigurationReport() throws Exception {
         BasicReport report = ReportGeneratorUtils.prepareReport(BasicReport.class, "report name", 1, 5);
 
         // add a normal report - should be added into List of subReports
@@ -32,13 +32,14 @@ public class ReportTest {
     }
 
     @Test
-    public void testMergeReports() throws InstantiationException, IllegalAccessException {
+    public void testMergeReports() throws Exception {
         BasicReport mainReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 1, 5);
         List<BasicReport> firstReports = ReportGeneratorUtils.prepareSetOfReports(BasicReport.class, 5, "first", 1, 5);
         mainReport.getSubReports().addAll(firstReports);
 
         BasicReport reportToMerge = ReportGeneratorUtils.prepareReport(BasicReport.class, "to merge", 5, 10);
-        List<BasicReport> secondReports = ReportGeneratorUtils.prepareSetOfReports(BasicReport.class, 5, "second", 5, 10);
+        List<BasicReport> secondReports =
+            ReportGeneratorUtils.prepareSetOfReports(BasicReport.class, 5, "second", 5, 10);
         reportToMerge.getSubReports().addAll(secondReports);
 
         //merge

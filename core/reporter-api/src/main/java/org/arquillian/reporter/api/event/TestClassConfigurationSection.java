@@ -19,10 +19,18 @@ public class TestClassConfigurationSection
         this.testClass = testClass;
     }
 
+    // todo rewrite
     public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass,
         String configurationId) {
         super(configuration, testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
+    }
+
+    public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass,
+        String configurationId, String testSuiteId) {
+        super(configuration, testClass.getCanonicalName(), configurationId);
+        this.testClass = testClass;
+        this.testSuiteId = testSuiteId;
     }
 
     @Override

@@ -26,6 +26,12 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
         this.method = method;
     }
 
+    public TestMethodSection(TestMethodReport testMethodReport, Method method, String testSuiteId) {
+        super(testMethodReport, ReporterUtils.getTestMethodId(method));
+        this.method = method;
+        this.testSuiteId = testSuiteId;
+    }
+
     @Override
     public TestClassSection getParentSectionThisSectionBelongsTo() {
         if (testSuiteId == null) {

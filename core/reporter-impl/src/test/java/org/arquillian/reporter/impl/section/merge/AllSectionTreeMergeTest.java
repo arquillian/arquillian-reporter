@@ -1,4 +1,4 @@
-package org.arquillian.reporter.impl.section;
+package org.arquillian.reporter.impl.section.merge;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,8 +68,7 @@ public class AllSectionTreeMergeTest {
     }
 
     @Test
-    public void mergeExecutionSectionTree()
-        throws InstantiationException, IllegalAccessException {
+    public void mergeExecutionSectionTree() throws Exception {
 
         // use same identifier to merge
         Identifier executionSectionId = new Identifier<>(sectionClass, sectionClass.getCanonicalName());

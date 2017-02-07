@@ -26,6 +26,13 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
         this.testMethod = testMethod;
     }
 
+    public TestMethodFailureSection(FailureReport failureReport, Method testMethod, String failureId,
+        String testSuiteId) {
+        super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
+        this.testMethod = testMethod;
+        this.testSuiteId = testSuiteId;
+    }
+
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
         TestMethodSection testMethodSection = new TestMethodSection(testMethod);

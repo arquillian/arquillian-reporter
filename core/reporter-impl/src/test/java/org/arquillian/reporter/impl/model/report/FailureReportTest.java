@@ -16,7 +16,7 @@ import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.FAILURE_R
 public class FailureReportTest {
 
     @Test
-    public void testAddNewReportToFailureReport() throws InstantiationException, IllegalAccessException {
+    public void testAddNewReportToFailureReport() throws Exception {
         FailureReport failureReport = ReportGeneratorUtils.prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 1, 5);
 
         // add a normal report - should be added into List of subReports
@@ -42,7 +42,7 @@ public class FailureReportTest {
     }
 
     @Test
-    public void testMergeReports() throws InstantiationException, IllegalAccessException {
+    public void testMergeReports() throws Exception {
         FailureReport mainFailureReport = ReportGeneratorUtils
             .prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 1, 5);
         List<FailureReport> firstFailure = ReportGeneratorUtils

@@ -28,6 +28,13 @@ public class TestMethodConfigurationSection
         this.testMethod = testMethod;
     }
 
+    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod,
+        String configurationId, String testSuiteId) {
+        super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
+        this.testMethod = testMethod;
+        this.testSuiteId = testSuiteId;
+    }
+
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
         TestMethodSection testMethodSection = new TestMethodSection(testMethod);

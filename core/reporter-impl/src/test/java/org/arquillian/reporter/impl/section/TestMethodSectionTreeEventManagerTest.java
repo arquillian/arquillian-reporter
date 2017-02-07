@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestMethodSectionTreeEventManagerTest {
 
     @Test
-    public void testAddTestMethodSectionsWithReportsToExistingTreeUsingEventManager() {
+    public void testAddTestMethodSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
         sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
@@ -54,7 +54,7 @@ public class TestMethodSectionTreeEventManagerTest {
     }
 
     @Test
-    public void testAddTestMethodConfigurationSectionsWithReportsToExistingTreeUsingEventManager() {
+    public void testAddTestMethodConfigurationSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
         sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
@@ -77,7 +77,7 @@ public class TestMethodSectionTreeEventManagerTest {
     }
 
     @Test
-    public void testAddTestMethodFailureSectionsWithReportsToExistingTreeUsingEventManager() {
+    public void testAddTestMethodFailureSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
         sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));

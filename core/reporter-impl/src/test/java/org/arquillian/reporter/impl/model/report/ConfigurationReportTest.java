@@ -16,7 +16,7 @@ import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.CONFIG_NA
 public class ConfigurationReportTest {
 
     @Test
-    public void testAddNewReportToConfigurationReport() throws InstantiationException, IllegalAccessException {
+    public void testAddNewReportToConfigurationReport() throws Exception {
         ConfigurationReport configurationReport = ReportGeneratorUtils
             .prepareReport(ConfigurationReport.class, "any config", 1, 5);
 
@@ -43,7 +43,7 @@ public class ConfigurationReportTest {
     }
 
     @Test
-    public void testMergeReports() throws InstantiationException, IllegalAccessException {
+    public void testMergeReports() throws Exception {
         ConfigurationReport mainConfigReport = ReportGeneratorUtils
             .prepareReport(ConfigurationReport.class, CONFIG_NAME, 1, 5);
         List<ConfigurationReport> firstConfigs = ReportGeneratorUtils

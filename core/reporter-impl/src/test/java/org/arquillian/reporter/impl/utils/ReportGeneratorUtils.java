@@ -59,12 +59,11 @@ public class ReportGeneratorUtils {
     }
 
     public static <T extends Report> T prepareReport(Class<T> reportClass, String name, int startIndex,
-        int endIndex) throws IllegalAccessException, InstantiationException {
+        int endIndex) throws Exception {
         return prepareReport(reportClass, new UnknownStringKey(name), startIndex, endIndex);
     }
 
-    public static <T extends Report> T prepareReportWithDefaults(Class<T> reportClass, String name)
-        throws IllegalAccessException, InstantiationException {
+    public static <T extends Report> T prepareReportWithDefaults(Class<T> reportClass, String name) throws Exception {
         return prepareReport(reportClass,
                              new UnknownStringKey(name),
                              DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD,
@@ -72,7 +71,7 @@ public class ReportGeneratorUtils {
     }
 
     public static <T extends Report> T prepareReport(Class<T> reportClass, StringKey name, int startIndex,
-        int endIndex) throws IllegalAccessException, InstantiationException {
+        int endIndex) throws Exception {
         T report = reportClass.newInstance();
         report.setName(name);
         feedReportWithData(report, startIndex, endIndex);

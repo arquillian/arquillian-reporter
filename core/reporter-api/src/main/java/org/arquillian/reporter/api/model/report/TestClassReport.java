@@ -13,7 +13,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_CL
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestClassReport extends AbstractReport<TestClassReport,TestClassReportBuilder> {
+public class TestClassReport extends AbstractReport<TestClassReport, TestClassReportBuilder> {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;
@@ -77,15 +77,10 @@ public class TestClassReport extends AbstractReport<TestClassReport,TestClassRep
     public Report addNewReport(Report newReport) {
         Class<? extends Report> newReportClass = newReport.getClass();
 
-        if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
-            if (newReport.getName() == null) {
-                getConfiguration().merge((ConfigurationReport) newReport);
-                return getConfiguration();
-            } else {
-                return getConfiguration().addNewReport((ConfigurationReport) newReport);
-            }
+        if (ConfigurationReport.class.isAssignableFrom(newReportClass)) {
+            return getConfiguration().addNewReport((ConfigurationReport) newReport);
 
-        } else if (TestMethodReport.class.isAssignableFrom(newReportClass)){
+        } else if (TestMethodReport.class.isAssignableFrom(newReportClass)) {
             getTestMethodReports().add((TestMethodReport) newReport);
             return newReport;
 

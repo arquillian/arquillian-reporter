@@ -92,7 +92,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         SectionTree<TestClassSection, TestClassReport> classTree =
             verifyNonExistingSuiteSectionAddedAndGetTree(suiteTree,
-                                                         new TestMethodSection(getDummyMethod()),
+                                                         new TestMethodSection(getDummyMethodInSecond()),
                                                          1, 4);
 
         List<TestMethodReport> testMethodReports = classTree.getAssociatedReport().getTestMethodReports();
@@ -120,7 +120,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         SectionTree<TestClassSection, TestClassReport> classTree =
             verifyNonExistingSuiteSectionAddedAndGetTree(suiteTree,
-                                                         new TestMethodSection(getDummyMethod()),
+                                                         new TestMethodSection(getDummyMethodInSecond()),
                                                          1, 4);
 
         List<TestMethodReport> testMethodReports = classTree.getAssociatedReport().getTestMethodReports();
@@ -147,7 +147,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         SectionTree<TestClassSection, TestClassReport> classTree =
             verifyNonExistingSuiteSectionAddedAndGetTree(suiteTree,
-                                                         new TestMethodSection(getDummyMethod()),
+                                                         new TestMethodSection(getDummyMethodInSecond()),
                                                          1, 4);
 
         List<TestMethodReport> testMethodReports = classTree.getAssociatedReport().getTestMethodReports();
@@ -175,7 +175,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         SectionTree<TestClassSection, TestClassReport> classTree =
             verifyNonExistingSuiteSectionAddedAndGetTree(suiteTree,
-                                                         new TestMethodSection(getDummyMethod()),
+                                                         new TestMethodSection(getDummyMethodInSecond()),
                                                          1, 4);
 
         List<TestMethodReport> testMethodReports = classTree.getAssociatedReport().getTestMethodReports();
@@ -191,12 +191,12 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         TestMethodSection methodSection = new TestMethodSection(
             createReportInNonExistingSection(TestMethodReport.class),
-            getDummyMethod());
+            getDummyMethodInSecond());
         methodSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
         return methodSection;
     }
 
-    private Method getDummyMethod() {
+    private Method getDummyMethodInSecond() {
         return SecondDummyTestClass.class.getDeclaredMethods()[0];
     }
 
@@ -204,7 +204,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         TestMethodConfigurationSection testMethodConfigurationSection = new TestMethodConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
-            getDummyMethod(),
+            getDummyMethodInSecond(),
             SECTION_IN_NON_EXISTING_SECTION_NAME);
         testMethodConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
 
@@ -215,7 +215,7 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         TestMethodFailureSection testMethodConfigurationSection = new TestMethodFailureSection(
             createReportInNonExistingSection(FailureReport.class),
-            getDummyMethod(),
+            getDummyMethodInSecond(),
             SECTION_IN_NON_EXISTING_SECTION_NAME);
         testMethodConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
 

@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestSuiteReportTest {
 
     @Test
-    public void testAddNewReportToTestSuiteReport() throws InstantiationException, IllegalAccessException {
+    public void testAddNewReportToTestSuiteReport() throws Exception {
         TestSuiteReport testSuiteReport =
             ReportGeneratorUtils.prepareReport(TestSuiteReport.class, TEST_SUITE_NAME, 1, 5);
 
@@ -91,7 +91,7 @@ public class TestSuiteReportTest {
     }
 
     @Test
-    public void testMergeReports() throws InstantiationException, IllegalAccessException {
+    public void testMergeReports() throws Exception {
         // prepare main
         TestSuiteReport mainTestSuiteReport = ReportGeneratorUtils
             .prepareReport(TestSuiteReport.class, "main test suite", 1, 5);
