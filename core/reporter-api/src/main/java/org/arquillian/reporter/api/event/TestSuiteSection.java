@@ -14,6 +14,10 @@ public class TestSuiteSection extends SectionEvent<TestSuiteSection, TestSuiteRe
         super(testSuiteId);
     }
 
+    public TestSuiteSection(TestSuiteReport testSuiteReport) {
+        super(testSuiteReport);
+    }
+
     public TestSuiteSection(TestSuiteReport testSuiteReport, String testSuiteId) {
         super(testSuiteReport, testSuiteId);
     }

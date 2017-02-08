@@ -27,7 +27,7 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
 
     @Test
     public void testMergeTestMethodSectionUsingIdInComplexTreeUsingEventManager() throws Exception {
-        TestMethodReport methodReport = getPreparedReportToMerge(TestMethodReport.class);
+        TestMethodReport methodReport = getPreparedReportToMergeOnIndex(TestMethodReport.class);
         TestMethodSection toMerge =
             new TestMethodSection(methodReport, getDummyMethod(SECTION_MERGE_INDEX),
                                   getTestSuiteSectionName(SECTION_MERGE_INDEX));
@@ -40,7 +40,7 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
 
     @Test
     public void testMergeTestMethodConfigurationSectionUsingIdInComplexTreeUsingEventManager() throws Exception {
-        ConfigurationReport configReport = getPreparedReportToMerge(ConfigurationReport.class);
+        ConfigurationReport configReport = getPreparedReportToMergeOnIndex(ConfigurationReport.class);
         String suiteName = getTestSuiteSectionName(SECTION_MERGE_INDEX);
         Method dummyMethod = getDummyMethod(SECTION_MERGE_INDEX);
 
@@ -56,7 +56,7 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
 
     @Test
     public void testMergeTestMethodFailureSectionUsingIdInComplexTreeUsingEventManager() throws Exception {
-        FailureReport failureReport = getPreparedReportToMerge(FailureReport.class);
+        FailureReport failureReport = getPreparedReportToMergeOnIndex(FailureReport.class);
         String suiteName = getTestSuiteSectionName(SECTION_MERGE_INDEX);
         Method dummyMethod = getDummyMethod(SECTION_MERGE_INDEX);
 
@@ -68,6 +68,53 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
         String configReportName = getFailureReportName(SECTION_MERGE_INDEX, testMethodNameSuffix);
 
         verifyMergeSectionUsingIdInComplexTreeUsingEventManager(toMerge, configReportName);
+    }
+
+    @Test
+    public void testMergeLatestTestMethodSectionInComplexTreeUsingEventManager() throws Exception {
+        TestMethodReport methodReport = getPreparedReportToMergeLatest(TestMethodReport.class);
+        TestMethodSection toMerge = new TestMethodSection(methodReport);
+
+        String testMethodReportName =
+            getTestMethodReportName(LATEST_SECTION_INDEX, getTestSuiteSectionName(LATEST_SECTION_INDEX),
+                                    DummyTestClass.class.getCanonicalName());
+        String methodSectionId = ReporterUtils.getTestMethodId(getDummyMethod(LATEST_SECTION_INDEX));
+
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, methodSectionId, testMethodReportName);
+    }
+
+    @Test
+    public void testMergeLatestTestMethodConfigurationSectionInComplexTreeUsingEventManager() throws Exception {
+        ConfigurationReport configReport = getPreparedReportToMergeLatest(ConfigurationReport.class);
+
+        TestMethodConfigurationSection toMerge = new TestMethodConfigurationSection(configReport);
+
+        String suiteName = getTestSuiteSectionName(LATEST_SECTION_INDEX);
+        Method dummyMethod = getDummyMethod(LATEST_SECTION_INDEX);
+        String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
+        String configReportName = getConfigReportName(LATEST_SECTION_INDEX, testMethodNameSuffix);
+
+        String methodId = ReporterUtils.getTestMethodId(getDummyMethod(LATEST_SECTION_INDEX));
+        String configId = ReporterUtils.buildId(methodId, getTestMethodConfigSectionName(LATEST_SECTION_INDEX));
+
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, configId, configReportName);
+    }
+
+    @Test
+    public void testMergeLatestTestMethodFailureSectionInComplexTreeUsingEventManager() throws Exception {
+        FailureReport failureReport = getPreparedReportToMergeLatest(FailureReport.class);
+
+        TestMethodFailureSection toMerge = new TestMethodFailureSection(failureReport);
+
+        String suiteName = getTestSuiteSectionName(LATEST_SECTION_INDEX);
+        Method dummyMethod = getDummyMethod(LATEST_SECTION_INDEX);
+        String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
+        String configReportName = getFailureReportName(LATEST_SECTION_INDEX, testMethodNameSuffix);
+
+        String methodId = ReporterUtils.getTestMethodId(getDummyMethod(LATEST_SECTION_INDEX));
+        String failureId = ReporterUtils.buildId(methodId, getTestMethodFailureSectionName(LATEST_SECTION_INDEX));
+
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, failureId, configReportName);
     }
 
     private Method getDummyMethod(int index) {

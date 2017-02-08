@@ -17,6 +17,10 @@ public class TestMethodConfigurationSection
     public TestMethodConfigurationSection() {
     }
 
+    public TestMethodConfigurationSection(ConfigurationReport configuration) {
+        super(configuration);
+    }
+
     public TestMethodConfigurationSection(Method testMethod, String configurationId) {
         super(ReporterUtils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
@@ -37,7 +41,10 @@ public class TestMethodConfigurationSection
 
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
-        TestMethodSection testMethodSection = new TestMethodSection(testMethod);
+        TestMethodSection testMethodSection = new TestMethodSection();
+        if (testMethod != null){
+            testMethodSection = new TestMethodSection(testMethod);
+        }
         testMethodSection.setTestSuiteId(testSuiteId);
         return testMethodSection;
     }
@@ -47,8 +54,6 @@ public class TestMethodConfigurationSection
         return ConfigurationReport.class;
     }
 
-
-    // todo add into builder or into constructor
     public void setTestSuiteId(String testSuiteId) {
         this.testSuiteId = testSuiteId;
     }

@@ -16,6 +16,10 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
         super(testClass != null ? testClass.getCanonicalName() : null);
     }
 
+    public TestClassSection(TestClassReport testClassReport) {
+        super(testClassReport);
+    }
+
     public TestClassSection(Class<?> testClass, String testSuiteId) {
         super(testClass.getCanonicalName());
         this.testSuiteId = testSuiteId;

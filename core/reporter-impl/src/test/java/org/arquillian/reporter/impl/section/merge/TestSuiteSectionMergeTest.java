@@ -19,7 +19,7 @@ public class TestSuiteSectionMergeTest extends AbstractMergeTest {
 
     @Test
     public void testMergeTestSuiteSectionUsingIdInComplexTreeUsingEventManager() throws Exception {
-        TestSuiteReport testSuiteReport = getPreparedReportToMerge(TestSuiteReport.class);
+        TestSuiteReport testSuiteReport = getPreparedReportToMergeOnIndex(TestSuiteReport.class);
         TestSuiteSection toMerge = new TestSuiteSection(testSuiteReport, getTestSuiteSectionName(SECTION_MERGE_INDEX));
 
         verifyMergeSectionUsingIdInComplexTreeUsingEventManager(toMerge, getTestSuiteReportName(SECTION_MERGE_INDEX));
@@ -27,7 +27,7 @@ public class TestSuiteSectionMergeTest extends AbstractMergeTest {
 
     @Test
     public void testMergeTestSuiteConfigurationSectionUsingIdInComplexTreeUsingEventManager() throws Exception {
-        ConfigurationReport configReport = getPreparedReportToMerge(ConfigurationReport.class);
+        ConfigurationReport configReport = getPreparedReportToMergeOnIndex(ConfigurationReport.class);
         String sectionName = getTestSuiteSectionName(SECTION_MERGE_INDEX);
         TestSuiteConfigurationSection toMerge =
             new TestSuiteConfigurationSection(configReport, sectionName,
@@ -35,6 +35,28 @@ public class TestSuiteSectionMergeTest extends AbstractMergeTest {
 
         String configReportName = getConfigReportName(SECTION_MERGE_INDEX, getTestSuiteNameSuffix(sectionName));
         verifyMergeSectionUsingIdInComplexTreeUsingEventManager(toMerge, configReportName);
+
+    }
+
+    @Test
+    public void testMergeLatestTestSuiteSectionInComplexTreeUsingEventManager() throws Exception {
+        TestSuiteReport testSuiteReport = getPreparedReportToMergeLatest(TestSuiteReport.class);
+        TestSuiteSection toMerge = new TestSuiteSection(testSuiteReport);
+
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge,
+                                                               getTestSuiteSectionName(LATEST_SECTION_INDEX),
+                                                               getTestSuiteReportName(LATEST_SECTION_INDEX));
+    }
+
+    @Test
+    public void testMergeLatestTestSuiteConfigurationSectionInComplexTreeUsingEventManager() throws Exception {
+        ConfigurationReport configReport = getPreparedReportToMergeLatest(ConfigurationReport.class);
+        TestSuiteConfigurationSection toMerge = new TestSuiteConfigurationSection(configReport);
+
+        String configSectionName = getTestSuiteConfigSectionName(LATEST_SECTION_INDEX);
+        String suiteName = getTestSuiteSectionName(LATEST_SECTION_INDEX);
+        String configReportName = getConfigReportName(LATEST_SECTION_INDEX, getTestSuiteNameSuffix(suiteName));
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, configSectionName, configReportName);
 
     }
 }

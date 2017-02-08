@@ -16,6 +16,10 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
     public TestMethodFailureSection() {
     }
 
+    public TestMethodFailureSection(FailureReport failureReport) {
+        super(failureReport);
+    }
+
     public TestMethodFailureSection(Method testMethod, String failureId) {
         super(ReporterUtils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
@@ -35,7 +39,10 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
 
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
-        TestMethodSection testMethodSection = new TestMethodSection(testMethod);
+        TestMethodSection testMethodSection = new TestMethodSection();
+        if (testMethod != null) {
+            testMethodSection = new TestMethodSection(testMethod);
+        }
         testMethodSection.setTestSuiteId(testSuiteId);
         return testMethodSection;
     }
@@ -45,7 +52,6 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
         return FailureReport.class;
     }
 
-    // todo add into builder or into constructor
     public void setTestSuiteId(String testSuiteId) {
         this.testSuiteId = testSuiteId;
     }

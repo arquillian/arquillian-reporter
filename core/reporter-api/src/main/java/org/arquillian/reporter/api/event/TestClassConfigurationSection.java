@@ -19,6 +19,10 @@ public class TestClassConfigurationSection
         this.testClass = testClass;
     }
 
+    public TestClassConfigurationSection(ConfigurationReport configuration) {
+        super(configuration);
+    }
+
     // todo rewrite
     public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass,
         String configurationId) {
@@ -35,11 +39,14 @@ public class TestClassConfigurationSection
 
     @Override
     public TestClassSection getParentSectionThisSectionBelongsTo() {
-        if (testSuiteId == null) {
-            return new TestClassSection(testClass);
-        } else {
-            return new TestClassSection(testClass, testSuiteId);
+        TestClassSection testClassSection = new TestClassSection();
+
+        if (testClass != null) {
+            testClassSection = new TestClassSection(testClass);
         }
+        testClassSection.setTestSuiteId(testSuiteId);
+
+        return testClassSection;
     }
 
     @Override
@@ -47,7 +54,6 @@ public class TestClassConfigurationSection
         return ConfigurationReport.class;
     }
 
-    // todo add into builder or into constructor
     public void setTestSuiteId(String testSuiteId) {
         this.testSuiteId = testSuiteId;
     }

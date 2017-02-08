@@ -21,6 +21,10 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
         this.method = method;
     }
 
+    public TestMethodSection(TestMethodReport testMethodReport) {
+        super(testMethodReport);
+    }
+
     public TestMethodSection(TestMethodReport testMethodReport, Method method) {
         super(testMethodReport, ReporterUtils.getTestMethodId(method));
         this.method = method;
@@ -34,11 +38,14 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
 
     @Override
     public TestClassSection getParentSectionThisSectionBelongsTo() {
-        if (testSuiteId == null) {
-            return new TestClassSection(method.getDeclaringClass());
-        } else {
-            return new TestClassSection(method.getDeclaringClass(), testSuiteId);
+        TestClassSection testClassSection = new TestClassSection();
+
+        if (method != null) {
+            testClassSection = new TestClassSection(method.getDeclaringClass());
         }
+        testClassSection.setTestSuiteId(testSuiteId);
+
+        return testClassSection;
     }
 
     @Override
@@ -46,7 +53,6 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
         return TestMethodReport.class;
     }
 
-    // todo add into builder or into constructor
     public void setTestSuiteId(String testSuiteId) {
         this.testSuiteId = testSuiteId;
     }

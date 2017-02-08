@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.ExecutionReport;
@@ -31,10 +32,17 @@ public abstract class AbstractMergeTest {
     protected int SECTION_MERGE_INDEX =
         EXPECTED_NUMBER_OF_SECTIONS > 1 ? EXPECTED_NUMBER_OF_SECTIONS - 2 : EXPECTED_NUMBER_OF_SECTIONS - 1;
 
+    protected int LATEST_SECTION_INDEX = EXPECTED_NUMBER_OF_SECTIONS - 1;
+
     protected String REPORT_TO_MERGE_NAME = "report-to-merge";
 
-    protected <T extends Report> T getPreparedReportToMerge(Class<T> reportTypeClass) throws Exception {
+    protected <T extends Report> T getPreparedReportToMergeOnIndex(Class<T> reportTypeClass) throws Exception {
         return prepareReport(reportTypeClass, REPORT_TO_MERGE_NAME, SECTION_MERGE_INDEX + 10, SECTION_MERGE_INDEX + 20);
+    }
+
+    protected <T extends Report> T getPreparedReportToMergeLatest(Class<T> reportTypeClass) throws Exception {
+        return prepareReport(reportTypeClass, REPORT_TO_MERGE_NAME, LATEST_SECTION_INDEX + 10,
+                             LATEST_SECTION_INDEX + 20);
     }
 
     protected void verifyMergeSectionUsingIdInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
@@ -42,8 +50,25 @@ public abstract class AbstractMergeTest {
         verifyMergeSectionUsingIdInComplexTreeUsingEventManager(sectionToMerge, reportName, 19);
     }
 
+    protected void verifyMergeLatestSectionInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
+        String idOfLatestSection, String reportName) throws Exception {
+        verifyMergeSectionUsingIdInComplexTreeUsingEventManager(sectionToMerge, idOfLatestSection, reportName, 19);
+    }
+
+    protected void verifyMergeLatestSectionInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
+        String idOfLatestSection, String reportName, int numberOfEntriesAndReports) throws Exception {
+        verifyMergeSectionUsingIdInComplexTreeUsingEventManager(sectionToMerge, idOfLatestSection, reportName,
+                                                                numberOfEntriesAndReports);
+    }
+
     protected void verifyMergeSectionUsingIdInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
         String reportName, int numberOfEntriesAndReports) throws Exception {
+        verifyMergeSectionUsingIdInComplexTreeUsingEventManager(sectionToMerge, null, reportName,
+                                                                numberOfEntriesAndReports);
+    }
+
+    protected void verifyMergeSectionUsingIdInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
+        String idOfLatestSection, String reportName, int numberOfEntriesAndReports) throws Exception {
 
         ExecutionReport executionReport = new ExecutionReport();
 
@@ -52,10 +77,18 @@ public abstract class AbstractMergeTest {
 
         SectionEventManager.processEvent(sectionToMerge, executionReport);
 
-        Optional<SectionTree> merged =
-            getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(),
-                                                    getSectionIdentifier(sectionToMerge),
-                                                    reportName);
+        Optional<SectionTree> merged = null;
+        int reportIndex;
+        if (idOfLatestSection == null) {
+            merged = getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(),
+                                                             getSectionIdentifier(sectionToMerge),
+                                                             reportName);
+            reportIndex = SECTION_MERGE_INDEX;
+        } else {
+            Identifier identifier = new Identifier(sectionToMerge.getClass(), idOfLatestSection);
+            merged = getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(), identifier, reportName);
+            reportIndex = LATEST_SECTION_INDEX;
+        }
 
         ArrayList<Report> mergedReports = new ArrayList<>(Arrays.asList(merged.get().getAssociatedReport()));
 
@@ -70,7 +103,7 @@ public abstract class AbstractMergeTest {
         assertThat(mergedReports).isEmpty();
 
         assertThatReport(merged.get().getAssociatedReport())
-            .hasGeneratedSubreportsAndEntries(SECTION_MERGE_INDEX + 1, SECTION_MERGE_INDEX + 20)
+            .hasGeneratedSubreportsAndEntries(reportIndex + 1, reportIndex + 20)
             .hasNumberOfSubreportsAndEntries(numberOfEntriesAndReports);
     }
 }
