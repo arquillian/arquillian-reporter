@@ -1,0 +1,106 @@
+= Arquillian Reporter
+
+Arquillian reporter brings neat and comprehensive reports into Arquillian Universe.
+
+== For testers
+
+If the Reporter is not provided by any extension
+
+== For developers of an Arquillian extension
+
+Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in a easy and a clean way.
+
+
+== Report
+
+The main building blog is `Report` that consist of:
+
+* name
+* list of Entries
+* list of other sub-`Report`-s
+
+As an Entry you can use any information that match one of these types:
+
+* String
+* Key-value (where value is an Entry)
+* File
+* Link
+* Table
+* Graph
+
+From the structure you can see that it allows you to build a huge number of combinations of a report information that can be transitively nested.
+The best representation of the Report structure is a tree of one root report and its sub-reports. The root report is created automatically by Arquillian Reporter project and it represents the whole test execution.
+
+....graph....
+
+Content of other sub-reports depends on tools and extensions you use and have on your classpath.
+The java class Report is a interface and it is not expected that you would have to provide you own implementation of the Report (but you can if you want - for more information see ....). For the basic purposes (that should be sufficient for you) there is a implementation called `BasicReport` and it contains exactly the same information that are listed above. For other purposes (mainly internal) there are also other Report implementations:
+
+* Configuration
+* Failure
+* TestSuite
+* TestClass
+* TestMethod
+
+
+== How to use it?
+
+To add anything to the whole report you should use events provided by Arquillian Reporter. Payload of the event is an instance of a Report. Before you fire your first event containing report you should understand the structure that is internally used.
+
+=== Merging
+
+Arquillian Reporter provides several automatic operations to make your reporting easier and more independent. One of the operations is merging.
+
+Arquillian Reporter is able to merge two Reports together so you don't have to complicatedly collect all information and then fire one event. Instead of that, you can fire several events continuously - you can notify immediately when you have some piece of report and let Reporter to merge (based on some information) the pieces together.
+Another case is when you want to add some entry to a report that has been created by other extension or by Arquillian Reporter itself. You don't have to browse through the whole tree, you just fire an event with an appropriate information.
+
+To make the merging possible, we need to somehow identify the nodes of the whole report tree. Because of complexity, it wasn't possible to identify all the nodes in the whole tree but only some of them. The whole Report tree is divided into several sections and only the root reports of the section are allowed to be merged.
+
+==== Section
+
+The whole Report tree is divided into several sections. There is one root section (called Execution Section) that contains the whole tree and some other subsections which can also contain additional subsections.
+Every section is represented by an event class that implements interface `SectionEvent`. You can create your own section implementing this interface (for more information see ....) or you can reuse some of those that are already created.
+
+Sections (events) that are already defined by Arquillian Reporter:
+
+* TestSuiteSection
+* TestSuiteConfigurationSection
+* TestClassSection
+* TestClassConfigurationSection
+* TestMethodSection
+* TestMethodConfigurationSection
+* TestMethodFailureSection
+
+Sections defined by Arquillian-core Reporter:
+
+* TestSuiteConfigurationContainerSection
+* TestSuiteConfigurationContainerDeploymentSection
+
+If we incorporated into the report tree, it would look like this:
+
+....graph....
+
+and only the red one is possible to merge. The thing is that, these reports are fired using the event with a specified string(identifier). This identifier should be unique in the whole subsection.
+
+Internally, Arquillian Reporter keeps an additional tree. It is a tree of the sections + identifier nodes (let's call it section tree). Corresponding section tree of the before-mentioned report tree would look like this:
+
+
+Every node in this section tree is connected to a report in the report tree. Then if you want to add some information to a deployment report, you just fire an event TestSuiteConfigurationContainerDeploymentSection with an identifier `war` and the attached Report. Arquillian Reporter then will find the existing report and add entries and sub-reports contained in the new report to the existing one.
+
+==== How to identify the node
+
+In the previous section we have described basics about the section and merging. But you can certainly imagine that it can be quite difficult to match the correct report that should be merged.
+Imagine this situation:
+
+
+
+
+
+
+
+
+
+
+
+
+
