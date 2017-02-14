@@ -122,8 +122,8 @@ public class TestClassNonExistingTreeSectionTest extends AbstractNonExistingTree
 
         TestClassConfigurationSection testClassConfigurationSection = new TestClassConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
-            SecondDummyTestClass.class,
-            SECTION_IN_NON_EXISTING_SECTION_NAME);
+            SECTION_IN_NON_EXISTING_SECTION_NAME,
+            SecondDummyTestClass.class);
         testClassConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
 
         return testClassConfigurationSection;

@@ -38,9 +38,9 @@ public class TestClassSectionMergeTest extends AbstractMergeTest {
         String sectionName = getTestSuiteSectionName(SECTION_MERGE_INDEX);
 
         TestClassConfigurationSection toMerge =
-            new TestClassConfigurationSection(configReport, DummyTestClass.class,
+            new TestClassConfigurationSection(configReport,
                                               getTestClassConfigSectionName(SECTION_MERGE_INDEX),
-                                              sectionName);
+                                              DummyTestClass.class, sectionName);
 
         String testClassNameSuffix = getTestClassNameSuffix(DummyTestClass.class.getCanonicalName(), sectionName);
         String configReportName = getConfigReportName(SECTION_MERGE_INDEX, testClassNameSuffix);

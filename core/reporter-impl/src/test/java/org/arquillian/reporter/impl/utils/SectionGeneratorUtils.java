@@ -199,8 +199,8 @@ public class SectionGeneratorUtils {
                                                              getTestClassNameSuffix(tc.getSectionId(), testSuiteId)),
                                          index + 1,
                                          index + 10),
-                                     DummyTestClass.class,
-                                     getTestClassConfigSectionName(index));
+                                     getTestClassConfigSectionName(index),
+                                     DummyTestClass.class);
                              testClassConfigurationSection.setTestSuiteId(testSuiteId);
                              return testClassConfigurationSection;
                          }

@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.arquillian.core.reporter.event.TestSuiteConfigurationContainerDeploymentSection;
+import org.arquillian.core.reporter.event.TestClassConfigurationDeploymentSection;
 import org.arquillian.core.reporter.event.TestSuiteConfigurationContainerSection;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.event.SectionEvent;
@@ -22,6 +22,7 @@ import org.jboss.arquillian.container.spi.event.container.BeforeDeploy;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.core.api.Event;
+import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.test.spi.TestClass;
@@ -38,8 +39,8 @@ import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CLASS_RUNS_AS
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_CONFIGURATION_REPORT;
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_NAME;
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_REPORT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_CONTAINER_NAME;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_CONTAINER_REPORT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_TEST_CLASS_NAME;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_TEST_CLASS_REPORT;
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.ORDER_OF_DEPLOYMENT;
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.PROTOCOL_USED_FOR_DEPLOYMENT;
 import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_CLASS_CONFIGURATION;
@@ -60,6 +61,9 @@ public class ArquillianCoreReporterLifecycleManager {
     private Event<SectionEvent> reportEvent;
 
     @Inject
+    private Instance<TestClass> testClass;
+
+    @Inject
     private Event<TestSuiteConfigurationSection> config;
 
     public void startTestSuite(@Observes(precedence = Integer.MAX_VALUE) BeforeSuite managerProcessing) {
@@ -72,34 +76,31 @@ public class ArquillianCoreReporterLifecycleManager {
     public void reportContainer(@Observes Container event) {
         Map<String, String> containerProperties = event.getContainerConfiguration().getContainerProperties();
 
-//        Reporter
-//            .createReport(new ConfigurationReport("Containers"))
-//            .inSection(new TestSuiteConfigurationSection(TEST_SUITE_NAME, "containers"))
-//            .fire(config);
-
         String containerId = event.getContainerConfiguration().isDefault() ? "_DEFAULT_" : event.getName();
 
         Reporter.createReport(CONTAINER_REPORT)
-                .addKeyValueEntry(CONTAINER_NAME, event.getName())
-                .addReport(
-                    Reporter.createReport(CONTAINER_CONFIGURATION_REPORT)
-                        .feedKeyValueListFromMap(containerProperties))
+            .addKeyValueEntry(CONTAINER_NAME, event.getName())
+            .addReport(
+                Reporter.createReport(CONTAINER_CONFIGURATION_REPORT)
+                    .feedKeyValueListFromMap(containerProperties))
             .inSection(new TestSuiteConfigurationContainerSection(containerId, DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
 
     public void reportDeployment(@Observes BeforeDeploy event) {
         DeploymentDescription description = event.getDeployment();
-        String targetContainer = description.getTarget().getName();
+        //         String targetContainer = description.getTarget().getName();
 
         Reporter
-            .createReport(DEPLOYMENT_IN_CONTAINER_REPORT)
-            .addKeyValueEntry(DEPLOYMENT_IN_CONTAINER_NAME, description.getName())
+            .createReport(DEPLOYMENT_IN_TEST_CLASS_REPORT)
+            .addKeyValueEntry(DEPLOYMENT_IN_TEST_CLASS_NAME, description.getName())
             .addKeyValueEntry(ARCHIVE_NAME_OF_DEPLOYMENT, description.getArchive().getName())
             .addKeyValueEntry(ORDER_OF_DEPLOYMENT, description.getOrder())
             .addKeyValueEntry(PROTOCOL_USED_FOR_DEPLOYMENT, description.getProtocol().getName())
-            .inSection(new TestSuiteConfigurationContainerDeploymentSection(description.getName(), targetContainer))
+            .inSection(new TestClassConfigurationDeploymentSection(description.getName(), null))
             .fire(reportEvent);
+
+        // todo add info into container
     }
 
     public void startTestClass(@Observes(precedence = Integer.MAX_VALUE) BeforeClass event) {
@@ -169,20 +170,18 @@ public class ArquillianCoreReporterLifecycleManager {
             .fire(reportEvent);
     }
 
-//
-//    private Collection<? extends ExtensionReport> getExtensionReports(ArquillianDescriptor descriptor) {
-//        List<ExtensionReport> extensionReports = new ArrayList<ExtensionReport>();
-//
-//        for (ExtensionDef extensionDef : descriptor.getExtensions()) {
-//            ExtensionReport extensionReport = new ExtensionReport();
-//            extensionReport.setQualifier(extensionDef.getExtensionName());
-//            extensionReport.setConfigurations(extensionDef.getExtensionProperties());
-//            extensionReports.add(extensionReport);
-//        }
-//        return extensionReports;
-//    }
-
-
+    //
+    //    private Collection<? extends ExtensionReport> getExtensionReports(ArquillianDescriptor descriptor) {
+    //        List<ExtensionReport> extensionReports = new ArrayList<ExtensionReport>();
+    //
+    //        for (ExtensionDef extensionDef : descriptor.getExtensions()) {
+    //            ExtensionReport extensionReport = new ExtensionReport();
+    //            extensionReport.setQualifier(extensionDef.getExtensionName());
+    //            extensionReport.setConfigurations(extensionDef.getExtensionProperties());
+    //            extensionReports.add(extensionReport);
+    //        }
+    //        return extensionReports;
+    //    }
 
     private static final class ReportMessageParser {
 

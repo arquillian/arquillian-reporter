@@ -17,8 +17,8 @@ public class ArquillianCoreKeys extends AbstractStringKey {
     public static final StringKey CONTAINER_REPORT = new ArquillianCoreKeys();
 
     // deployment
-    public static final StringKey DEPLOYMENT_IN_CONTAINER_REPORT = new ArquillianCoreKeys();
-    public static final StringKey DEPLOYMENT_IN_CONTAINER_NAME = new ArquillianCoreKeys();
+    public static final StringKey DEPLOYMENT_IN_TEST_CLASS_REPORT = new ArquillianCoreKeys();
+    public static final StringKey DEPLOYMENT_IN_TEST_CLASS_NAME = new ArquillianCoreKeys();
     public static final StringKey ARCHIVE_NAME_OF_DEPLOYMENT = new ArquillianCoreKeys();
     public static final StringKey ORDER_OF_DEPLOYMENT = new ArquillianCoreKeys();
     public static final StringKey PROTOCOL_USED_FOR_DEPLOYMENT = new ArquillianCoreKeys();

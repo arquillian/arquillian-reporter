@@ -14,9 +14,19 @@ public class TestClassConfigurationSection
     public TestClassConfigurationSection() {
     }
 
-    public TestClassConfigurationSection(Class<?> testClass, String configurationId) {
+    public TestClassConfigurationSection(String configurationId) {
+        super(configurationId);
+    }
+
+    public TestClassConfigurationSection(String configurationId, Class<?> testClass) {
         super(testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
+    }
+
+    public TestClassConfigurationSection(String configurationId, Class<?> testClass, String testSuiteId) {
+        super(testClass.getCanonicalName(), configurationId);
+        this.testClass = testClass;
+        this.testSuiteId = testSuiteId;
     }
 
     public TestClassConfigurationSection(ConfigurationReport configuration) {
@@ -24,14 +34,14 @@ public class TestClassConfigurationSection
     }
 
     // todo rewrite
-    public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass,
-        String configurationId) {
+    public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId,
+        Class<?> testClass) {
         super(configuration, testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
     }
 
-    public TestClassConfigurationSection(ConfigurationReport configuration, Class<?> testClass,
-        String configurationId, String testSuiteId) {
+    public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId, Class<?> testClass,
+        String testSuiteId) {
         super(configuration, testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
         this.testSuiteId = testSuiteId;

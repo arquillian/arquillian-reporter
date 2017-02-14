@@ -23,6 +23,10 @@ public class Reporter {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
+    public static ReportBuilder createReport(String name) {
+        return usingBuilder(ReportBuilder.class, new BasicReport(name));
+    }
+
     public static <T extends ReportBuilder<? extends AbstractReport, T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(
         S report) {
         return usingBuilder(report.getReportBuilderClass(), report);
