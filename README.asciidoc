@@ -4,14 +4,27 @@ Arquillian reporter brings neat and comprehensive reports into Arquillian Univer
 
 == For testers
 
-If the Reporter is not provided by any extension
+If the Reporter is not provided by any extension then to use the Arquillian Reporter in you test you just need to add this depchain dependency:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.arquillian.reporter</groupId>
+    <artifactId>arquillian-reporter-depchain</artifactId>
+    <version>${version.arquillian.reporter}</version>
+    <type>pom</type>
+</dependency>
+----
+
+
+into your pom.xml file.
 
 == For developers of an Arquillian extension
 
 Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in a easy and a clean way.
 
 
-== Report
+=== Report
 
 The main building blog is `Report` that consist of:
 
@@ -43,11 +56,11 @@ The java class Report is a interface and it is not expected that you would have 
 * TestMethod
 
 
-== How to use it?
+=== How to use it?
 
 To add anything to the whole report you should use events provided by Arquillian Reporter. Payload of the event is an instance of a Report. Before you fire your first event containing report you should understand the structure that is internally used.
 
-=== Merging
+==== Merging & adding new reports
 
 Arquillian Reporter provides several automatic operations to make your reporting easier and more independent. One of the operations is merging.
 
@@ -56,7 +69,7 @@ Another case is when you want to add some entry to a report that has been create
 
 To make the merging possible, we need to somehow identify the nodes of the whole report tree. Because of complexity, it wasn't possible to identify all the nodes in the whole tree but only some of them. The whole Report tree is divided into several sections and only the root reports of the section are allowed to be merged.
 
-==== Section
+===== Section
 
 The whole Report tree is divided into several sections. There is one root section (called Execution Section) that contains the whole tree and some other subsections which can also contain additional subsections.
 Every section is represented by an event class that implements interface `SectionEvent`. You can create your own section implementing this interface (for more information see ....) or you can reuse some of those that are already created.
@@ -74,7 +87,7 @@ Sections (events) that are already defined by Arquillian Reporter:
 Sections defined by Arquillian-core Reporter:
 
 * TestSuiteConfigurationContainerSection
-* TestSuiteConfigurationContainerDeploymentSection
+* TestClassConfigurationDeploymentSection
 
 If we incorporated into the report tree, it would look like this:
 
@@ -85,15 +98,145 @@ and only the red one is possible to merge. The thing is that, these reports are 
 Internally, Arquillian Reporter keeps an additional tree. It is a tree of the sections + identifier nodes (let's call it section tree). Corresponding section tree of the before-mentioned report tree would look like this:
 
 
-Every node in this section tree is connected to a report in the report tree. Then if you want to add some information to a deployment report, you just fire an event TestSuiteConfigurationContainerDeploymentSection with an identifier `war` and the attached Report. Arquillian Reporter then will find the existing report and add entries and sub-reports contained in the new report to the existing one.
+Every node in this section tree is connected to a report in the report tree. Then if you want to add some information to a deployment report, you just fire an event TestClassConfigurationDeploymentSection with an identifier `war` and the attached Report. Arquillian Reporter then will find the existing report and add entries and sub-reports contained in the new report to the existing one.
 
-==== How to identify the node
+===== How to identify the node
 
-In the previous section we have described basics about the section and merging. But you can certainly imagine that it can be quite difficult to match the correct report that should be merged.
+In the previous section we have described basics about sections and merging. You can certainly imagine that it can be sometimes quite difficult to match the correct report that should be merged.
 Imagine this situation:
 
+.....graph.....
+
+there are several deployments with the same name (identifier) but used in different test classes. So, how I can merge the report about war deployment used in the SecondDeploymentTestCase class? Every event (that represents some section) contain additional information that helps to identify a parent section the section belongs to. In other words, there in the TestClassConfigurationDeploymentSection class you may also define test class the deployment was defined in and also a test suite identifier. Arquillian reporter then retrospectively create an expected tree to the section:
+
+.....graph...
+
+and tries to find the best candidate in the whole section tree. If there in the tree is already a section with corresponding identifier, then it merges the reports. If there isn't any, then it attaches a new one and the report contained in the the event adds into report tree.
+
+====== Missing identifier of parental sections
+
+In case that the section event doesn't contain all necessary information to match the specific nodes in the section tree (eg. missing identifier of the test class of test suite), then Arquillian Reporter takes the latest added node belonging into corresponding section (latest reporter test class).
 
 
+==== Builders
+
+To make your reporting easier there are available builders providing fluent API that helps you to create reports and entries and add reports into appropriate sections.
+The main starting point is class `Reporter`, then you can decide what you want to build.
+
+Available builders:
+
+===== ReportBuilder
+using this builder you can build a report. To do so, use the method:
+[source,java]
+----
+Reporter.createReport()
+----
+There are three methods with this name but with different parameter. If you use one of these methods:
+[source,java]
+----
+Reporter.createReport(String name)
+Reporter.createReport(StringKey name)
+----
+then BasicReportBuilder is used and thus an instance of BasicReport is created (more about StringKey in this chapter). There are already several other builder created, but all of them has the same basic set of API methods.
+To use one specific builder to create one specific report choose the method `createReport(Report report)` where as a parameter use an existing instance of a report. For example if you write:
+[source,java]
+----
+Reporter.createReport(new TestClassReport("my report"));
+----
+then TestClassReportBuilder is used.
+
+Useful report builders that are available:
+* BasicReportBuilder
+* TestSuiteReportBuilder
+* TestClassReportBuilder
+* TestMethodReportBuilder
+
+====== ReportBuilder API
+Report builders provide you a fluent API that helps you to create a complex report. All methods returns the same instance of the builder so you can use fluent api and make your code more readable. To get the final instance of the report call the method:
+
+[source,java]
+----
+Reporter.createReport(...)
+        ....
+        .build();
+----
+which returns you the resulting report instance.
+
+Some other method examples (that are same for all report builders):
+
+* To add a key-value pair entry into the set of entries use
+[source,java]
+----
+Reporter.createReport(...).addKeyValueEntry(StringKey key, Entry value)
+----
+
+* To add any entry use
+[source,java]
+----
+Reporter.createReport(...).addEntry(Entry entry)
+----
+
+* To add a sub-report use
+[source,java]
+----
+Reporter.createReport(...).addReport(Report report)
+----
+or instead of passing an instance of a report you can pass an Instance of ReportBuilder without building it and build only the parental builder.
+[source,java]
+----
+Reporter.createReport(...)
+        .addReport(Reporter.createReport(..)....)
+        .build();
+----
+
+====== Add into section
+
+Now, when you have a an instance of a built report you would like to add it into the whole report tree. To do so, you should create an instance of an event that represents a section the report should belong to, set the report as a payload and then fire it. The standard code would look like:
+[source,java]
+----
+ConfigurationReport report = Reporter
+            .createReport(new ConfigurationReport("my report"))
+            .build();
+injectedReportEvent.fire(new TestClassConfigurationSection(report, "configId"));
+----
+instead of this, you can use method `inSection` provided by ReportBuilder API and keep everything compact:
+[source,java]
+----
+Reporter
+    .createReport("my report")
+    .inSection(new TestClassConfigurationSection("configId"))
+    .fire(injectedReportEvent);
+----
+Reporter creates corresponding instance of report, set it into the used section event and fire the event.
+
+===== Entry builders
+
+====== TableBuilder
+
+Table builder provides you a fluent API that helps you to create complex table. To use the builder call one of the two methods:
+[source,java]
+----
+Reporter.createTable(String name)
+Reporter.createTable(StringKey name)
+----
+and to get an instance of the table entry use the method `build()`
+
+==== Enough theory, give me some examples
+
+
+
+===== Automatic creation of missing section nodes
+
+
+=== String-keys
+
+
+
+=== Create your own report
+
+=== Create your own section
+
+=== Create your own builder
 
 
 
