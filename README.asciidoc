@@ -21,7 +21,7 @@ into your pom.xml file.
 
 == For developers of an Arquillian extension
 
-Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in a easy and a clean way.
+Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in an easy and a clean way.
 
 
 === Report
@@ -30,7 +30,7 @@ The main building blog is `Report` that consist of:
 
 * name
 * list of Entries
-* list of other sub-`Report`-s
+* list of other sub-reports
 
 As an Entry you can use any information that match one of these types:
 
@@ -44,7 +44,7 @@ As an Entry you can use any information that match one of these types:
 From the structure you can see that it allows you to build a huge number of combinations of a report information that can be transitively nested.
 The best representation of the Report structure is a tree of one root report and its sub-reports. The root report is created automatically by Arquillian Reporter project and it represents the whole test execution.
 
-....graph....
+image::docs/images/report-tree.jpg[report tree]
 
 Content of other sub-reports depends on tools and extensions you use and have on your classpath.
 The java class Report is a interface and it is not expected that you would have to provide you own implementation of the Report (but you can if you want - for more information see ....). For the basic purposes (that should be sufficient for you) there is a implementation called `BasicReport` and it contains exactly the same information that are listed above. For other purposes (mainly internal) there are also other Report implementations:
@@ -89,9 +89,9 @@ Sections defined by Arquillian-core Reporter:
 * TestSuiteConfigurationContainerSection
 * TestClassConfigurationDeploymentSection
 
-If we incorporated into the report tree, it would look like this:
+If we incorporated some of them into the report tree, it would look like this:
 
-....graph....
+image::docs/images/reporter-sections.jpg[reports&sections]
 
 and only the red one is possible to merge. The thing is that, these reports are fired using the event with a specified string(identifier). This identifier should be unique in the whole subsection.
 
