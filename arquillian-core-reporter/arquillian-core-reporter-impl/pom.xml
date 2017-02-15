@@ -30,7 +30,7 @@
         <!-- Reporter dependencies -->
         <dependency>
             <groupId>org.arquillian.reporter</groupId>
-            <artifactId>arquillian-reporter-api</artifactId>
+            <artifactId>arquillian-core-reporter-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
