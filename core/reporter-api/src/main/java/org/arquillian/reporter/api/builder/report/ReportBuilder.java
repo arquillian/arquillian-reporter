@@ -6,12 +6,12 @@ import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface ReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
+public interface ReportBuilder<REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
     extends Builder {
 
     REPORTTYPE build();

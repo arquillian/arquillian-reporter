@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 
@@ -24,6 +25,10 @@ public abstract class AbstractReport<TYPE extends AbstractReport, UTILS extends 
 
     public AbstractReport(StringKey name) {
         this.name = name;
+    }
+
+    public AbstractReport(String name) {
+        this.name = new UnknownStringKey(name);
     }
 
     public StringKey getName() {

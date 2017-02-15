@@ -11,8 +11,8 @@ import java.util.Optional;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
-import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -27,7 +27,7 @@ public class Reporter {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
-    public static <T extends ReportBuilder<? extends AbstractReport, T>, S extends AbstractReport<? extends AbstractReport, T>> T createReport(
+    public static <T extends ReportBuilder<? extends Report, T>, S extends Report<? extends Report, T>> T createReport(
         S report) {
         return usingBuilder(report.getReportBuilderClass(), report);
     }

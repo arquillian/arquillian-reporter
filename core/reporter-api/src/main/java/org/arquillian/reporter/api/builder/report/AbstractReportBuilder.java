@@ -10,12 +10,12 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
-import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
+public abstract class AbstractReportBuilder<REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder<REPORTTYPE, BUILDERTYPE>>
     implements ReportBuilder<REPORTTYPE, BUILDERTYPE> {
 
     private final REPORTTYPE report;
@@ -66,7 +66,7 @@ public abstract class AbstractReportBuilder<REPORTTYPE extends AbstractReport<RE
         return (BUILDERTYPE) this;
     }
 
-    public BUILDERTYPE addReport(AbstractReport report) {
+    public BUILDERTYPE addReport(Report report) {
         this.report.getSubReports().add(report);
         return (BUILDERTYPE) this;
     }

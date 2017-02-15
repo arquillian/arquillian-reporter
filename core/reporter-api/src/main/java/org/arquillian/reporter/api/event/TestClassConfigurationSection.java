@@ -40,6 +40,10 @@ public class TestClassConfigurationSection
         this.testClass = testClass;
     }
 
+    public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId) {
+        super(configuration, configurationId);
+    }
+
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId, Class<?> testClass,
         String testSuiteId) {
         super(configuration, testClass.getCanonicalName(), configurationId);

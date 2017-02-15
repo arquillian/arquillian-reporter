@@ -1,12 +1,12 @@
 package org.arquillian.reporter.api.model.report;
 
-import org.arquillian.reporter.api.builder.report.ReportBuilder;
+import org.arquillian.reporter.api.builder.report.FailureReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> {
+public class FailureReport extends AbstractReport<FailureReport, FailureReportBuilder> {
 
     public FailureReport() {
     }
@@ -16,8 +16,8 @@ public class FailureReport extends AbstractReport<FailureReport, ReportBuilder> 
     }
 
     @Override
-    public Class<ReportBuilder> getReportBuilderClass() {
-        return ReportBuilder.class;
+    public Class<FailureReportBuilder> getReportBuilderClass() {
+        return FailureReportBuilder.class;
     }
 
     @Override

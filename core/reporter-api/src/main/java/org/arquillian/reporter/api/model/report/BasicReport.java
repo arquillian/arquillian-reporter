@@ -1,13 +1,13 @@
 package org.arquillian.reporter.api.model.report;
 
-import org.arquillian.reporter.api.builder.report.ReportBuilder;
+import org.arquillian.reporter.api.builder.report.BasicReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class BasicReport extends AbstractReport<BasicReport,ReportBuilder> {
+public class BasicReport extends AbstractReport<BasicReport, BasicReportBuilder> {
 
     public BasicReport() {
     }
@@ -31,7 +31,7 @@ public class BasicReport extends AbstractReport<BasicReport,ReportBuilder> {
         return newReport;
     }
 
-    public Class<ReportBuilder> getReportBuilderClass() {
-        return ReportBuilder.class;
+    public Class<BasicReportBuilder> getReportBuilderClass() {
+        return BasicReportBuilder.class;
     }
 }
