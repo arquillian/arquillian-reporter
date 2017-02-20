@@ -257,8 +257,8 @@ public class SectionGeneratorUtils {
                                                                                                 testSuiteId)),
                                              index + 1,
                                              index + 10),
-                                         testMethodSection.getMethod(),
-                                         getTestMethodConfigSectionName(index));
+                                         getTestMethodConfigSectionName(index),
+                                         testMethodSection.getMethod());
                                  testMethodConfigSection.setTestSuiteId(testSuiteId);
                                  return testMethodConfigSection;
                              }
@@ -288,8 +288,8 @@ public class SectionGeneratorUtils {
                                                                                                  testSuiteId)),
                                              index + 1,
                                              index + 10),
-                                         testMethodSection.getMethod(),
-                                         getTestMethodFailureSectionName(index));
+                                         getTestMethodFailureSectionName(index),
+                                         testMethodSection.getMethod());
                                  testMethodFailureSection.setTestSuiteId(testSuiteId);
                                  return testMethodFailureSection;
                              }

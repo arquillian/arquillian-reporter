@@ -26,14 +26,14 @@ public class TestMethodConfigurationSection
         this.testMethod = testMethod;
     }
 
-    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod,
-        String configurationId) {
+    public TestMethodConfigurationSection(ConfigurationReport configuration, String configurationId,
+        Method testMethod) {
         super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
     }
 
-    public TestMethodConfigurationSection(ConfigurationReport configuration, Method testMethod,
-        String configurationId, String testSuiteId) {
+    public TestMethodConfigurationSection(ConfigurationReport configuration, String configurationId, Method testMethod,
+        String testSuiteId) {
         super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
@@ -42,7 +42,7 @@ public class TestMethodConfigurationSection
     @Override
     public TestMethodSection getParentSectionThisSectionBelongsTo() {
         TestMethodSection testMethodSection = new TestMethodSection();
-        if (testMethod != null){
+        if (testMethod != null) {
             testMethodSection = new TestMethodSection(testMethod);
         }
         testMethodSection.setTestSuiteId(testSuiteId);

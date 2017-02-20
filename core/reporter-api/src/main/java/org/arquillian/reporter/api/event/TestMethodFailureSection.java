@@ -25,12 +25,12 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
         this.testMethod = testMethod;
     }
 
-    public TestMethodFailureSection(FailureReport failureReport, Method testMethod, String failureId) {
+    public TestMethodFailureSection(FailureReport failureReport, String failureId, Method testMethod) {
         super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;
     }
 
-    public TestMethodFailureSection(FailureReport failureReport, Method testMethod, String failureId,
+    public TestMethodFailureSection(FailureReport failureReport, String failureId, Method testMethod,
         String testSuiteId) {
         super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
         this.testMethod = testMethod;

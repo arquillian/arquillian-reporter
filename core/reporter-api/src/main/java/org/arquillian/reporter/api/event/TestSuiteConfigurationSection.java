@@ -17,6 +17,10 @@ public class TestSuiteConfigurationSection
         super(section);
     }
 
+    public TestSuiteConfigurationSection(String configurationId) {
+        super(configurationId);
+    }
+
     public TestSuiteConfigurationSection(String testSuiteId, String configurationId) {
         super(configurationId);
         this.testSuiteId = testSuiteId;

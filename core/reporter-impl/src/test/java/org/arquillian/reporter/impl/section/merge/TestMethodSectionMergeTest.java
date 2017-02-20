@@ -45,8 +45,8 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
         Method dummyMethod = getDummyMethod(SECTION_MERGE_INDEX);
 
         TestMethodConfigurationSection toMerge =
-            new TestMethodConfigurationSection(configReport, dummyMethod,
-                                               getTestMethodConfigSectionName(SECTION_MERGE_INDEX), suiteName);
+            new TestMethodConfigurationSection(configReport, getTestMethodConfigSectionName(SECTION_MERGE_INDEX),
+                                               dummyMethod, suiteName);
 
         String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
         String configReportName = getConfigReportName(SECTION_MERGE_INDEX, testMethodNameSuffix);
@@ -61,8 +61,8 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
         Method dummyMethod = getDummyMethod(SECTION_MERGE_INDEX);
 
         TestMethodFailureSection toMerge =
-            new TestMethodFailureSection(failureReport, dummyMethod,
-                                         getTestMethodFailureSectionName(SECTION_MERGE_INDEX), suiteName);
+            new TestMethodFailureSection(failureReport, getTestMethodFailureSectionName(SECTION_MERGE_INDEX),
+                                         dummyMethod, suiteName);
 
         String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
         String configReportName = getFailureReportName(SECTION_MERGE_INDEX, testMethodNameSuffix);

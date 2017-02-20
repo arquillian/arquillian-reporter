@@ -204,8 +204,8 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         TestMethodConfigurationSection testMethodConfigurationSection = new TestMethodConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
-            getDummyMethodInSecond(),
-            SECTION_IN_NON_EXISTING_SECTION_NAME);
+            SECTION_IN_NON_EXISTING_SECTION_NAME,
+            getDummyMethodInSecond());
         testMethodConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
 
         return testMethodConfigurationSection;
@@ -215,8 +215,8 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
         TestMethodFailureSection testMethodConfigurationSection = new TestMethodFailureSection(
             createReportInNonExistingSection(FailureReport.class),
-            getDummyMethodInSecond(),
-            SECTION_IN_NON_EXISTING_SECTION_NAME);
+            SECTION_IN_NON_EXISTING_SECTION_NAME,
+            getDummyMethodInSecond());
         testMethodConfigurationSection.setTestSuiteId(NON_EXISTING_SECTION_NAME);
 
         return testMethodConfigurationSection;

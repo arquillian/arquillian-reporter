@@ -14,6 +14,10 @@ public class TestSuiteConfigurationContainerSection extends SectionEvent<TestSui
     public TestSuiteConfigurationContainerSection() {
     }
 
+    public TestSuiteConfigurationContainerSection(String containerId) {
+        super(containerId);
+    }
+
     public TestSuiteConfigurationContainerSection(String containerId, String testSuiteId) {
         super(containerId);
         this.testSuiteId = testSuiteId;

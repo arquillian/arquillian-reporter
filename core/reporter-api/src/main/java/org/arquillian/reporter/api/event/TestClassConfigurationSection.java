@@ -33,15 +33,14 @@ public class TestClassConfigurationSection
         super(configuration);
     }
 
-    // todo rewrite
+    public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId) {
+        super(configuration, configurationId);
+    }
+
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId,
         Class<?> testClass) {
         super(configuration, testClass.getCanonicalName(), configurationId);
         this.testClass = testClass;
-    }
-
-    public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId) {
-        super(configuration, configurationId);
     }
 
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId, Class<?> testClass,
