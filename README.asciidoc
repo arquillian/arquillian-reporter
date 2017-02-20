@@ -74,7 +74,7 @@ To make the merging possible, we need to somehow identify the nodes of the whole
 === Section
 
 The whole Report tree is divided into several sections. There is one root section (called Execution Section) that contains the whole tree and some other subsections which can also contain additional subsections.
-Every section is represented by an event class that implements interface `SectionEvent`. You can create your own section implementing this interface (for more information see ....) or you can reuse some of those that are already created.
+Every section is represented by an event class that is subsection of `SectionEvent` abstract class. You can create your own section (for more information see <<Create your own section>>) or you can reuse some of those that are already created.
 
 Sections (events) that are already defined by Arquillian Reporter:
 
@@ -399,14 +399,93 @@ Although, StringKey is a preferred way of setting names and keys, it is still po
 
 == Create your own report
 
+If you feel to be limited by the provided set of Report implementations, then you can create your own. As a report is considered any class that implements `Report` interface. There is provided an abstract implementation that implements the basic functionality - `AbstractReport` - so it is advised to extend this class.
+Every Report implementation class has two parameters:
+
+1. the Report implementation type itself
+2. a report builder that should be used in case of Reporter fluent API. If you don't want to create your own builder, then you can specify `ReportBuilder` and the basic implementation will be used.
+
+Let say that we want to create `MyReport` then the class declaration would be:
+[source,java]
+----
+public class MyReport extends AbstractReport<MyReport, ReportBuilder> {
+...
+}
+----
+You also have to implement several methods, but for more information see the javadoc .....
+
+== Create your own Builder
+
+If you feel to be limited by the provided set of Builder implementations, then you can create your own. As a builder is considered any implementation of an interface `Builder`. If you implement this interface, then you can use method:
+[source,java]
+----
+Reporter
+    .usingBuilder(MyBuilder.class, toBuild)
+    ....
+----
+with your builder class and constructor parameters.
+
+The `Builder` interface itself doesn't have any parameter nor require implementing methods.
+
+=== Create your own ReportBuilder
+
+If you want to create a new Builder for building reports, then you should implement a sub-interface 'ReportBuilder' that has several methods and 2 parameters. There is provided an Abstract implementation that implements the methods and it is very advised to extend it: `AbstractReportBuilder`.
+The parameters of the `ReportBuilder`:
+
+1. the new ReportBuilder type itself
+2. the Report type the builder should be used for
+
+Let say that we want to create a builder `MyReportBuilder` for `MyReport` report:
+[source,java]
+----
+public interface MyReportBuilder extends ReportBuilder<MyReportBuilder, MyReport> {
+...
+    public void sayHelloWorld();
+}
+----
+and the `MyReport` class would change to:
+[source,java]
+----
+public class MyReport extends AbstractReport<MyReport, MyReportBuilder> {
+...
+}
+----
+Then, If we used the Reporter API, I would be able to call:
+[source,java]
+----
+Reporter
+    .createReport(new MyReport())
+    .sayHelloWorld()
+    ...
+----
+
+=== Register implementation of Builders
+
+If you want to keep interfaces and their implementations separated, then you need to register them. For this use Arquillian SPI:
+[source,java]
+----
+public class MyExtension implements LoadableExtension {
+
+    public void register(ExtensionBuilder builder) {
+        builder.service(MyReportBuilder.class, MyReportBuilderImpl.class);
+        ...
+----
+
 == Create your own section
 
-== Create your own builder
+If you need to create a new report section, then you have to extend SectionEvent abstract class. This abstract class has 3 parameters:
 
+1. the new SectionEvent implementation type itself
+2. Report type that is the default payload type of the event
+3. SectionEvent type representing a section that is parental section of the new section
 
-
-
-
+Let say that we want to create `MySection` that is subsection of `TestMethodSection` and whose payload is `MyReport`:
+[source,java]
+----
+public class MySection extends SectionEvent<MySection, MyReport, TestMethodSection> {
+    ...
+}
+----
 
 
 
