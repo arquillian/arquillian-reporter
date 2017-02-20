@@ -14,20 +14,19 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.METHOD_FAILURE_
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReportBuilderImpl extends AbstractReportBuilder<TestMethodReport, TestMethodReportBuilder>
+public class TestMethodReportBuilderImpl extends AbstractReportBuilder<TestMethodReportBuilder, TestMethodReport>
     implements TestMethodReportBuilder {
-
 
     public TestMethodReportBuilderImpl(TestMethodReport sectionReport) {
         super(sectionReport);
     }
 
-    public TestMethodReportBuilderImpl stop(){
+    public TestMethodReportBuilderImpl stop() {
         getReport().setStop(ReporterUtils.getCurrentDate());
         return this;
     }
 
-    public TestMethodReportBuilderImpl setResult(TestResult result){
+    public TestMethodReportBuilderImpl setResult(TestResult result) {
         if (result.getStatus() == TestResult.Status.FAILED && result.getThrowable() != null) {
             String stackTrace = getStackTrace(result.getThrowable());
             FailureReport failureReport = new FailureReport(METHOD_FAILURE_REPORT);

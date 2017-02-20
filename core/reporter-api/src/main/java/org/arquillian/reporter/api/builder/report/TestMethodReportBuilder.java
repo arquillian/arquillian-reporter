@@ -6,7 +6,7 @@ import org.jboss.arquillian.test.spi.TestResult;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface TestMethodReportBuilder extends ReportBuilder<TestMethodReport, TestMethodReportBuilder> {
+public interface TestMethodReportBuilder extends ReportBuilder<TestMethodReportBuilder, TestMethodReport> {
 
     TestMethodReportBuilder stop();
 

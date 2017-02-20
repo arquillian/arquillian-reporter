@@ -8,7 +8,7 @@ import org.arquillian.reporter.api.model.report.ConfigurationReport;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ConfigurationReportBuilderImpl
-    extends AbstractReportBuilder<ConfigurationReport, ConfigurationReportBuilder>
+    extends AbstractReportBuilder<ConfigurationReportBuilder, ConfigurationReport>
     implements ConfigurationReportBuilder {
 
     public ConfigurationReportBuilderImpl(ConfigurationReport report) {

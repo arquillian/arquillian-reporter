@@ -11,7 +11,7 @@ import org.arquillian.reporter.api.model.report.Report;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface ReportBuilder<REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder>
+public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>>
     extends Builder {
 
     REPORTTYPE build();

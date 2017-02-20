@@ -15,8 +15,8 @@ import org.arquillian.reporter.api.model.report.Report;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class AbstractReportBuilder<REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>, BUILDERTYPE extends ReportBuilder<REPORTTYPE, BUILDERTYPE>>
-    implements ReportBuilder<REPORTTYPE, BUILDERTYPE> {
+public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BUILDERTYPE, REPORTTYPE>, REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>>
+    implements ReportBuilder<BUILDERTYPE, REPORTTYPE> {
 
     private final REPORTTYPE report;
     private List<BUILDERTYPE> reportBuilders = new ArrayList<>();

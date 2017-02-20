@@ -7,10 +7,10 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class ReportBuilderImpl<T extends AbstractReport<T,ReportBuilder>> extends
-    AbstractReportBuilder<T, ReportBuilderImpl<T>> {
+public class ReportBuilderImpl<REPORTTYPE extends AbstractReport<REPORTTYPE,ReportBuilder>> extends
+    AbstractReportBuilder<ReportBuilderImpl<REPORTTYPE>, REPORTTYPE> {
 
-    public ReportBuilderImpl(T sectionReport) {
+    public ReportBuilderImpl(REPORTTYPE sectionReport) {
         super(sectionReport);
     }
 

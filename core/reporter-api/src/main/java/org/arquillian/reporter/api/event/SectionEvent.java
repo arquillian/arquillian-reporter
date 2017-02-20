@@ -6,16 +6,16 @@ import org.arquillian.reporter.api.utils.ReporterUtils;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends Report, PARENT_TYPE extends SectionEvent> {
+public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, PARENTSECTIONTYPE>, REPORTTYPE extends Report, PARENTSECTIONTYPE extends SectionEvent> {
 
-    private REPORT_TYPE report;
+    private REPORTTYPE report;
     private String sectionId;
     private boolean processed = false;
 
     public SectionEvent() {
     }
 
-    public SectionEvent(REPORT_TYPE report) {
+    public SectionEvent(REPORTTYPE report) {
         this.report = report;
     }
 
@@ -23,16 +23,16 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
         sectionId = ReporterUtils.buildId(sectionIdParams);
     }
 
-    public SectionEvent(REPORT_TYPE report, String... sectionIdParams) {
+    public SectionEvent(REPORTTYPE report, String... sectionIdParams) {
         this.report = report;
         sectionId = ReporterUtils.buildId(sectionIdParams);
     }
 
-    public REPORT_TYPE getReport() {
+    public REPORTTYPE getReport() {
         return report;
     }
 
-    public void setReport(REPORT_TYPE report) {
+    public void setReport(REPORTTYPE report) {
         this.report = report;
     }
 
@@ -52,9 +52,9 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
         this.processed = processed;
     }
 
-    public abstract PARENT_TYPE getParentSectionThisSectionBelongsTo();
+    public abstract PARENTSECTIONTYPE getParentSectionThisSectionBelongsTo();
 
-    public abstract Class<REPORT_TYPE> getReportTypeClass();
+    public abstract Class<REPORTTYPE> getReportTypeClass();
 
     public Identifier<SECTIONTYPE> identifyYourself() {
         return new Identifier<SECTIONTYPE>((Class<SECTIONTYPE>) this.getClass(), getSectionId());

@@ -27,13 +27,13 @@ public class Reporter {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
-    public static <T extends ReportBuilder<? extends Report, T>, S extends Report<? extends Report, T>> T createReport(
-        S report) {
+    public static <BUILDERTYPE extends ReportBuilder<BUILDERTYPE, ? extends Report>, REPORTTYPE extends Report<? extends Report, BUILDERTYPE>> BUILDERTYPE createReport(
+        REPORTTYPE report) {
         return usingBuilder(report.getReportBuilderClass(), report);
     }
 
-    public static <T extends Builder> T usingBuilder(Class<T> builderClass, Object... constructParams) {
-        Class<T> implClass = BuilderRegistry.getImplementationForBuilder(builderClass);
+    public static <BUILDERTYPE extends Builder> BUILDERTYPE usingBuilder(Class<BUILDERTYPE> builderClass, Object... constructParams) {
+        Class<BUILDERTYPE> implClass = BuilderRegistry.getImplementationForBuilder(builderClass);
 
         if (implClass != null) {
             Class<?>[] classes = getConstructorParametersTypes(implClass, constructParams);
@@ -52,10 +52,6 @@ public class Reporter {
     public static TableBuilder createTable(StringKey name) {
         return usingBuilder(TableBuilder.class, name);
     }
-
-    //    public static CreateNode createNode(ReportNodeEvent reportNodeEvent){
-    //        return new CreateNode()
-    //    }
 
     // security actions
 

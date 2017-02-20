@@ -7,7 +7,8 @@ import org.arquillian.reporter.api.model.report.BasicReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class BasicReportBuilderImpl extends AbstractReportBuilder<BasicReport, BasicReportBuilder> implements BasicReportBuilder {
+public class BasicReportBuilderImpl extends AbstractReportBuilder<BasicReportBuilder, BasicReport>
+    implements BasicReportBuilder {
 
     public BasicReportBuilderImpl(BasicReport report) {
         super(report);

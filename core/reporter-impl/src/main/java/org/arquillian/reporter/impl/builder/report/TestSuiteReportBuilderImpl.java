@@ -8,7 +8,7 @@ import org.arquillian.reporter.api.model.report.TestSuiteReport;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestSuiteReportBuilderImpl extends AbstractReportBuilder<TestSuiteReport, TestSuiteReportBuilder>
+public class TestSuiteReportBuilderImpl extends AbstractReportBuilder<TestSuiteReportBuilder, TestSuiteReport>
     implements TestSuiteReportBuilder {
 
     public TestSuiteReportBuilderImpl(TestSuiteReport sectionReport) {
