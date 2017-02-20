@@ -26,7 +26,7 @@ public class SectionEventManager {
         }
 
         SectionTree eventTree = createTreeRecursively(event, null);
-        executionReport.getSectionTree().merge(eventTree);
+        executionReport.getSectionTree().mergeSectionTree(eventTree);
         event.setProcessed(true);
     }
 

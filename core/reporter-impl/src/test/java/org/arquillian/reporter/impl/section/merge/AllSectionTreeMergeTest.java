@@ -88,7 +88,7 @@ public class AllSectionTreeMergeTest {
         SectionTree executionTreeToMerge = new SectionTree<>(executionSectionId, secondExecutionReport);
 
         // merge
-        originalExecutionTree.merge(executionTreeToMerge);
+        originalExecutionTree.mergeSectionTree(executionTreeToMerge);
 
         // verify
         assertThatSectionTree(originalExecutionTree)

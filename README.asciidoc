@@ -23,6 +23,7 @@ into your pom.xml file.
 = For developers of an Arquillian extension
 
 Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in an easy and a clean way.
+To use it in your Arquillian extension use the same dependency chain that is stated above (`org.arquillian.reporter:arquillian-reporter-depchain`)
 
 
 == Report
@@ -159,6 +160,8 @@ Useful report builders that are available:
 * TestSuiteReportBuilder
 * TestClassReportBuilder
 * TestMethodReportBuilder
+* ConfigurationReportBuilderImpl
+* FailureReportBuilderImpl
 
 ===== ReportBuilder API
 Report builders provide you a fluent API that helps you to create a complex report. All methods returns the same instance of the builder so you can use fluent api and make your code more readable. To get the final instance of the report call the method:
@@ -173,19 +176,19 @@ which returns you the resulting report instance.
 
 Some other method examples (that are same for all report builders):
 
-* To add a key-value pair entry into the set of entries use
+* To add a key-value pair entry into the set of entries:
 [source,java]
 ----
 Reporter.createReport(...).addKeyValueEntry(StringKey key, Entry value)
 ----
 
-* To add any entry use
+* To add any entry
 [source,java]
 ----
 Reporter.createReport(...).addEntry(Entry entry)
 ----
 
-* To add a sub-report use
+* To add a sub-report
 [source,java]
 ----
 Reporter.createReport(...).addReport(Report report)
@@ -212,11 +215,36 @@ instead of this, you can use method `inSection` provided by ReportBuilder API an
 [source,java]
 ----
 Reporter
-    .createReport("my report")
+    .createReport(new ConfigurationReport("my report"))
     .inSection(new TestClassConfigurationSection("configId"))
     .fire(injectedReportEvent);
 ----
-Reporter creates corresponding instance of report, set it into the used section event and fire the event.
+Reporter uses corresponding instance of report, builds it, sets it into the used section event and fires the event.
+
+===== Type of the payload
+
+As you have already noticed, every section event has defined some type of report that is its default payload type. For example TestMethodSection has TestMethodReport and TestMethodConfigurationSection has ConfigurationReport etc... These types are also defined in the constructors of the section event classes. However, using the ReportBuilder API you can make the section to carry any other type of report. You can do for example this:
+[source,java]
+----
+Reporter
+    .createReport("my report")
+    .inSection(new TestClassSection(TestClass.class))
+    .fire(injectedReportEvent);
+----
+This creates an instance of BasicReport and sets it into the TestClassSection event. This report is then added into the list of sub-reports of 'TestClassReport' related to defined 'TestClass.class'. Analogically it is treated with this use case:
+[source,java]
+----
+Reporter
+    .createReport(new ConfigurationReport("my config report"))
+    .inSection(new TestClassSection(TestClass.class))
+    .fire(injectedReportEvent);
+----
+In this use case, an instance of ConfigurationReport is used and added into the list of configuration sub-reports in  the 'TestClassReport' of the 'TestClass' class.
+
+===== Automatic creation of missing section nodes
+
+It may happen that you want to add subsection of some section that doesn't exist. In other words, in the section event that you fire you use an identifier that doesn't match any existing section node. Arquillian Reporter then creates missing section node with the identifier and also corresponding report node in the report tree. This report's name is equal to the identifier. Then the report that has been attached in the section event is added in this automatically created report as its sub-report.
+This will guarantee that none of the reported information will be lost. Take a look at the chapter ... to see the real example of this function.
 
 ==== Entry builders
 
@@ -236,14 +264,72 @@ We went through basics of the Arquillian Reporter functions, now here are some e
 
 Let say we have this structure of the report:
 
+image::docs/images/first-in-steps.jpg[original structe tree]
 
+now we would like to add an information that both the test class and the test method are marked to be run as a client (to add key-value entry runAsClient = true)
 
-==== Automatic creation of missing section nodes
+First of all we will add it into the test class report. Because we need to merge two reports we have to use TestClassReport (we can omit the name), then we can add key-value pair and fire using corresponding section event.
+[source,java]
+----
+Reporter
+    .createReport(new TestClassReport())
+    .addKeyValueEntry("runAsClient", true)
+    .inSection(new TestClassSection(WildFlyTestClass.class))
+    .fire(injectedReportEvent);
+----
+and analogically for test method
+[source,java]
+----
+Reporter
+    .createReport(new TestMethodReport())
+    .addKeyValueEntry("runAsClient", true)
+    .inSection(new TestMethodSection())
+    .fire(injectedReportEvent);
+----
+then the resulting trees structure would be same - only the information would change:
 
+image::docs/images/steps-with-run-as-client.jpg[added runAsClient=false]
+
+now I'd like to add information about container. There is already a section created for container related information - `TestSuiteConfigurationContainerSection` - whose default payload is BasicReport
+
+[source,java]
+----
+Reporter
+    .createReport("WildFly")
+    .addKeyValueEntry("jbossHome", "/path/to/wildfly")
+    .addKeyValueEntry("managed", "false")
+    .inSection(new TestSuiteConfigurationContainerSection("WildFly"))
+    .fire(injectedReportEvent);
+----
+Using the API I've just created an instance of BasicReport with the name "WildFly" and added some key-value entries. Then I set the report as a payload of TestSuiteConfigurationContainerSection event and fired the event.
+TestSuiteConfigurationContainerSection is a subsection of TestSuiteConfigurationSection but in the graph you can see that there is no such a section-event-node present. In this case, the functionality described in the chapter <<Automatic creation of missing section nodes>> is used. Since TestSuiteConfigurationContainerSection identifies its parent in this way:
+[source,java]
+----
+new TestSuiteConfigurationSection(testSuiteId, "containers");
+----
+
+then a new section node TestSuiteConfigurationSection with the identifier "containers" is created. The resulting trees then would like:
+
+image::docs/images/steps-with-container.jpg[added container]
+
+Next step is to add a new information to the TestMethodSection about Drone. I want to add that in this method a method-scoped instance of drone was used and the browser was Firefox.
+[source,java]
+----
+Reporter
+    .createReport("Drone report")
+    .addKeyValueEntry("scope", "method")
+    .addKeyValueEntry("browser", "Firefox")
+    .inSection(new TestMethodSection(clientTest))
+    .fire(injectedReportEvent);
+----
+I just want to add a basic report to the list of sub-reports - that's why I don't specify any specific type of report and let Arquillian Reporter create an instance of BasicReport. Then I set it as a payload to the TestMethodSection with the defined test method.
+The section tree wouldn't change, but in the report tree would occur a new report node:
+
+image::docs/images/steps-drone-report.jpg[added drone]
+
+Analogically, we could continue with merging and adding new reports.
 
 == String-keys
-
-
 
 == Create your own report
 

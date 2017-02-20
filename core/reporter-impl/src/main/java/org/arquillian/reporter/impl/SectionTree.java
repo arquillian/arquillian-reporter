@@ -54,7 +54,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         return new SectionTree<>(getRootIdentifier(), associatedReport);
     }
 
-    public void merge(SectionTree<SECTIONTYPE, PAYLOAD_TYPE> treeToMerge) {
+    public void mergeSectionTree(SectionTree<SECTIONTYPE, PAYLOAD_TYPE> treeToMerge) {
         // merge this tree
         associatedReport.merge(treeToMerge.getAssociatedReport());
 
@@ -88,7 +88,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
                 }
             } else {
                 //if there is matching subtree then merge it
-                matchedSubtree.merge(subtreeToMerge);
+                matchedSubtree.mergeSectionTree(subtreeToMerge);
             }
         }
 
@@ -139,7 +139,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         // add the dummy tree
         getSubtrees().add(dummyTree);
         // and merge the subtree with the dummy tree
-        dummyTree.merge(subtreeToMerge);
+        dummyTree.mergeSectionTree(subtreeToMerge);
         // todo log
     }
 
