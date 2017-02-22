@@ -140,8 +140,8 @@ public class SectionGeneratorUtils {
                                           getConfigReportName(index, getTestSuiteNameSuffix(suiteId)),
                                           index + 1,
                                           index + 10),
-                            suiteId,
-                            getTestSuiteConfigSectionName(index));
+                            getTestSuiteConfigSectionName(index),
+                            suiteId);
                     }
                 }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
             sections.put((TestSuiteSection) suite, testSuiteConfigSections);

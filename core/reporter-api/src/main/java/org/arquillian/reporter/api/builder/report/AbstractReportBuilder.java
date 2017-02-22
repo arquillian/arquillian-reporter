@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
@@ -13,6 +14,10 @@ import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.Report;
 
 /**
+ * Abstract class providing a basic implementation of {@link ReportBuilder}
+ *
+ * @param <BUILDERTYPE> The {@link Builder} type of this implementation itself
+ * @param <REPORTTYPE>  The {@link Report} type the builder should build
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BUILDERTYPE, REPORTTYPE>, REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>>
@@ -25,36 +30,43 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
         this.report = report;
     }
 
+    @Override
     public BUILDERTYPE feedKeyValueListFromMap(Map<String, String> keyValueMap) {
         keyValueMap.forEach((k, v) -> getReport().getEntries().add(new KeyValueEntry(new UnknownStringKey(k), v)));
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addReport(BUILDERTYPE reportBuilder) {
         reportBuilders.add(reportBuilder);
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addEntry(Entry entry) {
         report.getEntries().add(entry);
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addKeyValueEntry(StringKey key, Entry value) {
         report.getEntries().add(new KeyValueEntry(key, value));
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addKeyValueEntry(StringKey key, String value) {
         report.getEntries().add(new KeyValueEntry(key, value));
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addKeyValueEntry(String key, String value) {
         report.getEntries().add(new KeyValueEntry(new UnknownStringKey(key), value));
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addKeyValueEntry(StringKey key, int value) {
         addKeyValueEntry(key, String.valueOf(value));
         return (BUILDERTYPE) this;
@@ -66,25 +78,38 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public BUILDERTYPE addReport(Report report) {
         this.report.getSubReports().add(report);
         return (BUILDERTYPE) this;
     }
 
+    @Override
     public REPORTTYPE build() {
         reportBuilders.forEach(builder -> addReport(builder.build()));
         return report;
     }
 
+    @Override
     public <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
         SECTIONTYPE event) {
         return Reporter.usingBuilder(ReportInSectionBuilder.class, build(), event);
     }
 
+    /**
+     * Returns list of added sub-report builders
+     *
+     * @return List of added sub-report builders
+     */
     protected List<BUILDERTYPE> getReportBuilders() {
         return reportBuilders;
     }
 
+    /**
+     * Returns an instance of {@link Report} that is being built
+     *
+     * @return An instance of {@link Report} that is being built
+     */
     protected REPORTTYPE getReport() {
         return report;
     }

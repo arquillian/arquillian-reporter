@@ -8,31 +8,66 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.entry.table.TableEntry;
 
 /**
+ * The main starting point for using Arquillian Reporter fluent API
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class Reporter {
 
+    /**
+     * Creates an instance of {@link BasicReport} and sets it into a {@link ReportBuilder} as a report to be built.
+     * The {@link ReportBuilder} instance will be then returned.
+     *
+     * @param name A StringKey representing a name of the {@link BasicReport} instance
+     * @return An instance of {@link ReportBuilder} with set instance of {@link BasicReport}
+     */
     public static ReportBuilder createReport(StringKey name) {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
+    /**
+     * Creates an instance of {@link BasicReport} and sets it into a {@link ReportBuilder} as a report to be built.
+     * The {@link ReportBuilder} instance will be then returned.
+     *
+     * @param name A name of the {@link BasicReport} instance. The name will be stored as an {@link UnknownStringKey}
+     * @return An instance of {@link ReportBuilder} with set instance of {@link BasicReport}
+     */
     public static ReportBuilder createReport(String name) {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
     }
 
+    /**
+     * Uses the given instance of {@link Report} and creates corresponding instance of {@link ReportBuilder} that should
+     * be used for the given type of {@link Report}.
+     * The {@link ReportBuilder} instance will be then returned.
+     *
+     * @param report An instance of {@link Report} implementation to be built
+     * @return An instance of {@link ReportBuilder} with the given report set
+     */
     public static <BUILDERTYPE extends ReportBuilder<BUILDERTYPE, ? extends Report>, REPORTTYPE extends Report<? extends Report, BUILDERTYPE>> BUILDERTYPE createReport(
         REPORTTYPE report) {
         return usingBuilder(report.getReportBuilderClass(), report);
     }
 
-    public static <BUILDERTYPE extends Builder> BUILDERTYPE usingBuilder(Class<BUILDERTYPE> builderClass, Object... constructParams) {
+    /**
+     * Creates an instance of the given {@link Builder} using the given constructor parameters. The instance of the builder is then returned.
+     *
+     * @param builderClass    An implementation class of the interface {@link Builder} to be created
+     * @param constructParams Constructor parameters that should be used for instantiating of the given builder class
+     * @param <BUILDERTYPE>   The type of the given builder class
+     * @return An instance of given {@link Builder} class
+     */
+    public static <BUILDERTYPE extends Builder> BUILDERTYPE usingBuilder(Class<BUILDERTYPE> builderClass,
+        Object... constructParams) {
         Class<BUILDERTYPE> implClass = BuilderRegistry.getImplementationForBuilder(builderClass);
 
         if (implClass != null) {
@@ -45,16 +80,37 @@ public class Reporter {
         }
     }
 
+    /**
+     * Creates an instance of {@link TableEntry} class and sets it into a {@link TableBuilder} as an entry to be built.
+     * The {@link TableBuilder} instance will be then returned.
+     *
+     * @param name A name of the {@link TableEntry} instance. The name will be stored as an {@link UnknownStringKey}
+     * @return An instance of {@link TableBuilder} with the given table entry set
+     */
     public static TableBuilder createTable(String name) {
         return usingBuilder(TableBuilder.class, name);
     }
 
+    /**
+     * Creates an instance of {@link TableEntry} class and sets it into a {@link TableBuilder} as an entry to be built.
+     * The {@link TableBuilder} instance will be then returned.
+     *
+     * @param name A StringKey representing name of the {@link TableEntry} instance.
+     * @return An instance of {@link TableBuilder} with the given table entry set
+     */
     public static TableBuilder createTable(StringKey name) {
         return usingBuilder(TableBuilder.class, name);
     }
 
     // security actions
 
+    /**
+     * Gets an array of constructor parameters types of the given class, based on the given object parameters
+     *
+     * @param implClass       A class the constructor should be get for
+     * @param constructParams List of parameters that the constructor should match
+     * @return An array of constructor parameters types of the given class, that should match the given object parameters
+     */
     private static Class<?>[] getConstructorParametersTypes(Class<?> implClass, Object... constructParams) {
         Constructor<?>[] constructors = implClass.getConstructors();
 
@@ -63,9 +119,9 @@ public class Reporter {
         } else {
             Class<?>[] expectedClasses =
                 Arrays.stream(constructParams).map(param -> param.getClass()).toArray(Class<?>[]::new);
-            Optional<Constructor<?>> firstMathedConstr = getFirstMatchedConstructor(constructors, expectedClasses);
-            if (firstMathedConstr.isPresent()) {
-                return firstMathedConstr.get().getParameterTypes();
+            Optional<Constructor<?>> firstMatchedConstr = getFirstMatchedConstructor(constructors, expectedClasses);
+            if (firstMatchedConstr.isPresent()) {
+                return firstMatchedConstr.get().getParameterTypes();
             } else {
                 // todo throw an exception?
                 return expectedClasses;
@@ -73,6 +129,13 @@ public class Reporter {
         }
     }
 
+    /**
+     * Gets first constructor that matches the given expected classes
+     *
+     * @param constructors    An array of constructors to be searched
+     * @param expectedClasses An array of expected classes the constructor should match
+     * @return First constructor that matches the given expected classes
+     */
     private static Optional<Constructor<?>> getFirstMatchedConstructor(Constructor<?>[] constructors,
         Class<?>[] expectedClasses) {
         return Arrays
@@ -91,13 +154,6 @@ public class Reporter {
             })
             .findFirst();
 
-    }
-
-    /**
-     * Obtains the Thread Context ClassLoader
-     */
-    private static ClassLoader getThreadContextClassLoader() {
-        return AccessController.doPrivileged(GetTcclAction.INSTANCE);
     }
 
     /**
@@ -177,17 +233,5 @@ public class Reporter {
                 }
             }
         }
-    }
-
-    /**
-     * Single instance to get the TCCL
-     */
-    private enum GetTcclAction implements PrivilegedAction<ClassLoader> {
-        INSTANCE;
-
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
-
     }
 }

@@ -10,9 +10,27 @@ import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_METHOD_
 import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_METHOD_CONFIGURATION_REPORT;
 
 /**
+ * A {@link Report} implementation that represents any report information related to a test method.
+ * Apart from the basic implementation it also provides some additional information:
+ * <p>
+ * <ul>
+ * Basic
+ * <li>name</li>
+ * <li>list of entries</li>
+ * <li>list of sub-reports</li>
+ * </ul>
+ * <ul>
+ * Additional provided by {@link TestMethodReport}
+ * <li>start time</li>
+ * <li>stop time</li>
+ * <li>test execution status</li>
+ * <li>configuration that contains reports and entries related to a test method configuration</li>
+ * <li>list of failures that occurred during a test execution</li>
+ * </ul>
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethodReportBuilder> {
+public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder> {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;
@@ -20,85 +38,162 @@ public class TestMethodReport extends AbstractReport<TestMethodReport,TestMethod
     private FailureReport failureReport = new FailureReport(GENERAL_METHOD_FAILURE_REPORT);
     private ConfigurationReport configuration = new ConfigurationReport(GENERAL_TEST_METHOD_CONFIGURATION_REPORT);
 
+    /**
+     * Creates an instance of {@link TestMethodReport}
+     */
     public TestMethodReport() {
     }
 
+    /**
+     * Creates an instance of {@link TestMethodReport} with the given {@link StringKey} set as a name
+     *
+     * @param name A {@link StringKey} to be set as a name
+     */
     public TestMethodReport(StringKey name) {
         super(name);
     }
 
+    /**
+     * Creates an instance of {@link TestMethodReport} with the given String set as a name as {@link UnknownStringKey}
+     *
+     * @param name A String to be set as a name as {@link UnknownStringKey}
+     */
     public TestMethodReport(String name) {
         super(new UnknownStringKey(name));
     }
 
+    /**
+     * Returns the {@link ConfigurationReport}
+     *
+     * @return The {@link ConfigurationReport}
+     */
     public ConfigurationReport getConfiguration() {
         return configuration;
     }
 
+    /**
+     * Sets the given {@link ConfigurationReport}
+     *
+     * @param configuration A {@link ConfigurationReport} to be set
+     */
     public void setConfiguration(ConfigurationReport configuration) {
         this.configuration = configuration;
     }
 
+    /**
+     * Returns the {@link TestResult.Status} of a test method execution
+     *
+     * @return The {@link TestResult.Status} of a test method execution
+     */
     public TestResult.Status getStatus() {
         return status;
     }
 
+    /**
+     * Sets the given {@link TestResult.Status} as a result of test method execution
+     *
+     * @param status A {@link TestResult.Status} to be set
+     */
     public void setStatus(TestResult.Status status) {
         this.status = status;
     }
 
+    /**
+     * Returns the {@link FailureReport}
+     *
+     * @return The {@link FailureReport}
+     */
     public FailureReport getFailureReport() {
         return failureReport;
     }
 
+    /**
+     * Sets the given {@link FailureReport}
+     *
+     * @param failureReport A {@link FailureReport} to be set
+     */
     public void setFailureReport(FailureReport failureReport) {
         this.failureReport = failureReport;
     }
 
+    /**
+     * Returns time when the test method execution stopped
+     *
+     * @return Time when the test method execution stopped
+     */
     public String getStop() {
         return stop;
     }
 
+    /**
+     * Sets the given time as time when an associated test method execution stopped
+     *
+     * @param stop Stop time to be set
+     */
     public void setStop(String stop) {
         this.stop = stop;
     }
 
+    /**
+     * Returns time when the test method execution started
+     *
+     * @return Time when the test method execution started
+     */
     public String getStart() {
         return start;
     }
 
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    @Override
+    /**
+     * Apart from the default functionality of merging ({@link AbstractReport#defaultMerge(AbstractReport)})
+     * it also manages the additional types of information. The default just takes the entries and sub-reports contained
+     * in the given {@link TestMethodReport} and adds them into the list of entries and sub-reports respectively withing this
+     * instance of report. In addition, {@link TestMethodReport} takes the {@link ConfigurationReport} and {@link FailureReport}
+     * and merges them with those ones contained in this report.s
+     * The last thing is that it check if the new report contains stop time and {@link TestResult.Status}; if yes,
+     * then it sets them in this report.
+     *
+     * @param newReport A {@link TestMethodReport} to be merged
+     * @return This same instance of {@link TestMethodReport}
+     */
     public TestMethodReport merge(TestMethodReport newReport) {
-        if (newReport == null){
+        if (newReport == null) {
             return this;
         }
         defaultMerge(newReport);
 
-        if (newReport.getStop() != null){
+        if (newReport.getStop() != null) {
             setStop(newReport.getStop());
         }
 
         getConfiguration().merge(newReport.getConfiguration());
         getFailureReport().merge(newReport.getFailureReport());
 
-        if (newReport.getStatus() != null){
+        if (newReport.getStatus() != null) {
             setStatus(newReport.getStatus());
         }
         return this;
     }
 
-    @Override
+    /**
+     * Takes the given {@link Report} and:
+     * <ul>
+     * <li>if it is a {@link ConfigurationReport} then it adds it into the list of
+     * sub-reports contained in this report's configuration-report</li>
+     * <li>if it is a {@link FailureReport} then it adds it into the list of
+     * sub-reports contained in this report's failure-report</li>
+     * <li>if it is any other type of {@link Report} then it adds it into the list of sub-reports</li>
+     * </ul>
+     *
+     * @param newReport A {@link Report} to be added
+     * @return The same instance of {@link Report} that has been added
+     */
     public Report addNewReport(Report newReport) {
         Class<? extends Report> newReportClass = newReport.getClass();
 
-        if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
+        if (ConfigurationReport.class.isAssignableFrom(newReportClass)) {
             return getConfiguration().addNewReport((ConfigurationReport) newReport);
 
-        } else if (FailureReport.class.isAssignableFrom(newReportClass)){
+        } else if (FailureReport.class.isAssignableFrom(newReportClass)) {
             return getFailureReport().addNewReport((FailureReport) newReport);
 
         } else {

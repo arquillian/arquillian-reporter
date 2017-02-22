@@ -11,18 +11,18 @@ import org.jboss.arquillian.core.api.Event;
 public class ReportInSectionBuilderImpl<REPORTTYPE extends AbstractReport, SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>>
     implements ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> {
 
-    private REPORTTYPE sectionReport;
-    private SECTIONTYPE reportNodeEvent;
+    private REPORTTYPE report;
+    private SECTIONTYPE sectionEvent;
 
-    public ReportInSectionBuilderImpl(REPORTTYPE sectionReport, SECTIONTYPE reportNodeEvent) {
-        this.sectionReport = sectionReport;
-        this.reportNodeEvent = reportNodeEvent;
+    public ReportInSectionBuilderImpl(REPORTTYPE report, SECTIONTYPE sectionEvent) {
+        this.report = report;
+        this.sectionEvent = sectionEvent;
     }
 
     @Override
     public SECTIONTYPE fire(Event<SectionEvent> fireEventExecutor) {
-        reportNodeEvent.setReport(sectionReport);
-        fireEventExecutor.fire(reportNodeEvent);
-        return reportNodeEvent;
+        sectionEvent.setReport(report);
+        fireEventExecutor.fire(sectionEvent);
+        return sectionEvent;
     }
 }

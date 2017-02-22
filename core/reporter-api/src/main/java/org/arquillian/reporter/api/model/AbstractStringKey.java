@@ -1,6 +1,8 @@
 package org.arquillian.reporter.api.model;
 
 /**
+ * An abstract class providing a basic implementation of {@link StringKey}. Extending this class you can create your own StringKey
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class AbstractStringKey implements StringKey {
@@ -13,32 +15,34 @@ public class AbstractStringKey implements StringKey {
 
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(String value) {
         this.value = value;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public String getIcon() {
         return icon;
     }
 
+    @Override
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public AbstractStringKey newInstance() {
-        return new AbstractStringKey();
     }
 
     @Override
@@ -68,7 +72,8 @@ public class AbstractStringKey implements StringKey {
         return result;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "AbstractStringKey{" +
             "value='" + value + '\'' +
             ", description='" + description + '\'' +

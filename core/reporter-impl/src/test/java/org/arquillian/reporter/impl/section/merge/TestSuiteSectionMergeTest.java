@@ -30,8 +30,8 @@ public class TestSuiteSectionMergeTest extends AbstractMergeTest {
         ConfigurationReport configReport = getPreparedReportToMergeOnIndex(ConfigurationReport.class);
         String sectionName = getTestSuiteSectionName(SECTION_MERGE_INDEX);
         TestSuiteConfigurationSection toMerge =
-            new TestSuiteConfigurationSection(configReport, sectionName,
-                                              getTestSuiteConfigSectionName(SECTION_MERGE_INDEX));
+            new TestSuiteConfigurationSection(configReport, getTestSuiteConfigSectionName(SECTION_MERGE_INDEX),
+                                              sectionName);
 
         String configReportName = getConfigReportName(SECTION_MERGE_INDEX, getTestSuiteNameSuffix(sectionName));
         verifyMergeSectionUsingIdInComplexTreeUsingEventManager(toMerge, configReportName);

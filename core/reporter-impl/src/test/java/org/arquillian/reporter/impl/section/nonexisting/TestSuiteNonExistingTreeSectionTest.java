@@ -54,7 +54,7 @@ public class TestSuiteNonExistingTreeSectionTest extends AbstractNonExistingTree
     private TestSuiteConfigurationSection createTestSuiteConfigSectionInNonExistingSection() throws Exception {
         return new TestSuiteConfigurationSection(
             createReportInNonExistingSection(ConfigurationReport.class),
-            NON_EXISTING_SECTION_NAME,
-            SECTION_IN_NON_EXISTING_SECTION_NAME);
+            SECTION_IN_NON_EXISTING_SECTION_NAME,
+            NON_EXISTING_SECTION_NAME);
     }
 }
