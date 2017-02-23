@@ -104,10 +104,19 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
     public ReportAssert hassSubReportsContaining(AbstractReport... expectedReports) {
         isNotNull();
 
-        assertThat(actual.getSubReports())
-            .usingRecursiveFieldByFieldElementComparator()
-            .as("The report should contain the expected set of sub-reports")
-            .contains(expectedReports);
+        //                assertThat(actual.getSubReports())
+        //                    .usingRecursiveFieldByFieldElementComparator()
+        //                    .as("The report should contain the expected set of sub-reports")
+        //                    .contains(expectedReports);
+
+        // because of complexity we need to run it in parallel
+        Arrays.stream(expectedReports).parallel().forEach(report -> {
+            assertThat(actual.getSubReports())
+                .usingRecursiveFieldByFieldElementComparator()
+                .as("The report should contain the expected set of sub-reports")
+                .contains(report);
+        });
+
         return this;
     }
 
@@ -124,10 +133,19 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
     public ReportAssert hasEntriesContaining(Entry... expectedEntries) {
         isNotNull();
 
-        assertThat(actual.getEntries())
-            .usingRecursiveFieldByFieldElementComparator()
-            .as("The report should contain the expected set of entries")
-            .contains(expectedEntries);
+
+        //        assertThat(actual.getEntries())
+        //            .usingRecursiveFieldByFieldElementComparator()
+        //            .as("The report should contain the expected set of entries")
+        //            .contains(expectedEntries);
+
+        // because of complexity we need to run it in parallel
+        Arrays.stream(expectedEntries).parallel().forEach(report -> {
+            assertThat(actual.getEntries())
+                .usingRecursiveFieldByFieldElementComparator()
+                .as("The report should contain the expected set of entries")
+                .contains(report);
+        });
         return this;
     }
 
@@ -147,13 +165,12 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
     }
 
     public ReportAssert hasGeneratedSubreportsAndEntries(int startIndex, int endIndex) {
-
         KeyValueEntry[] expectedEntries = IntStream
-            .range(startIndex, endIndex)
+            .range(startIndex, endIndex).parallel()
             .mapToObj(index -> getKeyValueEntryWitIndex(index)).toArray(KeyValueEntry[]::new);
 
         AbstractReport[] expectedReports = IntStream
-            .range(startIndex, endIndex)
+            .range(startIndex, endIndex).parallel()
             .mapToObj(index -> getReportWithIndex(index)).toArray(BasicReport[]::new);
 
         hassSubReportsContaining(expectedReports);
@@ -188,7 +205,6 @@ public class ReportAssert extends AbstractAssert<ReportAssert, Report> {
     public ReportAssert wholeExecutionReportTreeConsistOfAllGeneratedReports() {
         return wholeExecutionReportTreeConsistOfAllGeneratedReports(new ArrayList<Report>());
     }
-
 
     public ReportAssert wholeExecutionReportTreeConsistOfAllGeneratedReports(ArrayList<Report> merged) {
         return wholeExecutionReportTreeConsistOfGeneratedReports(
