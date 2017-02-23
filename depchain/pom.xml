@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.reporter</groupId>
-            <artifactId>arquillian-reporter-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.reporter</groupId>
             <artifactId>arquillian-core-reporter-api</artifactId>
             <version>${project.version}</version>
         </dependency>

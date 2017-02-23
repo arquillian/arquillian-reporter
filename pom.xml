@@ -30,7 +30,6 @@
     <modules>
         <module>core/reporter-impl</module>
         <module>core/reporter-api</module>
-        <module>core/reporter-spi</module>
         <module>arquillian-core-reporter/arquillian-core-reporter-api</module>
         <module>arquillian-core-reporter/arquillian-core-reporter-impl</module>
         <module>depchain</module>
