@@ -5,7 +5,7 @@ Arquillian reporter brings neat and comprehensive reports into Arquillian Univer
 
 = For testers
 
-If the Reporter is not provided by any extension then to use the Arquillian Reporter in you test you just need to add this depchain dependency:
+If the Reporter is not provided by any extension that you are using, then to use the Arquillian Reporter in your test you just need to add this depchain dependency:
 
 [source,xml]
 ----
@@ -20,21 +20,25 @@ If the Reporter is not provided by any extension then to use the Arquillian Repo
 
 into your pom.xml file.
 
+== Configuration
+
+There isn't any parameter supported so far.
+
 = For developers of an Arquillian extension
 
 Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in an easy and a clean way.
-To use it in your Arquillian extension use the same dependency chain that is stated above (`org.arquillian.reporter:arquillian-reporter-depchain`)
+To use it in your Arquillian extension use the same dependency-chain that is stated above (`org.arquillian.reporter:arquillian-reporter-depchain`)
 
 
 == Report
 
-The main building blog is `Report` that consist of:
+The main building block is a `Report` that consist of:
 
 * name
 * list of Entries
 * list of other sub-reports
 
-As an Entry you can use any information that match one of these types:
+As an `Entry` you can use any information that matches one of these types:
 
 * String
 * Key-value (where value is an Entry)
@@ -43,102 +47,103 @@ As an Entry you can use any information that match one of these types:
 * Table
 * Graph
 
-From the structure you can see that it allows you to build a huge number of combinations of a report information that can be transitively nested.
-The best representation of the Report structure is a tree of one root report and its sub-reports. The root report is created automatically by Arquillian Reporter project and it represents the whole test execution.
+From the structure, you can see that it allows you to build a huge number of combinations of your report that can be transitively nested.
+The best representation of the resulting report structure is a tree that consist of one root report and its sub-reports.
 
 image::docs/images/report-tree.jpg[report tree]
 
-Content of other sub-reports depends on tools and extensions you use and have on your classpath.
-The java class Report is a interface and it is not expected that you would have to provide you own implementation of the Report (but you can if you want - for more information see ....). For the basic purposes (that should be sufficient for you) there is a implementation called `BasicReport` and it contains exactly the same information that are listed above. For other purposes (mainly internal) there are also other Report implementations:
+The root report is created automatically by Arquillian Reporter project and it represents the whole test execution. The content of other sub-reports depends on tools and extensions you use and you have on your classpath.
 
-* Configuration
-* Failure
-* TestSuite
-* TestClass
-* TestMethod
+The Java class `Report` is an interface and it is not expected that you would have to provide you own implementation (but you can if you want - for more information see <<Create your own report>>). For the basic purposes (that should be sufficient for you) there is an implementation called `BasicReport` and it contains exactly the same information that is listed above. For other purposes there are also other `Report` implementations:
+
+* `ConfigurationReport`
+* `FailureReport`
+* `TestSuiteReport`
+* `TestClassReport`
+* `TestMethodReport`
 
 
 == How to use it?
 
-To add anything to the whole report you should use events provided by Arquillian Reporter. Payload of the event is an instance of a Report. Before you fire your first event containing report you should understand the structure that is internally used and also know how could you use builders and other features of Arquillian Reporter.
+To add anything to the whole report you should use events provided by Arquillian Reporter. The payload of the event is an instance of a `Report` implementation. However, before you fire your first event containing your report you should understand the structure that is internally used; and you should also know how could you use builders and other features provided by Arquillian Reporter.
 
 == Merging & adding new reports
 
 Arquillian Reporter provides several automatic operations to make your reporting easier and more independent. One of the operations is merging.
 
-Arquillian Reporter is able to merge two Reports together so you don't have to complicatedly collect all information and then fire one event. Instead of that, you can fire several events continuously - you can notify immediately when you have some piece of report and let Reporter to merge (based on some information) the pieces together.
-Another case is when you want to add some entry to a report that has been created by other extension or by Arquillian Reporter itself. You don't have to browse through the whole tree, you just fire an event with an appropriate information.
+*Merging* +
+Arquillian Reporter is able to merge two reports together so you don't have to complicatedly collect all information and then fire them at once. Instead of that, you can fire several events continuously - in other words, you can notify immediately when you have some piece of information and let Reporter merge (based on some information) the pieces together. +
+Another case is when you want to add some entry to a report that has been created by other extension or by Arquillian Reporter itself. You don't have to browse through the whole tree, you just fire an event with an appropriate identifier and information will be merged.
 
-To make the merging possible, we need to somehow identify the nodes of the whole report tree. Because of complexity, it wasn't possible to identify all the nodes in the whole tree but only some of them. The whole Report tree is divided into several sections and only the root reports of the section are allowed to be merged.
+To make the merging possible, we need to somehow identify the nodes of the whole report tree. Because of complexity, it wasn't possible to identify all the nodes in the whole tree but only some of them. The whole Report tree is divided into several sections and only the root reports of the sections are allowed to be merged. Does it seem to be complicated? Lets take a look at the definition of sections at first.
 
 === Section
 
-The whole Report tree is divided into several sections. There is one root section (called Execution Section) that contains the whole tree and some other subsections which can also contain additional subsections.
-Every section is represented by an event class that is subsection of `SectionEvent` abstract class. You can create your own section (for more information see <<Create your own section>>) or you can reuse some of those that are already created.
+The whole report tree is divided into several sections. There is one root section - called `ExecutionSection`. It consists of the whole tree divided into several subsections.
+Every section is represented by an event class that is an implementation of the abstract class `SectionEvent`. You can create your own section (for more information see <<Create your own section>>) or you can reuse some of those that are already implemented and used.
 
-Sections (events) that are already defined by Arquillian Reporter:
+Sections (events) that are already implemented by Arquillian Reporter:
 
-* TestSuiteSection
-* TestSuiteConfigurationSection
-* TestClassSection
-* TestClassConfigurationSection
-* TestMethodSection
-* TestMethodConfigurationSection
-* TestMethodFailureSection
+* `TestSuiteSection`
+* `TestSuiteConfigurationSection`
+* `TestClassSection`
+* `TestClassConfigurationSection`
+* `TestMethodSection`
+* `TestMethodConfigurationSection`
+* `TestMethodFailureSection`
 
-Sections defined by Arquillian-core Reporter:
+Sections implemented by Arquillian-core Reporter:
 
-* TestSuiteConfigurationContainerSection
-* TestClassConfigurationDeploymentSection
+* `TestSuiteConfigurationContainerSection`
+* `TestClassConfigurationDeploymentSection`
 
 If we incorporated some of them into the report tree, it would look like this:
 
 image::docs/images/reporter-sections.jpg[reports&sections]
 
-and only the red one is possible to merge. The thing is that, these reports are fired using the event with a specified string(identifier). This identifier should be unique in the whole subsection.
-Internally, Arquillian Reporter keeps an additional tree. It is a tree of the sections + identifier nodes (let's call it section tree). If we rewrote the tree into the section tree that is kept internally in memory it could look like this:
+Only the red nodes (reports) are possible to merge as they are the root nodes of each section. As you can see, there can be multiple root nodes in one section so we need to identify them. For this purpose, every section event that is fired with some report payload should contain a string as an identifier. This identifier should be unique in the whole subsection.
+
+Internally, Arquillian Reporter then needs to keep an additional tree. It is a tree that consists of `SectionEventImplementation.class + identifier` nodes. Let's call it "section tree". If we rewrote the previous tree into the section tree that is internally kept then it could look like this:
 
 image::docs/images/sections.jpg[reports&sections]
 
-there you can see that every node in the section tree is defined by a combination of the section-event-class + identifier. These nodes then keeps references to corresponding report instances in the report tree:
+There you can see that every node in the section tree is defined by a combination of the `SectionEventImplementation.class + identifier`. These nodes then keep references to corresponding report instances in the report tree:
 
 image::docs/images/references.jpg[reports&sections]
 
-Then if you want to add some information to a config report related to browsers, you just fire an event TestClassConfigurationSection with an identifier `browser-config` and the attached Report. Arquillian Reporter then will find the existing report and add entries and sub-reports contained in the new report to the existing one.
+If you want to add some additional information to a configuration report related to browsers, then you just fire an event `TestClassConfigurationSection` with an identifier `browser-config` and the attached `Report` instance. Arquillian Reporter then will find the existing report and add entries and sub-reports contained in the new report to the existing one.
 
 === How to identify the node
 
-In the previous section we have described basics about sections and merging. You can certainly imagine that it can be sometimes quite difficult to match the correct report that should be merged.
+In the previous section, we have described basics about sections and merging. You can certainly imagine that it can be sometimes quite difficult to match the correct report that should be merged.
 Imagine this situation:
 
 image::docs/images/multiple-deployments.jpg[multiple deployments tree]
 
-there are several deployments with the same name (identifier) but used in different test classes. So, how I can merge the report about ear deployment used in the EapTestCase class? Every event (that represents some section) contains also an additional information that helps to identify a parent section the section belongs to. In other words, there in the TestClassConfigurationDeploymentSection class you may also define test class the deployment was defined in and also a test suite identifier. Arquillian Reporter then using method "getParentSectionThisSectionBelongsTo()" retrospectively create an expected path in the section tree:
+There are several deployments with the same name (identifier) but used in different test classes. So, how I can merge the report related to the `ear` deployment which was used in the `EapTestCase` class? Every section event contains also an additional information that helps us to identify a parent section the section belongs to. In other words, there in the `TestClassConfigurationDeploymentSection` class you can define the test class (and corresponding test suite identifier) the deployment was defined in. Arquillian Reporter then using method `getParentSectionThisSectionBelongsTo()` retrospectively creates an expected path in the section tree:
 
 image::docs/images/expected-path.jpg[expected path]
 
-and tries to find the best candidate in the whole section tree. If there in the tree is already a section with corresponding identifier, then it merges the reports. If there isn't any, then it attaches a new one and the report contained in the the event adds into report tree.
+And then it tries to find the best candidate in the whole section tree. If there is already a section with the corresponding identifier in the section tree, then the reports are merged. If there isn't any, then it adds a new one and the report contained in the event attaches into report tree.
 
 ==== Missing identifier of parental sections
 
-In case that the section event doesn't contain all necessary information to match the specific nodes in the section tree (eg. missing identifier of the test class of test suite), then Arquillian Reporter takes the latest added node belonging into corresponding section (latest reporter test class).
+In case that the section event doesn't contain all necessary information to match the specific nodes in the section tree (eg. missing identifier of the test class or the test suite), then Arquillian Reporter takes the latest added node belonging to corresponding section. +
 Let's take the previous example. In case we didn't specify the test class the deployment was defined in, then the expected path would look like this:
 
 image::docs/images/expected-path-latest.jpg[expected path]
 
-Since there wouldn't be any identifier for TestClassSection set, then the latest report would be taken = WildFlyTestCase
+Since there wouldn't be any identifier for TestClassSection set, then the latest report would be taken => `WildFlyTestCase`
 
 ==== Automatic creation of missing section nodes
 
-It may happen that you want to add subsection of some section that doesn't exist. In other words, in the section event that you fire you use an identifier that doesn't match any existing section node. Arquillian Reporter then creates missing section node with the identifier and also corresponding report node in the report tree. This report's name is equal to the identifier. Then the report that has been attached in the section event is added in this automatically created report as its sub-report.
-This will guarantee that none of the reported information will be lost. Take a look at the chapter ... to see the real example of this function.
+It may happen that you want to add a subsection of some section that doesn't exist. In other words, in the section event that you fire you use an identifier that doesn't match any existing section node. Arquillian Reporter then creates missing section node with the identifier and also corresponding report node in the report tree. The report's name is equal to the missing section identifier. The report that has been attached in the section event is then added in this automatically created report as its sub-report. +
+This will guarantee that none of the reported information will be lost. Take a look at the chapter <<Enough theory, give me some examples>> to see the real example of this functionality.
 
 == Builders
 
-To make your reporting easier there are available builders providing fluent API that helps you to create reports and entries and add reports into appropriate sections.
-The main starting point is class `Reporter`, then you can decide what you want to build.
-
-Available builders:
+To make your reporting easier there are available several builders providing a fluent API that helps you to create reports, entries and add reports into appropriate sections. +
+The main starting point is the class `Reporter`.
 
 === ReportBuilder
 using this builder you can build a report. To do so, use the method:
@@ -146,59 +151,61 @@ using this builder you can build a report. To do so, use the method:
 ----
 Reporter.createReport()
 ----
-There are three methods with this name but with different parameter. If you use one of these methods:
+There are three methods with this name but with a different parameter. If you use one of these methods:
 [source,java]
 ----
 Reporter.createReport(String name)
 Reporter.createReport(StringKey name)
 ----
-then BasicReportBuilder is used and thus an instance of BasicReport is created (more about StringKey in this chapter). There are already several other builder created, but all of them has the same basic set of API methods.
-To use one specific builder to create one specific report choose the method `createReport(Report report)` where as a parameter use an existing instance of a report. For example if you write:
+then `BasicReportBuilder` is used and thus an instance of `BasicReport` is created (more about `StringKey` in this chapter: <<String-keys>>). There are several more specific report-builders implemented, but all of them has the same basic set of API methods. +
+To use one specific builder to create one specific report, choose the method `createReport(Report report)` where as a parameter use an existing instance of your desired report. For example, if you write:
 [source,java]
 ----
 Reporter.createReport(new TestClassReport("my report"));
 ----
-then TestClassReportBuilder is used.
+then `TestClassReportBuilder` is used as the default builder for `TestClassReport`.
 
-Useful report builders that are available:
-* BasicReportBuilder
-* TestSuiteReportBuilder
-* TestClassReportBuilder
-* TestMethodReportBuilder
-* ConfigurationReportBuilderImpl
-* FailureReportBuilderImpl
+Useful report builders that are implemented by Arquillian Reporter:
+
+* `BasicReportBuilder`
+* `TestSuiteReportBuilder`
+* `TestClassReportBuilder`
+* `TestMethodReportBuilder`
+* `ConfigurationReportBuilderImpl`
+* `FailureReportBuilderImpl`
 
 ==== ReportBuilder API
-Report builders provide you a fluent API that helps you to create a complex report. All methods returns the same instance of the builder so you can use fluent api and make your code more readable. To get the final instance of the report call the method:
-
+Report builders provide you a fluent API that helps you to create a complex report. All methods return the same instance of the builder so you can use a fluent and compact code to be more readable. To get the final instance of the built report, call the method `build()`:
 [source,java]
 ----
-Reporter.createReport(...)
-        ....
-        .build();
+Reporter.createReport(...).....build();
 ----
-which returns you the resulting report instance.
 
 Some other method examples (that are same for all report builders):
 
 * To add a key-value pair entry into the set of entries:
++
 [source,java]
 ----
-Reporter.createReport(...).addKeyValueEntry(StringKey key, Entry value)
+Reporter.createReport(...).addKeyValueEntry(String key, String value)
 ----
 
 * To add any entry
++
 [source,java]
 ----
 Reporter.createReport(...).addEntry(Entry entry)
 ----
 
 * To add a sub-report
++
 [source,java]
 ----
 Reporter.createReport(...).addReport(Report report)
 ----
-or instead of passing an instance of a report you can pass an Instance of ReportBuilder without building it and build only the parental builder.
++
+or instead of passing an instance of a report you can pass an instance of `ReportBuilder` without any need to build it:
++
 [source,java]
 ----
 Reporter.createReport(...)
@@ -208,7 +215,7 @@ Reporter.createReport(...)
 
 ==== Add into section
 
-Now, when you have a an instance of a built report you would like to add it into the whole report tree. To do so, you should create an instance of an event that represents a section the report should belong to, set the report as a payload and then fire it. The standard code would look like:
+Now, when you have an instance of a built report you would like to add it into the whole report tree. To do so, you should create an instance of an event that represents a section the report should belong to, set the report as a payload and then fire it. The standard code would look like:
 [source,java]
 ----
 ConfigurationReport report = Reporter
@@ -216,7 +223,7 @@ ConfigurationReport report = Reporter
             .build();
 injectedReportEvent.fire(new TestClassConfigurationSection(report, "configId"));
 ----
-instead of this, you can use method `inSection` provided by ReportBuilder API and keep everything compact:
+instead of this, you can use method `inSection` provided by `ReportBuilder` API and keep everything compact:
 [source,java]
 ----
 Reporter
@@ -224,11 +231,11 @@ Reporter
     .inSection(new TestClassConfigurationSection("configId"))
     .fire(injectedReportEvent);
 ----
-Reporter uses corresponding instance of report, builds it, sets it into the used section event and fires the event.
+Reporter uses the corresponding instance of report, builds it, sets it into the provided section event and fires the event.
 
 ==== Type of the payload
 
-As you have already noticed, every section event has defined some type of report that is its default payload type. For example TestMethodSection has TestMethodReport and TestMethodConfigurationSection has ConfigurationReport etc... These types are also defined in the constructors of the section event classes. However, using the ReportBuilder API you can make the section to carry any other type of report. You can do for example this:
+As you might have already noticed, every section event has some type of `Report` defined as its default payload type. For example `TestMethodSection` has `TestMethodReport` and `TestMethodConfigurationSection` has `ConfigurationReport` etc... These types are also defined in the constructors of the section event classes. However, using the ReportBuilder API you can make the section carrying any other `Report` type. You can do for example this:
 [source,java]
 ----
 Reporter
@@ -236,7 +243,7 @@ Reporter
     .inSection(new TestClassSection(TestClass.class))
     .fire(injectedReportEvent);
 ----
-This creates an instance of BasicReport and sets it into the TestClassSection event. This report is then added into the list of sub-reports of 'TestClassReport' related to defined 'TestClass.class'. Analogically it is treated with this use case:
+This creates an instance of `BasicReport` and sets it into the `TestClassSection` event. Since the default `Report` type of the section-event is `TestClassReport` then Arquillian Reporter finds the report related to `TestClass.class` and instead of merging it it adds the attached report into the list of sub-reports. Similar example:
 [source,java]
 ----
 Reporter
@@ -244,13 +251,13 @@ Reporter
     .inSection(new TestClassSection(TestClass.class))
     .fire(injectedReportEvent);
 ----
-In this use case, an instance of ConfigurationReport is used and added into the list of configuration sub-reports in  the 'TestClassReport' of the 'TestClass' class.
+In this use case, an instance of `ConfigurationReport` is used. Because it is a configuration report, then it is added into the list of configuration sub-reports in the `TestClassReport`.
 
 === Entry builders
 
 ==== TableBuilder
 
-Table builder provides you a fluent API that helps you to create complex table. To use the builder call one of the two methods:
+Table builder provides you a fluent API that helps you to create a complex table. To use the builder call one of the two methods:
 [source,java]
 ----
 Reporter.createTable(String name)
@@ -260,15 +267,15 @@ and to get an instance of the table entry use the method `build()`
 
 == Enough theory, give me some examples
 
-We went through basics of the Arquillian Reporter functions, now here are some examples how to add your reports into the whole report tree.
+So, we went through the basics of the Arquillian Reporter functions. Now, it's time to provide some example how to add your reports to the whole report tree.
 
-Let say we have this structure of the report:
+Let say that we have this initial structure of the report:
 
 image::docs/images/first-in-steps.jpg[original structe tree]
 
-now we would like to add an information that both the test class and the test method are marked to be run as a client (to add key-value entry runAsClient = true)
+Now, we would like to add an information that both the test class and the test method are marked to be run as a client (to add key-value entry runAsClient = true)
 
-First of all we will add it into the test class report. Because we need to merge two reports we have to use TestClassReport (we can omit the name), then we can add key-value pair and fire using corresponding section event.
+First of all, we will add it into the test class report. Because we need to merge the reports we have to use `TestClassReport` (we can omit the name), then we can add key-value pair and fire it using a corresponding section event.
 [source,java]
 ----
 Reporter
@@ -286,12 +293,11 @@ Reporter
     .inSection(new TestMethodSection())
     .fire(injectedReportEvent);
 ----
-then the resulting trees structure would be same - only the information would change:
+then the resulting tree structures would be same - only the information would change:
 
 image::docs/images/steps-with-run-as-client.jpg[added runAsClient=false]
 
-now I'd like to add information about container. There is already a section created for container related information - `TestSuiteConfigurationContainerSection` - whose default payload is BasicReport
-
+The next step is to add information about a container. There is already a section created for container related information - `TestSuiteConfigurationContainerSection` - and the default payload is `BasicReport`
 [source,java]
 ----
 Reporter
@@ -301,18 +307,17 @@ Reporter
     .inSection(new TestSuiteConfigurationContainerSection("WildFly"))
     .fire(injectedReportEvent);
 ----
-Using the API I've just created an instance of BasicReport with the name "WildFly" and added some key-value entries. Then I set the report as a payload of TestSuiteConfigurationContainerSection event and fired the event.
-TestSuiteConfigurationContainerSection is a subsection of TestSuiteConfigurationSection but in the graph you can see that there is no such a section-event-node present. In this case, the functionality described in the chapter <<Automatic creation of missing section nodes>> is used. Since TestSuiteConfigurationContainerSection identifies its parent in this way:
+Using the API we've just created an instance of BasicReport with the name "WildFly" and added some key-value entries. Then we set the report as a payload of `TestSuiteConfigurationContainerSection` event and fired the event.
+`TestSuiteConfigurationContainerSection` is a subsection of `TestSuiteConfigurationSection`, but there isn't any corresponding section-event-node present in the graph. In this case, the functionality described in the chapter <<Automatic creation of missing section nodes>> is used. Since `TestSuiteConfigurationContainerSection` identifies its parent in this way:
 [source,java]
 ----
 new TestSuiteConfigurationSection(testSuiteId, "containers");
 ----
-
-then a new section node TestSuiteConfigurationSection with the identifier "containers" is created. The resulting trees then would like:
+then a new section node `TestSuiteConfigurationSection` with the identifier `"containers"` is created. The resulting trees then would like:
 
 image::docs/images/steps-with-container.jpg[added container]
 
-Next step is to add a new information to the TestMethodSection about Drone. I want to add that in this method a method-scoped instance of drone was used and the browser was Firefox.
+The last step is to add a new information to the `TestMethodSection` about Drone. We want to add that in this method a method-scoped instance of a drone was used and that the browser was Firefox.
 [[bookmark-drone-report]]
 [source,java]
 ----
@@ -323,8 +328,7 @@ Reporter
     .inSection(new TestMethodSection(clientTest))
     .fire(injectedReportEvent);
 ----
-I just want to add a basic report to the list of sub-reports - that's why I don't specify any specific type of report and let Arquillian Reporter create an instance of BasicReport. Then I set it as a payload to the TestMethodSection with the defined test method.
-The section tree wouldn't change, but in the report tree would occur a new report node:
+We just want to add a basic report to the list of sub-reports - that's why we don't need to specify any concrete report type. Then we use the `TestMethodSection` event with the defined test method. When we fired, the section tree wouldn't change. But in the report tree, there would occur a new report node:
 
 image::docs/images/steps-drone-report.jpg[added drone]
 
@@ -332,13 +336,14 @@ Analogically, we could continue with merging and adding new reports.
 
 == String-keys
 
-In all report examples, that you can see in the text above, there are used only a String values for defining report names and key-values. However, using a String is not an ideal way of using it (we used it only because of simplicity). The preferred way is using StringKey.
+In all report examples, that you can see in the text above, there are used only a `String` values for defining report names and key-values. However, using a `String` is not an ideal way of using it (we used it only because of simplicity). The preferred way is using `StringKey`.
 
 === What is StringKey?
 
-`StringKey` is a abstraction of most of the values used in the whole report. It is a way that we chose for bringing additional semantic into the report. You can imagine that it could be sometimes quite difficult to figure out what some name of a report or a key-value pair stands for. Using StringKey we are able to add to the report an additional description, an icon or an additional localization.
+`StringKey` is an abstraction of most of the string values used in the whole report. It is a way that we chose for bringing additional semantic into the report. You can imagine that it could be sometimes quite difficult to figure out what some name of a report or a key-value pair stands for. Using `StringKey` we are able to add an additional description, an icon or an additional localization to the report.
 
-`StringKey` is an interface with one default abstract implementation `AbstractStringKey` that implements all necessary methods. It is expected that every integration of Arquillian Reporter should provide its own StringKey class that (ideally) extends the `AbstractStringKey`; let's call it `MyExtensionStringKey`. This class has to be registered as a service implementation of the StringKey interface using Arquillian SPI:
+`StringKey` is an interface with one default abstract implementation `AbstractStringKey` that implements all necessary methods. It is expected that every integration of Arquillian Reporter should provide its own `StringKey` implementation that (ideally) extends the `AbstractStringKey`. +
+ Example: let say that we have an implementation `MyExtensionStringKey`. This class has to be registered as a service implementation of the `StringKey` interface using an Arquillian SPI:
 [source,java]
 ----
 public class MyExtension implements LoadableExtension {
@@ -347,7 +352,7 @@ public class MyExtension implements LoadableExtension {
         builder.service(StringKey.class, MyExtensionStringKey.class);
         ...
 ----
-`MyExtensionStringKey` class should then contain public static and final constants of the same class itself. These constants should be then used in reports. For example let say that we have these constants defined in our `MyExtensionStringKey` class:
+`MyExtensionStringKey` class should then contain public static and final constants of the same class itself. These constants should be then used in reports. For example, let say that we have these constants defined in our `MyExtensionStringKey` class:
 [source,java]
 ----
 public class MyExtensionStringKey extends AbstractStringKey {
@@ -357,7 +362,7 @@ public class MyExtensionStringKey extends AbstractStringKey {
     public static final StringKey DRONE_BROWSER = new MyExtensionStringKey();
 }
 ----
-If we used our StringKeys, then <<bookmark-drone-report,this code snippet>> would look like this:
+If we used our string-keys, then <<bookmark-drone-report,this code snippet>> would look like this:
 [source,java]
 ----
 Reporter
@@ -370,14 +375,14 @@ Reporter
 
 === StringKey property file
 
-Now, how to add the string value, description and other values? For this purpose, there is used a property file. This file:
+Now, how to add the string value, description and other values? For this purpose, there is one property file used. The file:
 
-* should be located in src/main/resources directory
-* should have a name that is same as fully qualified name of the StringKey implementation (with the suffix `.properties`). So, in our case: `org.arquillian.my.extension.reporter.MyExtensionStringKey.properties`
-* should contain properties for all constants defined in the StringKey implementation with additional suffixes (all of them are optional):
-    ** `.value` for the actual value of the StringKey itself
+* should be located in `src/main/resources` directory
+* should have a name that is same as the fully qualified name of the `StringKey` implementation (with the suffix `.properties`). So, in our case: `org.arquillian.my.extension.reporter.MyExtensionStringKey.properties`
+* should contain properties for all constants defined in the `StringKey` implementation with additional suffixes (all of them are optional):
+    ** `.value` for the actual value of the `StringKey` itself
     ** `.description` for additional information about the the value/report
-    ** `.icon` path to an icon that should be used in the resulting report
+    ** `.icon` the path to an icon that should be used in the resulting report
 
 In our case, the file would be:
 
@@ -395,14 +400,15 @@ Arquillian Reporter finds these files, parses it, gets the values and assign the
 
 === UnknownStringKey
 
-Although, StringKey is a preferred way of setting names and keys, it is still possible to use a pure String. In this case the String is automatically wrapped into an instance of UnknownStringKey class.
+Although `StringKey` is a preferred way of setting names and keys, it is still possible to use a pure `String` value. In this case, the String is automatically wrapped into an instance of `UnknownStringKey` class.
 
 == Create your own report
 
-If you feel to be limited by the provided set of Report implementations, then you can create your own. As a report is considered any class that implements `Report` interface. There is provided an abstract implementation that implements the basic functionality - `AbstractReport` - so it is advised to extend this class.
-Every Report implementation class has two parameters:
+If you feel to be limited by the provided set of `Report` implementations, then you can create your own. As a report is considered any class that implements `Report` interface. There is provided an abstract implementation that implements the basic functionality - `AbstractReport` - so it is advised to extend this class.
 
-1. the Report implementation type itself
+Every `Report` implementation class has two parameters:
+
+1. the `Report` implementation type itself
 2. a report builder that should be used in case of Reporter fluent API. If you don't want to create your own builder, then you can specify `ReportBuilder` and the basic implementation will be used.
 
 Let say that we want to create `MyReport` then the class declaration would be:
@@ -412,11 +418,10 @@ public class MyReport extends AbstractReport<MyReport, ReportBuilder> {
 ...
 }
 ----
-You also have to implement several methods, but for more information see the javadoc .....
 
 == Create your own Builder
 
-If you feel to be limited by the provided set of Builder implementations, then you can create your own. As a builder is considered any implementation of an interface `Builder`. If you implement this interface, then you can use method:
+If you feel to be limited by the provided set of `Builder` implementations, then you can create your own. As a builder is considered any implementation of an interface `Builder`. If you implement this interface, then you can use a method:
 [source,java]
 ----
 Reporter
@@ -425,15 +430,16 @@ Reporter
 ----
 with your builder class and constructor parameters.
 
-The `Builder` interface itself doesn't have any parameter nor require implementing methods.
+The `Builder` interface itself doesn't have any parameter nor require implementing any method.
 
 === Create your own ReportBuilder
 
-If you want to create a new Builder for building reports, then you should implement a sub-interface 'ReportBuilder' that has several methods and 2 parameters. There is provided an Abstract implementation that implements the methods and it is very advised to extend it: `AbstractReportBuilder`.
-The parameters of the `ReportBuilder`:
+If you want to create a new `Builder` for building reports, then you should implement a sub-interface `ReportBuilder` that has several methods and 2 parameters. There is provided an abstract implementation that implements the methods and it is very advised to extend it: `AbstractReportBuilder`.
 
-1. the new ReportBuilder type itself
-2. the Report type the builder should be used for
+The parameters of the `ReportBuilder` are:
+
+1. the `ReportBuilder` implementation type itself
+2. the `Report` type the builder should be used for
 
 Let say that we want to create a builder `MyReportBuilder` for `MyReport` report:
 [source,java]
@@ -443,7 +449,7 @@ public interface MyReportBuilder extends ReportBuilder<MyReportBuilder, MyReport
     public void sayHelloWorld();
 }
 ----
-and the `MyReport` class would change to:
+and the `MyReport` class would be changed to:
 [source,java]
 ----
 public class MyReport extends AbstractReport<MyReport, MyReportBuilder> {
@@ -461,7 +467,7 @@ Reporter
 
 === Register implementation of Builders
 
-If you want to keep interfaces and their implementations separated, then you need to register them. For this use Arquillian SPI:
+If you want to keep interfaces and their implementations separated, then you need to register them. For this purpose you should use an Arquillian SPI:
 [source,java]
 ----
 public class MyExtension implements LoadableExtension {
@@ -473,13 +479,13 @@ public class MyExtension implements LoadableExtension {
 
 == Create your own section
 
-If you need to create a new report section, then you have to extend SectionEvent abstract class. This abstract class has 3 parameters:
+If you need to create a new report section, then you have to extend the abstract class `SectionEvent`. This abstract class has 3 parameters:
 
-1. the new SectionEvent implementation type itself
-2. Report type that is the default payload type of the event
-3. SectionEvent type representing a section that is parental section of the new section
+1. the `SectionEvent` implementation type itself
+2. a `Report` type that is the default payload type of the event
+3. a `SectionEvent` type representing a section that is parental section of the new section
 
-Let say that we want to create `MySection` that is subsection of `TestMethodSection` and whose payload is `MyReport`:
+Let say that we want to create `MySection` that is subsection of `TestMethodSection` and the payload is `MyReport`:
 [source,java]
 ----
 public class MySection extends SectionEvent<MySection, MyReport, TestMethodSection> {
