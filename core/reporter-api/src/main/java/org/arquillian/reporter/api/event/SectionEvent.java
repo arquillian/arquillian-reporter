@@ -99,24 +99,6 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
     }
 
     /**
-     * Returns whether the event has been already processed
-     *
-     * @return Whether the event has been already processed
-     */
-    public boolean isProcessed() {
-        return processed;
-    }
-
-    /**
-     * Sets whether the event has been already processed
-     *
-     * @param processed Whether the event has been already processed
-     */
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
-    }
-
-    /**
      * Based on information that are set, creates and returns an instance of {@link SectionEvent} implementation
      * that represents a parent section this section belongs to
      *

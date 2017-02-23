@@ -11,7 +11,6 @@ import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatS
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.prepareSectionTreeWithReporterCoreSectionsAndReports;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.PARENT_COUNT_OF_COMPLEX_PREPARED_TREE;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE;
-import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.verifyAllSectionsAreProcessed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -33,7 +32,5 @@ public class ComplexTreeEventManagerTest {
             .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE)
             .associatedReport()
             .wholeExecutionReportTreeConsistOfAllGeneratedReports();
-
-        verifyAllSectionsAreProcessed(sections);
     }
 }

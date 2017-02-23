@@ -47,13 +47,4 @@ public class SectionAssert extends AbstractAssert<SectionAssert, SectionEvent> {
         }
         return this;
     }
-
-    public SectionAssert isProccessed() {
-        isNotNull();
-        if (!actual.isProcessed()) {
-            failWithMessage("The section should be processed but the value of the variable \"processed\" is <%s>",
-                            actual.isProcessed());
-        }
-        return this;
-    }
 }

@@ -50,40 +50,6 @@ public class ReporterLifecycleManager {
         processEvent(event, report.get());
     }
 
-    // technically, I don't need any more specific observer than the general one...
-
-    //    public void observeEventsFroTestSuiteSection(@Observes TestSuiteSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestSuiteConfigurationSection(@Observes TestSuiteConfigurationSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestClassSection(@Observes TestClassSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestClassSection(@Observes TestClassConfigurationSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestClassConfigurationSection(@Observes TestSuiteConfigurationSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestMethodSection(@Observes TestMethodSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestMethodConfigurationSection(@Observes TestMethodConfigurationSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
-    //    public void observeEventsForTestMethodFailureSection(@Observes TestMethodFailureSection event) {
-    //        processEvent(event, report.get());
-    //    }
-    //
     public void afterSuite(@Observes ManagerStopping event) throws IOException {
         printJson();
     }

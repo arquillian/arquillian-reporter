@@ -12,10 +12,6 @@ public class SectionEventManager {
     public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
     void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionReport executionReport) {
 
-        if (event.isProcessed()) {
-            return;
-        }
-
         // check if the expected payload type is same the actual one
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
         if (!expectedPayload.isAssignableFrom(event.getReport().getClass())){
@@ -27,7 +23,6 @@ public class SectionEventManager {
 
         SectionTree eventTree = createTreeRecursively(event, null);
         executionReport.getSectionTree().mergeSectionTree(eventTree);
-        event.setProcessed(true);
     }
 
     private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, ? extends SectionEvent>, REPORT_TYPE extends AbstractReport>

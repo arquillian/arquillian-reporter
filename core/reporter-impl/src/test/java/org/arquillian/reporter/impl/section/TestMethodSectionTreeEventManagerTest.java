@@ -23,7 +23,6 @@ import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithT
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestMethodSections;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestSuiteSections;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getSubsectionsOfSomeSection;
-import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.verifyAllSectionsAreProcessed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -49,8 +48,6 @@ public class TestMethodSectionTreeEventManagerTest {
             .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
                                                                TestClassReport.class,
                                                                TestMethodReport.class);
-
-        verifyAllSectionsAreProcessed(sections);
     }
 
     @Test
@@ -73,7 +70,6 @@ public class TestMethodSectionTreeEventManagerTest {
                                                                TestClassReport.class,
                                                                TestMethodReport.class,
                                                                ConfigurationReport.class);
-        verifyAllSectionsAreProcessed(sections);
     }
 
     @Test
@@ -96,6 +92,5 @@ public class TestMethodSectionTreeEventManagerTest {
                                                                TestClassReport.class,
                                                                TestMethodReport.class,
                                                                FailureReport.class);
-        verifyAllSectionsAreProcessed(sections);
     }
 }
