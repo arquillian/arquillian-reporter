@@ -1,6 +1,7 @@
 package org.arquillian.reporter.api.event;
 
 import org.arquillian.reporter.api.model.report.TestClassReport;
+import org.arquillian.reporter.api.utils.ReporterUtils;
 
 /**
  * An implementation of {@link SectionEvent} that represents section for {@link TestClassReport}s
@@ -23,7 +24,7 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
      * @param testClass A test class the section relates to and whose canonical name should be used as an id of this {@link TestClassSection}
      */
     public TestClassSection(Class<?> testClass) {
-        super(testClass != null ? testClass.getCanonicalName() : null);
+        super(ReporterUtils.getTestClassId(testClass));
     }
 
     /**
@@ -34,7 +35,7 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
      * @param testSuiteId A test suite id this class belongs to
      */
     public TestClassSection(Class<?> testClass, String testSuiteId) {
-        super(testClass.getCanonicalName());
+        super(ReporterUtils.getTestClassId(testClass));
         this.testSuiteId = testSuiteId;
     }
 
@@ -55,7 +56,7 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
      * @param testClass       A test class the section relates to and whose canonical name should be used as an id of this {@link TestClassSection}
      */
     public TestClassSection(TestClassReport testClassReport, Class<?> testClass) {
-        super(testClassReport, testClass.getCanonicalName());
+        super(testClassReport, ReporterUtils.getTestClassId(testClass));
     }
 
     /**
@@ -68,7 +69,7 @@ public class TestClassSection extends SectionEvent<TestClassSection, TestClassRe
      * @param testSuiteId     A test suite id this class belongs to
      */
     public TestClassSection(TestClassReport testClassReport, Class<?> testClass, String testSuiteId) {
-        super(testClassReport, testClass.getCanonicalName());
+        super(testClassReport, ReporterUtils.getTestClassId(testClass));
         this.testSuiteId = testSuiteId;
     }
 

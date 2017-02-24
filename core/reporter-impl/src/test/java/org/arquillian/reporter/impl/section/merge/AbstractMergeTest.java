@@ -77,18 +77,20 @@ public abstract class AbstractMergeTest {
 
         SectionEventManager.processEvent(sectionToMerge, executionReport);
 
-        Optional<SectionTree> merged = null;
+        Identifier identifier = null;
         int reportIndex;
         if (idOfLatestSection == null) {
-            merged = getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(),
-                                                             getSectionIdentifier(sectionToMerge),
-                                                             reportName);
+            identifier = getSectionIdentifier(sectionToMerge);
             reportIndex = SECTION_MERGE_INDEX;
         } else {
-            Identifier identifier = new Identifier(sectionToMerge.getClass(), idOfLatestSection);
-            merged = getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(), identifier, reportName);
+            identifier = new Identifier(sectionToMerge.getClass(), idOfLatestSection);
             reportIndex = LATEST_SECTION_INDEX;
         }
+
+        Optional<SectionTree> merged =
+            getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(), identifier, reportName);
+
+        assertThat(merged).as("The section-tree-node with identifier: <%s> should be present.", identifier).isPresent();
 
         ArrayList<Report> mergedReports = new ArrayList<>(Arrays.asList(merged.get().getAssociatedReport()));
 

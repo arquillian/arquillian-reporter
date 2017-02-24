@@ -23,10 +23,7 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
     }
 
     /**
-     * Creates an instance of {@link TestMethodSection} with an id created from given test method.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName'
-     * </p>
+     * Creates an instance of {@link TestMethodSection} with an id created from given test method name.
      *
      * @param method A test method this {@link TestMethodSection} relates to
      */
@@ -36,11 +33,7 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
     }
 
     /**
-     * Creates an instance of {@link TestMethodSection} with an id created from given test method.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName'
-     * </p>
-     * It also stores the given test suite id for identifying parental section.
+     * Creates an instance of {@link TestMethodSection} with an id created from given test method name.
      *
      * @param method      A test method this {@link TestMethodSection} relates to
      * @param testSuiteId An id of a test suite the {@link TestMethodReport} belongs to.
@@ -62,10 +55,7 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
 
     /**
      * Creates an instance of {@link TestMethodSection} with the given {@link TestMethodReport}
-     * and an id created from given test method.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName'
-     * </p>
+     * and an id created from given test method name.
      *
      * @param testMethodReport A {@link TestMethodReport} that should be contained within this {@link TestMethodSection}
      * @param method           A test method this {@link TestMethodSection} relates to
@@ -77,10 +67,7 @@ public class TestMethodSection extends SectionEvent<TestMethodSection, TestMetho
 
     /**
      * Creates an instance of {@link TestMethodSection} with the given {@link TestMethodReport}
-     * and an id created from given test method.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName'
-     * </p>
+     * and an id created from given test method name.
      * It also stores the given test suite id for identifying parental section.
      *
      * @param testMethodReport A {@link TestMethodReport} that should be contained within this {@link TestMethodSection}

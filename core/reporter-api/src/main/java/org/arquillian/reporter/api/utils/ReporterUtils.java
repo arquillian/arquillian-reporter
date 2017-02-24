@@ -30,43 +30,29 @@ public class ReporterUtils {
     }
 
     /**
-     * Takes the given {@link Method}, retrieves the declaring class and creates an id representing the method using this format:
-     * declaring.class.Name#testMethodName
+     * Takes the given {@link Class}, and creates an id using the fully qualified name of the test class
      *
-     * @param method A {@link Method} to be used for creating an id
-     * @return Created an id of the given {@link Method}
+     * @param method A {@link Class} to be used for creating an id
+     * @return If the class is not null then it returns its fully qualified name, null otherwise
      */
-    public static String getTestMethodId(Method method) {
+    public static String getTestClassId(Class<?> method) {
         if (method != null) {
-            return buildId(method.getDeclaringClass().toString(), method.getName());
+            return method.getName();
         }
         return null;
     }
 
     /**
-     * Takes the given sectionIdParams and using them creates a String identifier.
-     * The identifier is created using all sectionIdParams joining them together using a char: '#'
-     * <p>
-     *     The resulting identifier of two sectionIdParams 'bar' and 'foo' is: 'bar#foo'
-     * </p>
+     * Takes the given {@link Method}, and creates an id using the method name
      *
-     * @param sectionIdParams Strings to be used for creating identifier
+     * @param method A {@link Method} to be used for creating an id
+     * @return If the method is not null then it returns its name, null otherwise
      */
-    public static String buildId(String... sectionIdParams) {
-        StringBuffer id = new StringBuffer();
-        if (sectionIdParams != null) {
-            for (String sectionIdParam : sectionIdParams) {
-                if (sectionIdParam != null) {
-                    if (!id.toString().isEmpty()) {
-                        id.append("#");
-                    }
-                    id.append(sectionIdParam);
-                } else {
-                    return null;
-                }
-            }
+    public static String getTestMethodId(Method method) {
+        if (method != null) {
+            return method.getName();
         }
-        return id.toString();
+        return null;
     }
 
     /**

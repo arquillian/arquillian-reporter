@@ -4,7 +4,6 @@ import org.arquillian.reporter.api.event.TestClassConfigurationSection;
 import org.arquillian.reporter.api.event.TestClassSection;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
-import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.impl.utils.dummy.DummyTestClass;
 import org.junit.Test;
 
@@ -72,11 +71,9 @@ public class TestClassSectionMergeTest extends AbstractMergeTest {
         String testClassNameSuffix = getTestClassNameSuffix(classCanonicalName, sectionName);
         String configReportName = getConfigReportName(LATEST_SECTION_INDEX, testClassNameSuffix);
 
-        String configSectionName =
-            ReporterUtils.buildId(classCanonicalName, getTestClassConfigSectionName(LATEST_SECTION_INDEX));
 
         verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge,
-                                                               configSectionName,
+                                                               getTestClassConfigSectionName(LATEST_SECTION_INDEX),
                                                                configReportName);
     }
 

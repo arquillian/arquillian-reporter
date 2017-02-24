@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.api.utils.ReporterUtils;
 
 /**
  * An implementation of {@link SectionEvent} that represents section for {@link FailureReport}s within a {@link TestMethodReport}
@@ -23,7 +22,7 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with the given id
+     * Creates an instance of {@link TestMethodFailureSection} with the given id.
      *
      * @param failureId A failure id to be used to identify the {@link TestMethodFailureSection}
      */
@@ -32,35 +31,27 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with an id build from the given failureId and
-     * test method id of the method the {@link FailureReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#failureId'
-     * </p>
+     * Creates an instance of {@link TestMethodFailureSection} with the given id.
      * It also stores the given test method for identifying parental section.
      *
-     * @param failureId  A failure id to be used in resulting id
+     * @param failureId  A failure id to be used to identify the {@link TestMethodFailureSection}
      * @param testMethod A test method the {@link FailureReport} belongs to.
      */
     public TestMethodFailureSection(String failureId, Method testMethod) {
-        super(ReporterUtils.getTestMethodId(testMethod), failureId);
+        super(failureId);
         this.testMethod = testMethod;
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with an id build from the given failureId and
-     * test method id of the method the {@link FailureReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#failureId'
-     * </p>
+     * Creates an instance of {@link TestMethodFailureSection} with the given id.
      * It also stores the given test method and test suite for identifying parental section.
      *
-     * @param failureId   A failure id to be used in resulting id
+     * @param failureId   A failure id to be used to identify the {@link TestMethodFailureSection}
      * @param testMethod  A test method the {@link FailureReport} belongs to.
      * @param testSuiteId An id of a test suite the {@link FailureReport} belongs to.
      */
     public TestMethodFailureSection(String failureId, Method testMethod, String testSuiteId) {
-        super(ReporterUtils.getTestMethodId(testMethod), failureId);
+        super(failureId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
     }
@@ -75,49 +66,43 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with with the given {@link FailureReport}
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}
      * and an id represented by the given failureId
      *
      * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
-     * @param failureId     A failure id to be used in resulting id
+     * @param failureId     A failure id to be used to identify the {@link TestMethodFailureSection}
      */
     public TestMethodFailureSection(FailureReport failureReport, String failureId) {
         super(failureReport, failureId);
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with with the given {@link FailureReport}
-     * and an id build from the given failureId and test method id of the method the {@link FailureReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#failureId'
-     * </p>
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}
+     * and an id represented by the given failureId
      * It also stores the given test method for identifying parental section.
      *
      * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
-     * @param failureId     A failure id to be used in resulting id
+     * @param failureId     A failure id to be used to identify the {@link TestMethodFailureSection}
      * @param testMethod    A test method the {@link FailureReport} belongs to.
      */
     public TestMethodFailureSection(FailureReport failureReport, String failureId, Method testMethod) {
-        super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
+        super(failureReport, failureId);
         this.testMethod = testMethod;
     }
 
     /**
-     * Creates an instance of {@link TestMethodFailureSection} with with the given {@link FailureReport}
-     * and an id build from the given failureId and test method id of the method the {@link FailureReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#failureId'
-     * </p>
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}
+     * and an id represented by the given failureId
      * It also stores the given test method and test suite id for identifying parental section.
      *
      * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
-     * @param failureId     A failure id to be used in resulting id
+     * @param failureId     A failure id to be used to identify the {@link TestMethodFailureSection}
      * @param testMethod    A test method the {@link FailureReport} belongs to.
      * @param testSuiteId   An id of a test suite the {@link FailureReport} belongs to.
      */
     public TestMethodFailureSection(FailureReport failureReport, String failureId, Method testMethod,
         String testSuiteId) {
-        super(failureReport, ReporterUtils.getTestMethodId(testMethod), failureId);
+        super(failureReport, failureId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
     }

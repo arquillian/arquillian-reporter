@@ -29,23 +29,19 @@ public class TestClassConfigurationDeploymentSection extends
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given deployment id
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given deployment id.
      *
-     * @param deploymentId A deployment id to be used to identify this {@link SectionEvent}
+     * @param deploymentId A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      */
     public TestClassConfigurationDeploymentSection(String deploymentId) {
         super(deploymentId);
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with an id build from the given deploymentId and
-     * canonical name of the given testClass the deployment was deployed from.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#deploymentId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given deployment id.
      * It also stores the given test class for identifying parental section.
      *
-     * @param deploymentId A deployment id to be used in resulting id
+     * @param deploymentId A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      * @param testClass    A test class the deployment was deployed from
      */
     public TestClassConfigurationDeploymentSection(String deploymentId, Class testClass) {
@@ -54,14 +50,10 @@ public class TestClassConfigurationDeploymentSection extends
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with an id build from the given deploymentId and
-     * canonical name of the given testClass the deployment was deployed from.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#deploymentId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given deployment id.
      * It also stores the given test class and test suite id for identifying parental section.
      *
-     * @param deploymentId A deployment id to be used in resulting id
+     * @param deploymentId A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      * @param testClass    A test class the deployment was deployed from
      * @param testSuiteId  A test suite id of a test suite the test is running in
      */
@@ -81,25 +73,20 @@ public class TestClassConfigurationDeploymentSection extends
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and deployment id
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and deployment id.
      *
      * @param sectionReport A {@link BasicReport} that should be contained within this {@link TestClassConfigurationDeploymentSection}
-     * @param deploymentId  A deployment id to be used to identify this {@link SectionEvent}
+     * @param deploymentId  A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      */
     public TestClassConfigurationDeploymentSection(BasicReport sectionReport, String deploymentId) {
         super(sectionReport, deploymentId);
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and
-     * an id build from the given deploymentId and canonical name of the given testClass the deployment was deployed from.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#deploymentId'
-     * </p>
-     * It also stores the given test class for identifying parental section.
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and deployment id.
      *
      * @param sectionReport A {@link BasicReport} that should be contained within this {@link TestClassConfigurationDeploymentSection}
-     * @param deploymentId  A configuration id to be used in resulting id
+     * @param deploymentId  A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      * @param testClass     A test class the deployment was deployed from
      */
     public TestClassConfigurationDeploymentSection(BasicReport sectionReport, String deploymentId, Class testClass) {
@@ -108,15 +95,11 @@ public class TestClassConfigurationDeploymentSection extends
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and
-     * an id build from the given deploymentId and canonical name of the given testClass the deployment was deployed from.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#deploymentId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationDeploymentSection} with the given {@link BasicReport} and deployment id.
      * It also stores the given test class and test suite id for identifying parental section.
      *
      * @param sectionReport A {@link BasicReport} that should be contained within this {@link TestClassConfigurationDeploymentSection}
-     * @param deploymentId  A configuration id to be used in resulting id
+     * @param deploymentId  A deployment id to be used to identify this {@link TestClassConfigurationDeploymentSection}
      * @param testClass     A test class the deployment was deployed from
      * @param testSuiteId   A test suite id of a test suite the test is running in
      */

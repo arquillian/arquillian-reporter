@@ -1,7 +1,6 @@
 package org.arquillian.reporter.api.event;
 
 import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.api.utils.ReporterUtils;
 
 /**
  * An abstract class representing Section in general. Extending this class you create an event that represent some specific section
@@ -33,33 +32,23 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
     }
 
     /**
-     * Creates an instance of {@link SectionEvent}
-     * The given sectionIdParams are processed and created a String identifier of the {@link SectionEvent}.
-     * The identifier is created using all sectionIdParams joining them together using a char: '#'
-     * <p>
-     * The resulting identifier of two sectionIdParams 'bar' and 'foo' is: 'bar#foo'
-     * </p>
+     * Creates an instance of {@link SectionEvent} and sets the sectionId as an id of the section
      *
-     * @param sectionIdParams Strings to be used for creating identifier
+     * @param sectionId An id to be used as an identifier
      */
-    public SectionEvent(String... sectionIdParams) {
-        sectionId = ReporterUtils.buildId(sectionIdParams);
+    public SectionEvent(String sectionId) {
+        this.sectionId = sectionId;
     }
 
     /**
-     * Creates an instance of {@link SectionEvent} with the given {@link Report}.
-     * The given sectionIdParams are processed and created a String identifier of the {@link SectionEvent}.
-     * The identifier is created using all sectionIdParams joining them together using a char: '#'
-     * <p>
-     * The resulting identifier of two sectionIdParams 'bar' and 'foo' is: 'bar#foo'
-     * </p>
+     * Creates an instance of {@link SectionEvent} with the given {@link Report} and sets the sectionId as an id of the section.
      *
-     * @param report          A {@link Report} to be set as its payload
-     * @param sectionIdParams Strings to be used for creating identifier
+     * @param report    A {@link Report} to be set as its payload
+     * @param sectionId An id to be used as an identifier
      */
-    public SectionEvent(REPORTTYPE report, String... sectionIdParams) {
+    public SectionEvent(REPORTTYPE report, String sectionId) {
         this.report = report;
-        sectionId = ReporterUtils.buildId(sectionIdParams);
+        this.sectionId = sectionId;
     }
 
     /**

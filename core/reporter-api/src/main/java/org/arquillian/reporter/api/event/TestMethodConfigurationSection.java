@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.api.utils.ReporterUtils;
 
 /**
  * An implementation of {@link SectionEvent} that represents section for {@link ConfigurationReport}s within a {@link TestMethodReport}
@@ -24,7 +23,7 @@ public class TestMethodConfigurationSection
     }
 
     /**
-     * Creates an instance of {@link TestMethodConfigurationSection} with the given id
+     * Creates an instance of {@link TestMethodConfigurationSection} with the given id.
      *
      * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      */
@@ -33,35 +32,27 @@ public class TestMethodConfigurationSection
     }
 
     /**
-     * Creates an instance of {@link TestMethodConfigurationSection} with an id build from the given configurationId and
-     * test method id of the method the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#configurationId'
-     * </p>
+     * Creates an instance of {@link TestMethodConfigurationSection} with the given id.
      * It also stores the given test method for identifying parental section.
      *
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      * @param testMethod      A test method the {@link ConfigurationReport} belongs to.
      */
     public TestMethodConfigurationSection(String configurationId, Method testMethod) {
-        super(ReporterUtils.getTestMethodId(testMethod), configurationId);
+        super(configurationId);
         this.testMethod = testMethod;
     }
 
     /**
-     * Creates an instance of {@link TestMethodConfigurationSection} with an id build from the given configurationId and
-     * test method id of the method the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#configurationId'
-     * </p>
+     * Creates an instance of {@link TestMethodConfigurationSection} with the given id.
      * It also stores the given test method and test suite for identifying parental section.
      *
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      * @param testMethod      A test method the {@link ConfigurationReport} belongs to.
      * @param testSuiteId     An id of a test suite the {@link ConfigurationReport} belongs to.
      */
     public TestMethodConfigurationSection(String configurationId, Method testMethod, String testSuiteId) {
-        super(ReporterUtils.getTestMethodId(testMethod), configurationId);
+        super(configurationId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
     }
@@ -80,46 +71,38 @@ public class TestMethodConfigurationSection
      * and an id represented by the given configurationId
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained as the payload of this {@link TestMethodConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      */
     public TestMethodConfigurationSection(ConfigurationReport configuration, String configurationId) {
         super(configuration, configurationId);
     }
 
     /**
-     * Creates an instance of {@link TestMethodConfigurationSection} with with the given {@link ConfigurationReport}
-     * and an id build from the given configurationId and test method id of the method the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#configurationId'
-     * </p>
+     * Creates an instance of {@link TestMethodConfigurationSection} with with the given id and given {@link ConfigurationReport}
      * It also stores the given test method for identifying parental section.
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained as the payload of this {@link TestMethodConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      * @param testMethod      A test method the {@link ConfigurationReport} belongs to.
      */
     public TestMethodConfigurationSection(ConfigurationReport configuration, String configurationId,
         Method testMethod) {
-        super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
+        super(configuration, configurationId);
         this.testMethod = testMethod;
     }
 
     /**
-     * Creates an instance of {@link TestMethodConfigurationSection} with with the given {@link ConfigurationReport}
-     * and an id build from the given configurationId and test method id of the method the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'declaring.test.class.canonical.Name#methodName#configurationId'
-     * </p>
+     * Creates an instance of {@link TestMethodConfigurationSection} with with the given id and given {@link ConfigurationReport}
      * It also stores the given test method and test suite for identifying parental section.
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained as the payload of this {@link TestMethodConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestMethodConfigurationSection}
      * @param testMethod      A test method the {@link ConfigurationReport} belongs to.
      * @param testSuiteId     An id of a test suite the {@link ConfigurationReport} belongs to.
      */
     public TestMethodConfigurationSection(ConfigurationReport configuration, String configurationId, Method testMethod,
         String testSuiteId) {
-        super(configuration, ReporterUtils.getTestMethodId(testMethod), configurationId);
+        super(configuration, configurationId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
     }

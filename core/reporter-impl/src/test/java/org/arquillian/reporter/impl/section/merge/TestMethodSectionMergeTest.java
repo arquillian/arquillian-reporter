@@ -94,10 +94,9 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
         String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
         String configReportName = getConfigReportName(LATEST_SECTION_INDEX, testMethodNameSuffix);
 
-        String methodId = ReporterUtils.getTestMethodId(getDummyMethod(LATEST_SECTION_INDEX));
-        String configId = ReporterUtils.buildId(methodId, getTestMethodConfigSectionName(LATEST_SECTION_INDEX));
-
-        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, configId, configReportName);
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge,
+                                                               getTestMethodConfigSectionName(LATEST_SECTION_INDEX),
+                                                               configReportName);
     }
 
     @Test
@@ -111,10 +110,9 @@ public class TestMethodSectionMergeTest extends AbstractMergeTest {
         String testMethodNameSuffix = getTestMethodNameSuffix(ReporterUtils.getTestMethodId(dummyMethod), suiteName);
         String configReportName = getFailureReportName(LATEST_SECTION_INDEX, testMethodNameSuffix);
 
-        String methodId = ReporterUtils.getTestMethodId(getDummyMethod(LATEST_SECTION_INDEX));
-        String failureId = ReporterUtils.buildId(methodId, getTestMethodFailureSectionName(LATEST_SECTION_INDEX));
-
-        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge, failureId, configReportName);
+        verifyMergeLatestSectionInComplexTreeUsingEventManager(toMerge,
+                                                               getTestMethodFailureSectionName(LATEST_SECTION_INDEX),
+                                                               configReportName);
     }
 
     private Method getDummyMethod(int index) {

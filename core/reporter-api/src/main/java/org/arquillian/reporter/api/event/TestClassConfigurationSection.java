@@ -21,44 +21,36 @@ public class TestClassConfigurationSection
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationSection} with the given id
+     * Creates an instance of {@link TestClassConfigurationSection} with the given id.
      *
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      */
     public TestClassConfigurationSection(String configurationId) {
         super(configurationId);
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationSection} with an id build from the given configurationId and
-     * canonical name of the given testClass the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#configurationId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationSection} with the given id.
      * It also stores the given test class for identifying parental section.
      *
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      * @param testClass       A test class the {@link ConfigurationReport} belongs to.
      */
     public TestClassConfigurationSection(String configurationId, Class<?> testClass) {
-        super(testClass.getCanonicalName(), configurationId);
+        super(configurationId);
         this.testClass = testClass;
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationSection} with an id build from the given configurationId and
-     * canonical name of the given testClass the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#configurationId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationSection} with the given id.
      * It also stores the given test class and test suite id for identifying parental section.
      *
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      * @param testClass       A test class the {@link ConfigurationReport} belongs to.
      * @param testSuiteId     An id of a test suite the {@link ConfigurationReport} belongs to.
      */
     public TestClassConfigurationSection(String configurationId, Class<?> testClass, String testSuiteId) {
-        super(testClass.getCanonicalName(), configurationId);
+        super(configurationId);
         this.testClass = testClass;
         this.testSuiteId = testSuiteId;
     }
@@ -76,46 +68,38 @@ public class TestClassConfigurationSection
      * Creates an instance of {@link TestClassConfigurationSection} with the given id and given {@link ConfigurationReport}
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      */
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId) {
         super(configuration, configurationId);
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationSection} with the given {@link ConfigurationReport} and an id
-     * build from the given configurationId and canonical name of the given testClass the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#configurationId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationSection} with the given id and given {@link ConfigurationReport}
      * It also stores the given test class for identifying parental section.
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      * @param testClass       A test class the {@link ConfigurationReport} belongs to.
      */
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId,
         Class<?> testClass) {
-        super(configuration, testClass.getCanonicalName(), configurationId);
+        super(configuration, configurationId);
         this.testClass = testClass;
     }
 
     /**
-     * Creates an instance of {@link TestClassConfigurationSection} with the given {@link ConfigurationReport} and an id
-     * build from the given configurationId and canonical name of the given testClass the {@link ConfigurationReport} belongs to.
-     * <p>
-     * The resulting id is created as: 'test.class.canonical.name#configurationId'
-     * </p>
+     * Creates an instance of {@link TestClassConfigurationSection} with the given id and given {@link ConfigurationReport}
      * It also stores the given test class and test suite id for identifying parental section.
      *
      * @param configuration   A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
-     * @param configurationId A configuration id to be used in resulting id
+     * @param configurationId A configuration id to be used to identify the {@link TestClassConfigurationSection}
      * @param testClass       A test class the {@link ConfigurationReport} belongs to.
      * @param testSuiteId     An id of a test suite the {@link ConfigurationReport} belongs to.
      */
     public TestClassConfigurationSection(ConfigurationReport configuration, String configurationId, Class<?> testClass,
         String testSuiteId) {
-        super(configuration, testClass.getCanonicalName(), configurationId);
+        super(configuration, configurationId);
         this.testClass = testClass;
         this.testSuiteId = testSuiteId;
     }
