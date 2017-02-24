@@ -34,6 +34,9 @@ public class ReporterLifecycleManager {
     @Inject
     private Instance<ServiceLoader> serviceLoader;
 
+    // observe the first event that is available for us and prepare the execution report that contains all information
+    // about the whole test execution; then it loads registered implementation of builders and loads and sets
+    // all string-keys that are available
     public void observeFirstEvent(@Observes(precedence = 100) ManagerStarted event) {
         if (report.get() == null) {
             ExecutionReport executionReport = new ExecutionReport();
@@ -46,6 +49,7 @@ public class ReporterLifecycleManager {
         }
     }
 
+    // observe all section-events
     public void observeEventsForAllSections(@Observes SectionEvent event) {
         processEvent(event, report.get());
     }
@@ -62,11 +66,11 @@ public class ReporterLifecycleManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println(json);
-//        try {
-//            Thread.sleep(500);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        //        System.out.println(json);
+        //        try {
+        //            Thread.sleep(500);
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
     }
 }

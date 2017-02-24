@@ -12,7 +12,7 @@ public class SectionEventManager {
     public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
     void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionReport executionReport) {
 
-        // check if the expected payload type is same the actual one
+        // check if the expected payload type is same as the actual one
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
         if (!expectedPayload.isAssignableFrom(event.getReport().getClass())){
             // if not, then create a report class that will be a wrapper of the actual report
@@ -21,7 +21,9 @@ public class SectionEventManager {
             event.setReport((REPORT_TYPE) wrapper);
         }
 
+        // create an expected path in the section tree to the report
         SectionTree eventTree = createTreeRecursively(event, null);
+        // and merge the expcted path with the current state of section tree
         executionReport.getSectionTree().mergeSectionTree(eventTree);
     }
 

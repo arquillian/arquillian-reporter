@@ -8,7 +8,6 @@ import java.util.Map;
 public class ReporterConfiguration {
 
     private  ReporterConfiguration(){
-
     }
 
     public static ReporterConfiguration fromMap(Map<String, String> reporterProps) {

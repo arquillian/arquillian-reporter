@@ -13,6 +13,8 @@ import org.arquillian.reporter.api.model.entry.table.TableEntry;
 import org.arquillian.reporter.api.model.entry.table.TableRow;
 
 /**
+ * An implementation of {@link TableBuilder} used for building {@link TableEntry}
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TableBuilderImpl implements TableBuilder {

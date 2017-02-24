@@ -3,6 +3,8 @@ package org.arquillian.reporter.impl;
 import org.arquillian.reporter.api.event.SectionEvent;
 
 /**
+ * The root {@link SectionEvent} node in the whole section tree
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ExecutionSection extends SectionEvent<ExecutionSection, ExecutionReport, SectionEvent> {

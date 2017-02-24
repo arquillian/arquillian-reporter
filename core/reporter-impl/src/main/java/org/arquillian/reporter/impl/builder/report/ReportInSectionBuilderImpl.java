@@ -6,6 +6,8 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.jboss.arquillian.core.api.Event;
 
 /**
+ * An implementation of {@link ReportInSectionBuilder} used for setting report into a {@link SectionEvent}
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ReportInSectionBuilderImpl<REPORTTYPE extends AbstractReport, SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>>

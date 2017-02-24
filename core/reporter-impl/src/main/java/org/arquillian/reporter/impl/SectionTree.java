@@ -3,19 +3,22 @@ package org.arquillian.reporter.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.api.utils.Validate;
-import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.utils.Validate;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_TYPE, ? extends SectionEvent>, PAYLOAD_TYPE extends Report> {
+
+    private Logger log = Logger.getLogger(getClass().getName());
 
     private Identifier<SECTIONTYPE> rootIdentifier;
     private List<SectionTree> subtrees = new ArrayList<>();
@@ -121,7 +124,8 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
     }
 
     private void createMissingSubtreeAndMergeIt(Identifier rootIdentifierSubtreeToMerge, SectionTree subtreeToMerge) {
-        // get class of the missing section
+        // get class and id of the missing section
+        String sectionId = rootIdentifierSubtreeToMerge.getSectionId();
         Class subTreeSectionClass = rootIdentifierSubtreeToMerge.getSectionEventClass();
         // and use non-parametric constructor to construct
         SectionEvent dummySection = (SectionEvent) SecurityActions.newInstance(subTreeSectionClass);
@@ -129,7 +133,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         AbstractReport dummyReport =
             (AbstractReport) SecurityActions.newInstance(dummySection.getReportTypeClass());
         // set name of dummy report to the section id specified in identifier
-        dummyReport.setName(new UnknownStringKey(rootIdentifierSubtreeToMerge.getSectionId()));
+        dummyReport.setName(new UnknownStringKey(sectionId));
         // set dummy report as an associated report
         subtreeToMerge.setAssociatedReport(dummyReport);
         // and also into the current report structure
@@ -138,12 +142,16 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         SectionTree dummyTree = subtreeToMerge.getCloneWithoutSubtrees();
         // add the dummy tree
         getSubtrees().add(dummyTree);
+
+        log.info(String.format("There hasn't been found a parent node with identifier \"%s + %s\" in the section tree. "
+                                   + "Reporter creates a new node with corresponding identifiers and also a report node in the report tree with name = %s",
+                               subTreeSectionClass, sectionId, sectionId));
         // and merge the subtree with the dummy tree
         dummyTree.mergeSectionTree(subtreeToMerge);
-        // todo log
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "SectionTree{" +
             "rootIdentifier=" + rootIdentifier +
             ", subtrees=" + subtrees +

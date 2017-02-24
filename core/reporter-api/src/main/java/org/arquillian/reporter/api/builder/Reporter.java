@@ -7,14 +7,15 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.logging.Logger;
 
-import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.table.TableEntry;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.api.model.entry.table.TableEntry;
 
 /**
  * The main starting point for using Arquillian Reporter fluent API
@@ -22,6 +23,8 @@ import org.arquillian.reporter.api.model.entry.table.TableEntry;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class Reporter {
+
+    private static final Logger log = Logger.getLogger(Reporter.class.getName());
 
     /**
      * Creates an instance of {@link BasicReport} and sets it into a {@link ReportBuilder} as a report to be built.
@@ -32,6 +35,16 @@ public class Reporter {
      */
     public static ReportBuilder createReport(StringKey name) {
         return usingBuilder(ReportBuilder.class, new BasicReport(name));
+    }
+
+    /**
+     * Creates an instance of {@link BasicReport} without any name specified. It sets the BasicReport implementation
+     * into a {@link ReportBuilder} as a report to be built. The {@link ReportBuilder} instance will be then returned.
+     *
+     * @return An instance of {@link ReportBuilder} with set instance of {@link BasicReport}
+     */
+    public static ReportBuilder createReport() {
+        return usingBuilder(ReportBuilder.class, new BasicReport(""));
     }
 
     /**
@@ -74,7 +87,6 @@ public class Reporter {
             Class<?>[] classes = getConstructorParametersTypes(implClass, constructParams);
             return newInstance(implClass, classes, constructParams);
         } else {
-            // todo
             throw new IllegalArgumentException(
                 "There is no implementation registered for the builder: " + builderClass.getCanonicalName());
         }
@@ -123,7 +135,9 @@ public class Reporter {
             if (firstMatchedConstr.isPresent()) {
                 return firstMatchedConstr.get().getParameterTypes();
             } else {
-                // todo throw an exception?
+                log.warning(String.format(
+                    "It wasn't possible to find any constructor method of the class %s with expected set of constructor parameter types: %s",
+                    implClass, Arrays.asList(constructParams)));
                 return expectedClasses;
             }
         }

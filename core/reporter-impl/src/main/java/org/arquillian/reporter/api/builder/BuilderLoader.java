@@ -10,10 +10,15 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.core.spi.context.Context;
 
 /**
+ * Loads implementation of {@link Builder} implementations registered using Arquillian SPI
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class BuilderLoader {
 
+    /**
+     * Loads implementation of {@link Builder} implementations registered using Arquillian SPI
+     */
     public static void load() {
         ExtensionLoader extensionLoader = locateExtensionLoader(new JavaSPIExtensionLoader());
         Collection<LoadableExtension> extensions = extensionLoader.load();

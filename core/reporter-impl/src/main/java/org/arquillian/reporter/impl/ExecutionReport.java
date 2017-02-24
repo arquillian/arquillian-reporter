@@ -10,6 +10,8 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 
 /**
+ * Report containing all information about the whole test execution
+ *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuilder> {

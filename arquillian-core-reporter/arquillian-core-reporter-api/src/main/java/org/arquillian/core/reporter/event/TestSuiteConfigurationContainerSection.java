@@ -20,6 +20,7 @@ public class TestSuiteConfigurationContainerSection
     extends SectionEvent<TestSuiteConfigurationContainerSection, BasicReport, TestSuiteConfigurationSection> {
 
     private String testSuiteId;
+    public static final String TEST_SUITE_CONFIGURATION_SECTION_ID = "containers";
 
     /**
      * Creates an instance of {@link TestSuiteConfigurationContainerSection}
@@ -84,7 +85,7 @@ public class TestSuiteConfigurationContainerSection
 
     @Override
     public TestSuiteConfigurationSection getParentSectionThisSectionBelongsTo() {
-        return new TestSuiteConfigurationSection("containers", testSuiteId);
+        return new TestSuiteConfigurationSection(TEST_SUITE_CONFIGURATION_SECTION_ID, testSuiteId);
     }
 
     @Override

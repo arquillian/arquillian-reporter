@@ -16,6 +16,7 @@ import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.Container;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;
 import org.jboss.arquillian.container.spi.event.container.BeforeDeploy;
@@ -66,11 +67,26 @@ public class ArquillianCoreReporterLifecycleManager {
     @Inject
     private Event<TestSuiteConfigurationSection> config;
 
+    @Inject
+    private Instance<ArquillianDescriptor> descriptor;
+
     public void startTestSuite(@Observes(precedence = Integer.MAX_VALUE) BeforeSuite managerProcessing) {
         Reporter
             .createReport(new TestSuiteReport(TEST_SUITE_NAME))
             .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
+
+        // todo differentiate between loaded extensions and configs that are in arquillian.xml
+        //        ReportBuilder extensionsReport = Reporter.createReport(new ConfigurationReport("Loaded extensions"));
+        //        for (ExtensionDef extensionDef : descriptor.get().getExtensions()) {
+        //            ReportBuilder extBuilder = Reporter
+        //                .createReport(extensionDef.getExtensionName())
+        //                .feedKeyValueListFromMap(extensionDef.getExtensionProperties());
+        //            extensionsReport.addReport(extBuilder);
+        //        }
+        //        extensionsReport
+        //            .inSection(new TestSuiteConfigurationSection("loaded-extension"))
+        //            .fire(reportEvent);
     }
 
     public void reportContainer(@Observes Container event) {
@@ -97,10 +113,10 @@ public class ArquillianCoreReporterLifecycleManager {
             .addKeyValueEntry(ARCHIVE_NAME_OF_DEPLOYMENT, description.getArchive().getName())
             .addKeyValueEntry(ORDER_OF_DEPLOYMENT, description.getOrder())
             .addKeyValueEntry(PROTOCOL_USED_FOR_DEPLOYMENT, description.getProtocol().getName())
-            .inSection(new TestClassConfigurationDeploymentSection(description.getName(), null))
+            .inSection(new TestClassConfigurationDeploymentSection(description.getName()))
             .fire(reportEvent);
 
-        // todo add info into container
+        // todo add info into container report - optimally keep oll deployments in a table - to do so we need to have functionality of merging tables. Or is there any better way?
     }
 
     public void startTestClass(@Observes(precedence = Integer.MAX_VALUE) BeforeClass event) {
@@ -169,19 +185,6 @@ public class ArquillianCoreReporterLifecycleManager {
             .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
             .fire(reportEvent);
     }
-
-    //
-    //    private Collection<? extends ExtensionReport> getExtensionReports(ArquillianDescriptor descriptor) {
-    //        List<ExtensionReport> extensionReports = new ArrayList<ExtensionReport>();
-    //
-    //        for (ExtensionDef extensionDef : descriptor.getExtensions()) {
-    //            ExtensionReport extensionReport = new ExtensionReport();
-    //            extensionReport.setQualifier(extensionDef.getExtensionName());
-    //            extensionReport.setConfigurations(extensionDef.getExtensionProperties());
-    //            extensionReports.add(extensionReport);
-    //        }
-    //        return extensionReports;
-    //    }
 
     private static final class ReportMessageParser {
 
