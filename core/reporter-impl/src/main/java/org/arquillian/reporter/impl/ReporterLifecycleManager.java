@@ -34,7 +34,7 @@ public class ReporterLifecycleManager {
     @Inject
     private Instance<ServiceLoader> serviceLoader;
 
-    public void observeFirstEvent(@Observes ManagerStarted event) {
+    public void observeFirstEvent(@Observes(precedence = 100) ManagerStarted event) {
         if (report.get() == null) {
             ExecutionReport executionReport = new ExecutionReport();
             report.set(executionReport);
