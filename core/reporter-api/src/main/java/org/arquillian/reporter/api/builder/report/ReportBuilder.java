@@ -51,7 +51,7 @@ public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE ext
      * @param reportBuilder An {@link Report} to add into the list of sub-reports
      * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
      */
-    BUILDERTYPE addReport(BUILDERTYPE reportBuilder);
+    BUILDERTYPE addReport(ReportBuilder reportBuilder);
 
     /**
      * Adds the given {@link Report} into the list of sub-reports in the associated {@link Report} instance

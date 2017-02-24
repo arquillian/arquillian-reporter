@@ -24,7 +24,7 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
     implements ReportBuilder<BUILDERTYPE, REPORTTYPE> {
 
     private final REPORTTYPE report;
-    private List<BUILDERTYPE> reportBuilders = new ArrayList<>();
+    private List<ReportBuilder> reportBuilders = new ArrayList<>();
 
     public AbstractReportBuilder(REPORTTYPE report) {
         this.report = report;
@@ -37,7 +37,7 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
     }
 
     @Override
-    public BUILDERTYPE addReport(BUILDERTYPE reportBuilder) {
+    public BUILDERTYPE addReport(ReportBuilder reportBuilder) {
         reportBuilders.add(reportBuilder);
         return (BUILDERTYPE) this;
     }
@@ -101,7 +101,7 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
      *
      * @return List of added sub-report builders
      */
-    protected List<BUILDERTYPE> getReportBuilders() {
+    protected List<ReportBuilder> getReportBuilders() {
         return reportBuilders;
     }
 
