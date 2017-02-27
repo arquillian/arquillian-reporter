@@ -9,6 +9,7 @@ import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.StringEntry;
 
 /**
  * A {@link Builder} providing an API that helps you to build a {@link Report}
@@ -34,6 +35,14 @@ public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE ext
      * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
      */
     BUILDERTYPE addEntry(Entry entry);
+
+    /**
+     * Adds the given string as a {@link StringEntry} into the list of entries in the associated {@link Report} instance
+     *
+     * @param entry A string to be added as a {@link StringEntry}
+     * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
+     */
+    BUILDERTYPE addEntry(String entry);
 
     /**
      * Takes the given map of Strings and each pair stores as a {@link KeyValueEntry} in the list of entries in the associated {@link Report} instance.

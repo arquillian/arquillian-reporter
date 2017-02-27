@@ -19,9 +19,9 @@ public interface ReportInSectionBuilder<REPORTTYPE extends Report, SECTIONTYPE e
     /**
      * Fire an arquillian {@link SectionEvent} that was set in previous step
      *
-     * @param reportEvent A {@link Event<SectionEvent>} to be used for firing
+     * @param injectedSectionEvent A {@link Event<SectionEvent>} to be used for firing
      * @return The fired {@link SectionEvent} that was set in previous step
      */
-    SECTIONTYPE fire(Event<SectionEvent> reportEvent);
+    SECTIONTYPE fire(Event<SectionEvent> injectedSectionEvent);
 
 }

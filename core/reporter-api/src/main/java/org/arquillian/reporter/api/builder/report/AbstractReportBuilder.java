@@ -11,6 +11,7 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
+import org.arquillian.reporter.api.model.entry.StringEntry;
 import org.arquillian.reporter.api.model.report.Report;
 
 /**
@@ -45,6 +46,12 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
     @Override
     public BUILDERTYPE addEntry(Entry entry) {
         report.getEntries().add(entry);
+        return (BUILDERTYPE) this;
+    }
+
+    @Override
+    public BUILDERTYPE addEntry(String entry) {
+        report.getEntries().add(new StringEntry(entry));
         return (BUILDERTYPE) this;
     }
 

@@ -22,9 +22,9 @@ public class ReportInSectionBuilderImpl<REPORTTYPE extends AbstractReport, SECTI
     }
 
     @Override
-    public SECTIONTYPE fire(Event<SectionEvent> fireEventExecutor) {
+    public SECTIONTYPE fire(Event<SectionEvent> injectedSectionEvent) {
         sectionEvent.setReport(report);
-        fireEventExecutor.fire(sectionEvent);
+        injectedSectionEvent.fire(sectionEvent);
         return sectionEvent;
     }
 }
