@@ -32,6 +32,8 @@
         <module>core/reporter-api</module>
         <module>arquillian-core-reporter/arquillian-core-reporter-api</module>
         <module>arquillian-core-reporter/arquillian-core-reporter-impl</module>
+        <module>arquillian-environment-reporter/arquillian-environment-reporter-api</module>
+        <module>arquillian-environment-reporter/arquillian-environment-reporter-impl</module>
         <module>depchain</module>
     </modules>
 
@@ -40,9 +42,23 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>1.1.12.Final</version>
+                <version>${version.arquillian.core}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-impl-base</artifactId>
+                <version>${version.arquillian.core}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.core</groupId>
+                <artifactId>arquillian-core-impl-base</artifactId>
+                <version>${version.arquillian.core}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
