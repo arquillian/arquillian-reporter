@@ -29,6 +29,7 @@ There isn't any parameter supported so far.
 Arquillian reporter offers you a possibility to create complex and structured reports from your Arquillian extension in an easy and a clean way.
 To use it in your Arquillian extension use the same dependency-chain that is stated above (`org.arquillian.reporter:arquillian-reporter-depchain`)
 
+If you don't want to read about the theory and just see some examples, you can jump to the chapter <<Examples>> where are also some graphs available, or directly to the chapter <<More examples>> where are oly code snippets and its description.
 
 == Report
 
@@ -138,7 +139,7 @@ Since there wouldn't be any identifier for TestClassSection set, then the latest
 ==== Automatic creation of missing section nodes
 
 It may happen that you want to add a subsection of some section that doesn't exist. In other words, in the section event that you fire you use an identifier that doesn't match any existing section node. Arquillian Reporter then creates missing section node with the identifier and also corresponding report node in the report tree. The report's name is equal to the missing section identifier. The report that has been attached in the section event is then added in this automatically created report as its sub-report. +
-This will guarantee that none of the reported information will be lost. Take a look at the chapter <<Enough theory, give me some examples>> to see the real example of this functionality.
+This will guarantee that none of the reported information will be lost. Take a look at the chapter <<Examples>> to see the real example of this functionality.
 
 == Builders
 
@@ -221,7 +222,7 @@ Now, when you have an instance of a built report you would like to add it into t
 ConfigurationReport report = Reporter
             .createReport(new ConfigurationReport("my report"))
             .build();
-injectedReportEvent.fire(new TestClassConfigurationSection(report, "configId"));
+injectedSectionEvent.fire(new TestClassConfigurationSection(report, "configId"));
 ----
 instead of this, you can use method `inSection` provided by `ReportBuilder` API and keep everything compact:
 [source,java]
@@ -229,7 +230,7 @@ instead of this, you can use method `inSection` provided by `ReportBuilder` API 
 Reporter
     .createReport(new ConfigurationReport("my report"))
     .inSection(new TestClassConfigurationSection("configId"))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 Reporter uses the corresponding instance of report, builds it, sets it into the provided section event and fires the event.
 
@@ -241,7 +242,7 @@ As you might have already noticed, every section event has some type of `Report`
 Reporter
     .createReport("my report")
     .inSection(new TestClassSection(TestClass.class))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 This creates an instance of `BasicReport` and sets it into the `TestClassSection` event. Since the default `Report` type of the section-event is `TestClassReport` then Arquillian Reporter finds the report related to `TestClass.class` and instead of merging it it adds the attached report into the list of sub-reports. Similar example:
 [source,java]
@@ -249,7 +250,7 @@ This creates an instance of `BasicReport` and sets it into the `TestClassSection
 Reporter
     .createReport(new ConfigurationReport("my config report"))
     .inSection(new TestClassSection(TestClass.class))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 In this use case, an instance of `ConfigurationReport` is used. Because it is a configuration report, then it is added into the list of configuration sub-reports in the `TestClassReport`.
 
@@ -265,7 +266,7 @@ Reporter.createTable(StringKey name)
 ----
 and to get an instance of the table entry use the method `build()`
 
-== Enough theory, give me some examples
+== Examples
 
 So, we went through the basics of the Arquillian Reporter functions. Now, it's time to provide some example how to add your reports to the whole report tree.
 
@@ -282,7 +283,7 @@ Reporter
     .createReport(new TestClassReport())
     .addKeyValueEntry("runAsClient", true)
     .inSection(new TestClassSection(WildFlyTestClass.class))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 and analogically for test method
 [source,java]
@@ -291,7 +292,7 @@ Reporter
     .createReport(new TestMethodReport())
     .addKeyValueEntry("runAsClient", true)
     .inSection(new TestMethodSection())
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 then the resulting tree structures would be same - only the information would change:
 
@@ -305,7 +306,7 @@ Reporter
     .addKeyValueEntry("jbossHome", "/path/to/wildfly")
     .addKeyValueEntry("managed", "false")
     .inSection(new TestSuiteConfigurationContainerSection("WildFly"))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 Using the API we've just created an instance of BasicReport with the name "WildFly" and added some key-value entries. Then we set the report as a payload of `TestSuiteConfigurationContainerSection` event and fired the event.
 `TestSuiteConfigurationContainerSection` is a subsection of `TestSuiteConfigurationSection`, but there isn't any corresponding section-event-node present in the graph. In this case, the functionality described in the chapter <<Automatic creation of missing section nodes>> is used. Since `TestSuiteConfigurationContainerSection` identifies its parent in this way:
@@ -326,7 +327,7 @@ Reporter
     .addKeyValueEntry("scope", "method")
     .addKeyValueEntry("browser", "Firefox")
     .inSection(new TestMethodSection(clientTest))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 We just want to add a basic report to the list of sub-reports - that's why we don't need to specify any concrete report type. Then we use the `TestMethodSection` event with the defined test method. When we fired, the section tree wouldn't change. But in the report tree, there would occur a new report node:
 
@@ -370,7 +371,7 @@ Reporter
     .addKeyValueEntry(DRONE_SCOPE_IN_GENERAL, "method")
     .addKeyValueEntry(DRONE_BROWSER, "Firefox")
     .inSection(new TestMethodSection(clientTest))
-    .fire(injectedReportEvent);
+    .fire(injectedSectionEvent);
 ----
 
 === StringKey property file
@@ -494,6 +495,228 @@ public class MySection extends SectionEvent<MySection, MyReport, TestMethodSecti
 ----
 
 
+== More examples
 
+====
+*I.*
 
+Add a new configuration report related to a test suite with an id `"test-suite-id"`. This report should contain a key-value pair:
+[source,java]
+----
+Reporter
+    .createReport(new ConfigurationReport("My config report name")) // <1>
+    .addKeyValueEntry("this is a key", "this is a value") // <2>
+    .inSection(new TestSuiteConfigurationSection("my-config-id", "test-suite-id")) // <3>
+    .fire(injectedSectionEvent); // <4>
+----
+<1> The type of the `Report` has to be a `ConfigurationReport` because it is the default payload of the `TestSuiteConfigurationSection` event and we want to create a completely new report.
+<2> Add the key-value pair
+<3> Set it into the appropriate section `TestSuiteConfigurationSection` (config section under a test suite section) where is specified the configuration id `"my-config-id"` and `"test-suite-id"` as an id of the test suite the configuration relates to
+<4> Fire the event using an injected instance of `Event<SectionEvent>`.
+====
 
+{empty} +
+
+====
+*II.*
+
+Add an additional sub-report to the configuration report that we created in the previous step - there are two ways of doing so - first one: +
+[source,java]
+----
+Reporter
+    .createReport(new ConfigurationReport()) // <1>
+    .addReport(Reporter // <2>
+                   .createReport("My config sub-report name")
+                   .add... // <3>
+                   ...
+    .inSection(new TestSuiteConfigurationSection("my-config-id")) // <4>
+    .fire(injectedSectionEvent);
+----
+<1> Create a `ConfigurationReport` that will be merged with the one from previous step. The name is not necessary, as the original name `"My config report name"` is taken and won't be overridden.
+<2> Add the report you want to append as a sub-report of this new configuration report
+<3> Add anything you want into the report
+<4> Set it into the appropriate section `TestSuiteConfigurationSection` with an id of the configuration we want to merge: `"my-config-id"`. There isn't specified the id of the test suite - we know, that the report is part of the latest test suite report, so we don't have to add there the id as it will match the latest one.
+
+The second way is shorter and preferred. The result is completely same:
+[source,java]
+----
+Reporter
+    .createReport("My config sub-report name") // <1>
+    .add... // <2>
+    ...
+    .inSection(new TestSuiteConfigurationSection("my-config-id")) // <3>
+    .fire(injectedSectionEvent);
+----
+<1> Create a `BasicReport`
+<2> Add anything you want into the report
+<3> this is same as the previous one - set it into the section `TestSuiteConfigurationSection` with an appropriate id `"my-config-id"`; id of the test suite is not necessary - the latest one is used.
+
+As the payload is a `BasicReport` and not a `ConfigurationReport` then Arquillian Reporter automatically takes this basic one and wraps into an instance of `ConfigurationReport`. The result is same but using less code.
+====
+
+{empty} +
+
+====
+*III.*
+
+Add a new configuration report containing a string entry to the latest test suite report:
+[source,java]
+----
+Reporter
+    .createReport(new ConfigurationReport("Second config report name")) // <1>
+    .addEntry("this is a string entry") // <2>
+    .inSection(new TestSuiteConfigurationSection("my-second-config-id")) // <3>
+    .fire(injectedSectionEvent); // <4>
+----
+<1> Create a `ConfigurationReport`
+<2> Add a string entry (or anything you want)
+<3> Set in the appropriate section with a configuration id specified. Id cannot be same as we want to create a new configuration report
+<4> Fire
+====
+
+{empty} +
+
+====
+*IV.*
+
+Add a table entry and key-value pair into the configuration report `"Second config report name"` from the previous step
+[source,java]
+----
+TableEntry myTable = Reporter // <1>
+                        .createTable("My table") // <2>
+                        .addBodyRow("first row first column", "first row second column") // <3>
+                        .addBodyRow("second row first column", "second row second column") // <4>
+                        .build(); // <5>
+
+Reporter
+    .createReport(new ConfigurationReport()) // <6>
+    .addEntry(myTable) // <7>
+    .addKeyValueEntry("this is a key", "this is a value") // <8>
+    .inSection(new TestSuiteConfigurationSection("my-second-config-id")) // <9>
+    .fire(injectedSectionEvent); // <10>
+----
+<1> Use the `Reporter` class also for creating a table
+<2> Create table with a name
+<3> Add a first row containing two cells into the body
+<4> Add a second row containing two cells into the body
+<5> Build and get the resulting table.
+<6> Create a configuration report - needs to be merged because of the entries (the name is not necessary)
+<7> Add the created table entry
+<8> Add key-value pair entry
+<9> Set the report into an appropriate section with corresponding id
+<10> Fire
+====
+
+{empty} +
+
+====
+*V.*
+
+Add a sub-report containing key-value pairs created from a map of strings to the latest test method report:
+[source,java]
+----
+Map<String, String> mapOfStrings = ...;
+Reporter
+    .createReport("Sub-report of method report") // <1>
+    .feedKeyValueListFromMap(mapOfStrings) // <2>
+    .inSection(new TestMethodSection()) // <3>
+    .fire(injectedSectionEvent);
+----
+<1> We're adding a report to an existing one - instance of a `BasicReport` is enough.
+<2> Using method `feedKeyValueListFromMap` you can pass a map of strings and Reporter creates for every pair of key and value a key-value entry.
+<3> We want to add it into the latest test method report => we use `TestMethodSection` and no identifier is necessary.
+====
+
+{empty} +
+
+====
+*VI.*
+
+Add a sub-report containing two string entries to a test method report of the method `myTestMethod` (it is part of the latest test suite).
+[source,java]
+----
+Reporter
+    .createReport("Sub-report of myTestMethod report")
+    .addEntry("first string entry")
+    .addEntry("second string entry")
+    .inSection(new TestMethodSection(myTestMethod))
+    .fire(injectedSectionEvent);
+----
+====
+
+{empty} +
+
+====
+*VII.*
+
+Add a key-value entry and a sub-report containing a string entry to a test class report of the class `DummyTestClass.java` (it is part of the latest test suite).
+[source,java]
+----
+Reporter
+    .createReport(new TestClassReport()) // <1>
+    .addKeyValueEntry("this is key", "this is value") // <2>
+    .addReport(Reporter  // <3>
+                   .createReport("sub-report")
+                   .addEntry("string entry"))
+    .inSection(new TestClassSection(DummyTestClass.class)) // <4>
+    .fire(injectedSectionEvent);
+----
+<1> Create a `TestClassReport` as we need to merge it - because of the key-value entry.
+<2> Add key-value entry
+<3> Add sub-report with the string entry
+<4> Set it into the `TestClassSection` with the class specified
+====
+
+{empty} +
+
+====
+*VIII.*
+
+Add a configuration report to the test class report of `DummyTestClass.java` class
+[source,java]
+----
+Reporter
+    .createReport(new ConfigurationReport("Config of DummyTestClass"))
+    .add...
+    ...
+    .inSection(new TestClassConfigurationSection("my-dummy-config-id", DummyTestClass.class)) // <1>
+    .fire(injectedSectionEvent);
+----
+<1> We're using the the `TestClassConfigurationSection` where the first parameter is id of the configuration and the second one is a class the report belongs to.
+====
+
+{empty} +
+
+====
+*IX.*
+
+In this example we will use the code from the chapter <<Create your own section>>. We will add a report `MyReport` containing a table entry and fire it using the `MySection` (that is subsection of `TestMethodSection`). This should belong to the test method report of the method `myTestMethod`.
+[source,java]
+----
+Reporter
+    .createReport(new MyReport("My report name")) // <1>
+    .addEntry(tableEntry) // <2>
+    .inSection(new MySection("my-report-id", myTestMethod)) // <3>
+    .fire(injectedSectionEvent);
+----
+<1> Create `MyReport` as we want to create a new report
+<2> Add table entry (and/or anything you want)
+<3> Set it into the section `MySection` that is a subsection of `TestMethodSection`. First param is an id that we can reference, second is the method this report belongs to.
+====
+
+{empty} +
+
+====
+*IX.*
+
+Add sub-report to the `MyReport` from the previous example:
+[source,java]
+----
+Reporter
+    .createReport("My sub-report")
+    .add...
+    ...
+    .inSection(new MySection("my-report-id", myTestMethod))
+    .fire(injectedSectionEvent);
+----
+====
