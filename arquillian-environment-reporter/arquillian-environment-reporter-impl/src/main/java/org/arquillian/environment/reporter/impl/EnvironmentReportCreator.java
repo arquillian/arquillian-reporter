@@ -12,15 +12,17 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 import java.nio.charset.Charset;
 import java.util.TimeZone;
 
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.CHARSET;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.DOCKER;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.ENVIRONMENT_SECTION_NAME;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.JAVA_VERSION;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.OPERATIVE_SYSTEM;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.TEST_RUNNER;
-import static org.arquillian.environment.reporter.impl.ArquillianEnvironmentKeys.TIMEZONE;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.CHARSET;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.DOCKER;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.ENVIRONMENT_SECTION_NAME;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.JAVA_VERSION;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.OPERATIVE_SYSTEM;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.OPERATIVE_SYSTEM_ARCH;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.OPERATIVE_SYSTEM_VERSION;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.TEST_RUNNER;
+import static org.arquillian.environment.reporter.impl.EnvironmentKey.TIMEZONE;
 
-public class ArquillianEnvironmentReporterLifecycleManager {
+public class EnvironmentReportCreator {
 
     @Inject
     Event<SectionEvent> reportEvent;
@@ -33,6 +35,8 @@ public class ArquillianEnvironmentReporterLifecycleManager {
                 .addKeyValueEntry(TIMEZONE, getTimeZone())
                 .addKeyValueEntry(CHARSET, getDefaultCharset())
                 .addKeyValueEntry(OPERATIVE_SYSTEM, getOperativeSystemName())
+                .addKeyValueEntry(OPERATIVE_SYSTEM_ARCH, getOperativeSystemArchitecture())
+                .addKeyValueEntry(OPERATIVE_SYSTEM_VERSION,getOperativeSystemVersion())
                 .inSection(new TestSuiteConfigurationSection("environment"))
                 .fire(reportEvent);
     }
@@ -59,6 +63,14 @@ public class ArquillianEnvironmentReporterLifecycleManager {
 
     private String getOperativeSystemName() {
         return System.getProperty("os.name");
+    }
+
+    private String getOperativeSystemArchitecture() {
+        return System.getProperty("os.arch");
+    }
+
+    private String getOperativeSystemVersion() {
+        return System.getProperty("os.version");
     }
 
 }

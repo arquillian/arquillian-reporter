@@ -25,6 +25,9 @@
         <maven.compiler.source>1.8</maven.compiler.source>
 
         <version.arquillian.core>1.1.12.Final</version.arquillian.core>
+        <version.junit>4.12</version.junit>
+        <version.assertj-core>3.6.0</version.assertj-core>
+        <version.mockito>2.7.13</version.mockito>
     </properties>
     <!-- Modules -->
     <modules>
@@ -58,6 +61,24 @@
                 <artifactId>arquillian-core-impl-base</artifactId>
                 <version>${version.arquillian.core}</version>
                 <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj-core}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${version.mockito}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

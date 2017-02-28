@@ -33,6 +33,16 @@
             <artifactId>arquillian-core-reporter-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.arquillian.reporter</groupId>
+            <artifactId>arquillian-environment-reporter-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.reporter</groupId>
+            <artifactId>arquillian-environment-reporter-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

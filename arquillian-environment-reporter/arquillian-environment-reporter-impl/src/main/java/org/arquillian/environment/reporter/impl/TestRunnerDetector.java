@@ -3,14 +3,16 @@ package org.arquillian.environment.reporter.impl;
 public class TestRunnerDetector {
 
     private TestRunnerDetector() {
-        super();
     }
 
     public static TestRunner detect() {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return detect(Thread.currentThread().getStackTrace());
+    }
+
+    static TestRunner detect(StackTraceElement[] stackTrace) {
 
         // Iterate from last element to first
-        for (int i = stackTrace.length - 1; i < stackTrace.length; i--) {
+        for (int i = stackTrace.length - 1; i >= 0; i--) {
 
             String currentClassName = stackTrace[i].getClassName();
 
@@ -30,7 +32,7 @@ public class TestRunnerDetector {
                 return TestRunner.INTELLIJ;
             }
 
-            if (currentClassName.contains(TestRunner.GRADLE.getPackageName())) {
+            if (currentClassName.contains(TestRunner.ECLIPSE.getPackageName())) {
                 return TestRunner.ECLIPSE;
             }
 
