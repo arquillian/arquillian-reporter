@@ -8,7 +8,7 @@ import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 
-import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_CLASS_CONFIGURATION_REPORT;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT;
 
 /**
  * A {@link Report} implementation that represents any report information related to a test class.

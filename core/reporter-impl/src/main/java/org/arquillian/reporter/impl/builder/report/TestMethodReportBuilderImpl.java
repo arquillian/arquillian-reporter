@@ -8,8 +8,8 @@ import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.jboss.arquillian.test.spi.TestResult;
 
-import static org.arquillian.reporter.api.model.ReporterCoreKeys.METHOD_FAILURE_REPORT;
-import static org.arquillian.reporter.api.model.ReporterCoreKeys.METHOD_FAILURE_REPORT_STACKTRACE;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.METHOD_FAILURE_REPORT;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.METHOD_FAILURE_REPORT_STACKTRACE;
 
 /**
  * An implementation of {@link TestMethodReportBuilder} used for building {@link TestMethodReport}

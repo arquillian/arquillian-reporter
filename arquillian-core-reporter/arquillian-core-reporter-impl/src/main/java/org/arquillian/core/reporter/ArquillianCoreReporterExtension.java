@@ -1,6 +1,6 @@
 package org.arquillian.core.reporter;
 
-import org.arquillian.core.reporter.impl.ArquillianCoreKeys;
+import org.arquillian.core.reporter.impl.ArquillianCoreKey;
 import org.arquillian.core.reporter.impl.ArquillianCoreReporterLifecycleManager;
 import org.arquillian.reporter.api.model.StringKey;
 import org.jboss.arquillian.core.spi.LoadableExtension;
@@ -13,6 +13,6 @@ public class ArquillianCoreReporterExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.observer(ArquillianCoreReporterLifecycleManager.class);
-        builder.service(StringKey.class, ArquillianCoreKeys.class);
+        builder.service(StringKey.class, ArquillianCoreKey.class);
     }
 }

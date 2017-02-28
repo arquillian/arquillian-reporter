@@ -35,21 +35,21 @@ import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.ARCHIVE_NAME_OF_DEPLOYMENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CLASS_RUNS_AS_CLIENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_CONFIGURATION_REPORT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_NAME;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.CONTAINER_REPORT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_TEST_CLASS_NAME;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.DEPLOYMENT_IN_TEST_CLASS_REPORT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.ORDER_OF_DEPLOYMENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.PROTOCOL_USED_FOR_DEPLOYMENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_CLASS_CONFIGURATION;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_CLASS_REPORT_MESSAGE;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_METHOD_OPERATES_ON_DEPLOYMENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_METHOD_REPORT_MESSAGE;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_METHOD_RUNS_AS_CLIENT;
-import static org.arquillian.core.reporter.impl.ArquillianCoreKeys.TEST_SUITE_NAME;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.ARCHIVE_NAME_OF_DEPLOYMENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.CLASS_RUNS_AS_CLIENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.CONTAINER_CONFIGURATION_REPORT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.CONTAINER_NAME;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.CONTAINER_REPORT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_REPORT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.ORDER_OF_DEPLOYMENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.PROTOCOL_USED_FOR_DEPLOYMENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_CLASS_CONFIGURATION;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT;
+import static org.arquillian.core.reporter.impl.ArquillianCoreKey.TEST_SUITE_NAME;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>

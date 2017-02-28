@@ -6,8 +6,8 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.jboss.arquillian.test.spi.TestResult;
 
-import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_METHOD_FAILURE_REPORT;
-import static org.arquillian.reporter.api.model.ReporterCoreKeys.GENERAL_TEST_METHOD_CONFIGURATION_REPORT;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_METHOD_FAILURE_REPORT;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_METHOD_CONFIGURATION_REPORT;
 
 /**
  * A {@link Report} implementation that represents any report information related to a test method.

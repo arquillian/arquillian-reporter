@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.builder.report.ReportInSectionBuilder;
 import org.arquillian.reporter.api.builder.report.TestClassReportBuilder;
 import org.arquillian.reporter.api.builder.report.TestMethodReportBuilder;
 import org.arquillian.reporter.api.builder.report.TestSuiteReportBuilder;
-import org.arquillian.reporter.api.model.ReporterCoreKeys;
+import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.impl.ReporterLifecycleManager;
 import org.arquillian.reporter.impl.builder.entry.TableBuilderImpl;
@@ -30,7 +30,7 @@ public class ReporterExtension implements LoadableExtension {
 
     public void register(ExtensionBuilder builder) {
         builder.observer(ReporterLifecycleManager.class);
-        builder.service(StringKey.class, ReporterCoreKeys.class);
+        builder.service(StringKey.class, ReporterCoreKey.class);
 
         // builders
         // todo: which of the next four builders do we need? or all of them?
