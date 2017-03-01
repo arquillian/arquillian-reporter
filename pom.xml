@@ -4,13 +4,38 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>22</version>
+        <relativePath />
+    </parent>
+
     <groupId>org.arquillian.reporter</groupId>
     <artifactId>arquillian-reporter-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <name>Arquillian Reporter Parent</name>
-    <description>Arquillian Reporter Parent</description>
+    <description>Arquillian Reporter extension that brings neat and comprehensive reports into Arquillian Universe</description>
+    <url>http://arquillian.org</url>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-reporter.git</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <!-- Developers -->
     <developers>
@@ -28,6 +53,8 @@
         <version.junit>4.12</version.junit>
         <version.assertj-core>3.6.0</version.assertj-core>
         <version.mockito>2.7.13</version.mockito>
+
+        <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
     <!-- Modules -->
     <modules>
@@ -38,6 +65,7 @@
         <module>arquillian-environment-reporter/arquillian-environment-reporter-api</module>
         <module>arquillian-environment-reporter/arquillian-environment-reporter-impl</module>
         <module>depchain</module>
+        <module>bom</module>
     </modules>
 
     <dependencyManagement>
@@ -84,4 +112,19 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <pushChanges>false</pushChanges>
+                        <localCheckout>true</localCheckout>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
