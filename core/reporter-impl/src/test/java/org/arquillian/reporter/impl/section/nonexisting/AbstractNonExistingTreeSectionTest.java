@@ -93,11 +93,11 @@ public class AbstractNonExistingTreeSectionTest {
     protected void verifyConfigAddedInNonExistingSection(ConfigurationReport configuration) {
 
         assertThatReport(configuration)
-            .hasNumberOfSubreports(1);
+            .hasNumberOfSubReports(1);
 
         assertThatReport(configuration.getSubReports().get(0))
             .hasName(REPORT_NAME_IN_NON_EXISTING_SECTION)
-            .hasGeneratedSubreportsAndEntriesWithDefaults();
+            .hasGeneratedSubReportsAndEntriesWithDefaults();
     }
 
 }

@@ -5,16 +5,15 @@ import java.util.List;
 
 import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.builder.Reporter;
-import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.impl.utils.dummy.DummyStringKeys;
 import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
-import org.assertj.core.api.SoftAssertions;
+import org.arquillian.reporter.impl.utils.dummy.DummyStringKeys;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.TestClassReportAssert.assertThatTestClassReport;
 import static org.arquillian.reporter.impl.utils.dummy.DummyStringKeys.TEST_CLASS_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +29,8 @@ public class TestClassReportTest {
 
         // add configuration report - should be added into list of configs
         ConfigurationReport configurationReportToAdd =
-            ReportGeneratorUtils.prepareReport(ConfigurationReport.class, DummyStringKeys.TEST_CLASS_CONFIG_NAME, 5, 10);
+            ReportGeneratorUtils
+                .prepareReport(ConfigurationReport.class, DummyStringKeys.TEST_CLASS_CONFIG_NAME, 5, 10);
         testClassReport.addNewReport(configurationReportToAdd);
 
         // add test method report - should be added into list of set method reports
@@ -51,19 +51,15 @@ public class TestClassReportTest {
         testClassReport.addNewReport(testMethodReportToAdd);
 
         // verify
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(testClassReport)
-                .hasName("main test class")
-                .hasSubReportsWithout(configurationReportToAdd, testMethodReportToAdd, secondTestMethodReportToAdd)
-                .hasSubReportsEndingWith(basicReport)
-                .hasGeneratedSubreportsAndEntries(1, 5)
-                .hasNumberOfSubreports(5)
-                .hasNumberOfEntries(4);
-
-            assertThat(testClassReport.getConfiguration().getSubReports()).containsExactly(configurationReportToAdd);
-            assertThat(testClassReport.getTestMethodReports())
-                .containsExactly(testMethodReportToAdd, secondTestMethodReportToAdd, testMethodReportToAdd);
-        });
+        assertThatTestClassReport(testClassReport)
+            .hasName("main test class")
+            .hasConfigSubReportsContainingExactly(configurationReportToAdd)
+            .hasTestMethodReportsExactly(testMethodReportToAdd, secondTestMethodReportToAdd, testMethodReportToAdd)
+            .hasSubReportsWithout(configurationReportToAdd, testMethodReportToAdd, secondTestMethodReportToAdd)
+            .hasSubReportsEndingWith(basicReport)
+            .hasGeneratedSubReportsAndEntries(1, 5)
+            .hasNumberOfSubReports(5)
+            .hasNumberOfEntries(4);
     }
 
     @Test
@@ -119,29 +115,23 @@ public class TestClassReportTest {
         mainTestClassReport.merge(testClassToMerge);
 
         // the report that has been merged is still same
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(testClassToMerge)
-                .hasName("to merge")
-                .hasGeneratedSubreportsAndEntries(5, 10)
-                .hasNumberOfSubreportsAndEntries(5);
-
-            assertThat(testClassToMerge.getTestMethodReports()).isEqualTo(methodsToMerge);
-            assertThat(testClassToMerge.getConfiguration().getSubReports()).isEqualTo(configsToMerge);
-        });
+        assertThatTestClassReport(testClassToMerge)
+            .hasName("to merge")
+            .hasTestMethodReportListEqualTo(methodsToMerge)
+            .hasConfigSubReportListEqualTo(configsToMerge)
+            .hasGeneratedSubReportsAndEntries(5, 10)
+            .hasNumberOfSubReportsAndEntries(5);
 
         // the main report should contain all information
         firstMethods.addAll(methodsToMerge);
         firstConfigs.addAll(configsToMerge);
 
         //verify
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(mainTestClassReport)
-                .hasName(TEST_CLASS_NAME)
-                .hasGeneratedSubreportsAndEntries(1, 10)
-                .hasNumberOfSubreportsAndEntries(9);
-
-            assertThat(mainTestClassReport.getTestMethodReports()).isEqualTo(firstMethods);
-            assertThat(mainTestClassReport.getConfiguration().getSubReports()).isEqualTo(firstConfigs);
-        });
+        assertThatTestClassReport(mainTestClassReport)
+            .hasName(TEST_CLASS_NAME)
+            .hasTestMethodReportListEqualTo(firstMethods)
+            .hasConfigSubReportListEqualTo(firstConfigs)
+            .hasGeneratedSubReportsAndEntries(1, 10)
+            .hasNumberOfSubReportsAndEntries(9);
     }
 }

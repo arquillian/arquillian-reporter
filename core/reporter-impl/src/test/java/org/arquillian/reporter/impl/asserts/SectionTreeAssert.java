@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.tuple;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class SectionTreeAssert extends AbstractAssert<SectionTreeAssert, SectionTree> {
+
     public SectionTreeAssert(SectionTree actual) {
         super(actual, SectionTreeAssert.class);
     }
@@ -52,7 +53,7 @@ public class SectionTreeAssert extends AbstractAssert<SectionTreeAssert, Section
         return this;
     }
 
-    public SectionTreeAssert doesNotHavyAnySubtree() {
+    public SectionTreeAssert doesNotHaveAnySubtree() {
         isNotNull();
         assertThat(actual.getSubtrees()).as("The tree should not have any subtree").isEmpty();
         return this;
@@ -107,7 +108,7 @@ public class SectionTreeAssert extends AbstractAssert<SectionTreeAssert, Section
         return this;
     }
 
-    public SectionTreeAssert wholeTreeConsistOfCouplesMathing(
+    public SectionTreeAssert wholeTreeConsistOfCouplesMatching(
         Map<? extends SectionEvent, List<? extends SectionEvent>> mapOfParentsAndListsOfChildren) {
 
         // get all trees within the whole tree
@@ -122,13 +123,14 @@ public class SectionTreeAssert extends AbstractAssert<SectionTreeAssert, Section
             assertThat(actualListOfTrees)
                 .usingRecursiveFieldByFieldElementComparator()
                 .extracting("rootIdentifier", "associatedReport")
-                .as("the whole subtree should contain only one occurrence of a tree containing identifier <%s>",
+                .as("the whole subtree should contain only one occurrence of a tree containing identifier <%s>. ",
                     parentIdentifier)
                 .containsOnlyOnce(new Tuple(parentIdentifier, parent.getReport()));
 
             // get the tree that corresponds to the parent section (has same identifier)
             SectionTree matched =
-                getTreeWithIdAndReportNameFromList(actualListOfTrees, parentIdentifier, parent.getReport().getName()).get();
+                getTreeWithIdAndReportNameFromList(actualListOfTrees, parentIdentifier, parent.getReport().getName())
+                    .get();
 
             // get all section-children of the parent section
             List<? extends SectionEvent> children = mapOfParentsAndListsOfChildren.get(parent);

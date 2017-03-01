@@ -15,7 +15,7 @@ import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
+import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestClassSections;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestMethodConfigurationSections;
@@ -34,63 +34,70 @@ public class TestMethodSectionTreeEventManagerTest {
     public void testAddTestMethodSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
-        sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
-        sections.putAll(feedWithTestMethodSections(executionReport, getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
+        sections.putAll(
+            feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
+        sections.putAll(
+            feedWithTestMethodSections(executionReport, getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
 
         int parentCount = (1 + EXPECTED_NUMBER_OF_SECTIONS * 2);
         int treeNodesCount = (int) (parentCount + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 2));
         assertThat(sections).hasSize(parentCount);
 
-        assertThatSectionTree(executionReport.getSectionTree())
-            .wholeTreeConsistOfCouplesMathing(sections)
+        assertThatExecutionReport(executionReport)
+            .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class,
+                                                    TestMethodReport.class)
+            .sectionTree()
+            .wholeTreeConsistOfCouplesMatching(sections)
             .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
-            .associatedReport()
-            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
-                                                               TestClassReport.class,
-                                                               TestMethodReport.class);
+            .associatedReport();
     }
 
     @Test
     public void testAddTestMethodConfigurationSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
-        sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
-        sections.putAll(feedWithTestMethodSections(executionReport, getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
+        sections.putAll(feedWithTestClassSections(executionReport,
+                                                  getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
+        sections.putAll(feedWithTestMethodSections(executionReport,
+                                                   getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
         sections.putAll(feedWithTestMethodConfigurationSections(executionReport,
-                                                                getSubsectionsOfSomeSection(TestClassSection.class, sections)));
+                                                                getSubsectionsOfSomeSection(TestClassSection.class,
+                                                                                            sections)));
 
         int parentCount = (int) (1 + (EXPECTED_NUMBER_OF_SECTIONS * 2) + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 2));
         int treeNodesCount = (int) (parentCount + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 3));
         assertThat(sections).hasSize(parentCount);
-        assertThatSectionTree(executionReport.getSectionTree())
-            .wholeTreeConsistOfCouplesMathing(sections)
+
+        assertThatExecutionReport(executionReport)
+            .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class,
+                                                    TestMethodReport.class, ConfigurationReport.class)
+            .sectionTree()
+            .wholeTreeConsistOfCouplesMatching(sections)
             .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
-            .associatedReport()
-            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
-                                                               TestClassReport.class,
-                                                               TestMethodReport.class,
-                                                               ConfigurationReport.class);
+            .associatedReport();
     }
 
     @Test
     public void testAddTestMethodFailureSectionsWithReportsUsingEventManager() {
         ExecutionReport executionReport = new ExecutionReport();
         Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
-        sections.putAll(feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
-        sections.putAll(feedWithTestMethodSections(executionReport, getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
+        sections.putAll(feedWithTestClassSections(executionReport,
+                                                  getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
+        sections.putAll(feedWithTestMethodSections(executionReport,
+                                                   getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
         sections.putAll(
-            feedWithTestMethodFailureSections(executionReport, getSubsectionsOfSomeSection(TestClassSection.class, sections)));
+            feedWithTestMethodFailureSections(executionReport,
+                                              getSubsectionsOfSomeSection(TestClassSection.class, sections)));
 
         int parentCount = (int) (1 + (EXPECTED_NUMBER_OF_SECTIONS * 2) + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 2));
         int treeNodesCount = (int) (parentCount + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 3));
         assertThat(sections).hasSize(parentCount);
-        assertThatSectionTree(executionReport.getSectionTree())
-            .wholeTreeConsistOfCouplesMathing(sections)
+
+        assertThatExecutionReport(executionReport)
+            .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class,
+                                                    TestMethodReport.class, FailureReport.class)
+            .sectionTree().wholeTreeConsistOfCouplesMatching(sections)
             .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
-            .associatedReport()
-            .wholeExecutionReportTreeConsistOfGeneratedReports(TestSuiteReport.class,
-                                                               TestClassReport.class,
-                                                               TestMethodReport.class,
-                                                               FailureReport.class);
+            .associatedReport();
     }
 }

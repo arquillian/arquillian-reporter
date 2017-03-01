@@ -20,6 +20,7 @@ import org.arquillian.reporter.impl.utils.dummy.SecondDummyTestClass;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.TestMethodReportAssert.assertThatTestMethodReport;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.prepareSectionTreeWithReporterCoreSectionsAndReports;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE;
@@ -226,21 +227,20 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
         assertThat(methodReports).hasSize(1);
         TestMethodReport testMethodReport = methodReports.get(0);
 
-        assertThatReport(testMethodReport)
+        assertThatTestMethodReport(testMethodReport)
             .hasName(REPORT_NAME_IN_NON_EXISTING_SECTION)
-            .hasGeneratedSubreportsAndEntriesWithDefaults();
-
-        assertThatReport(testMethodReport.getConfiguration()).hasNumberOfSubreportsAndEntries(0);
-        assertThatReport(testMethodReport.getFailureReport()).hasNumberOfSubreportsAndEntries(0);
+            .hasConfigWithNumberOfSubreportsAndEntries(0)
+            .hasFailureWithNumberOfSubreportsAndEntries(0)
+            .hasGeneratedSubReportsAndEntriesWithDefaults();
     }
 
     private void verifyFailureAddedInNonExistingSection(FailureReport failureReport) {
 
         assertThatReport(failureReport)
-            .hasNumberOfSubreports(1);
+            .hasNumberOfSubReports(1);
 
         assertThatReport(failureReport.getSubReports().get(0))
             .hasName(REPORT_NAME_IN_NON_EXISTING_SECTION)
-            .hasGeneratedSubreportsAndEntriesWithDefaults();
+            .hasGeneratedSubReportsAndEntriesWithDefaults();
     }
 }

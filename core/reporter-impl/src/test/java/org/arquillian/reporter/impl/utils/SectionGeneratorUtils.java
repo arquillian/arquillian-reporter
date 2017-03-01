@@ -18,6 +18,7 @@ import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
+import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
@@ -34,6 +35,15 @@ import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.prepareRep
 public class SectionGeneratorUtils {
 
     public static final int EXPECTED_NUMBER_OF_SECTIONS = 4;
+
+    public static final Class<? extends Report>[] ALL_REPORT_TYPES_TO_VERIFY =
+        new Class[] { TestSuiteReport.class,
+            ConfigurationReport.class,
+            TestClassReport.class,
+            ConfigurationReport.class,
+            TestMethodReport.class,
+            ConfigurationReport.class,
+            FailureReport.class };
 
     // names for test suite part
 
@@ -80,7 +90,7 @@ public class SectionGeneratorUtils {
                              index, classId, suiteId);
     }
 
-    public static Method getTestMethodSectionName(int index) {
+    public static Method getTestMethodForSection(int index) {
         return DummyTestClass.class.getDeclaredMethods()[index];
     }
 
@@ -227,7 +237,7 @@ public class SectionGeneratorUtils {
                                          getTestMethodReportName(index, testSuiteId, tc.getSectionId()),
                                          index + 1,
                                          index + 10),
-                                     getTestMethodSectionName(index));
+                                     getTestMethodForSection(index));
                                  testMethodSection.setTestSuiteId(testSuiteId);
                                  return testMethodSection;
                              }
@@ -337,7 +347,6 @@ public class SectionGeneratorUtils {
         }).flatMap(List::stream).collect(Collectors.toList());
     }
 
-
     private static void mergeMapOfSections(Map<SectionEvent, List<? extends SectionEvent>> sections,
         Map<SectionEvent, List<? extends SectionEvent>> sectionsToMerge) {
 
@@ -350,7 +359,6 @@ public class SectionGeneratorUtils {
         });
 
     }
-
 
     abstract static class SectionGeneratorAndProcessor<T extends SectionEvent> {
 

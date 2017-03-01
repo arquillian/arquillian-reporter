@@ -93,11 +93,11 @@ public class AllSectionTreeMergeTest {
         // verify
         assertThatSectionTree(originalExecutionTree)
             .hasRootIdentifier(executionSectionId)
-            .doesNotHavyAnySubtree()
+            .doesNotHaveAnySubtree()
             .associatedReport() // verify the associated report
             .hasName(reportClass.getCanonicalName())
-            .hasGeneratedSubreportsAndEntries(1, 10)
-            .hasNumberOfSubreportsAndEntries(9);
+            .hasGeneratedSubReportsAndEntries(1, 10)
+            .hasNumberOfSubReportsAndEntries(9);
     }
 
 }

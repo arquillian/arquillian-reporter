@@ -26,7 +26,7 @@ public class FailureReportTest {
         // verify
         assertThatReport(failureReport)
             .hasSubReportsEndingWith(basicReport)
-            .hasNumberOfSubreports(5);
+            .hasNumberOfSubReports(5);
 
         // add failure report - should be added into List of subReports
         FailureReport failureToAdd = ReportGeneratorUtils.prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 5, 10);
@@ -35,8 +35,8 @@ public class FailureReportTest {
         // verify
         assertThatReport(failureReport)
             .hasName(FAILURE_REPORT_NAME)
-            .hasGeneratedSubreportsAndEntries(1, 5)
-            .hasNumberOfSubreports(6)
+            .hasGeneratedSubReportsAndEntries(1, 5)
+            .hasNumberOfSubReports(6)
             .hasNumberOfEntries(4)
             .hasSubReportsEndingWith(basicReport, failureToAdd);
     }
@@ -61,17 +61,17 @@ public class FailureReportTest {
         assertThatReport(failureToMerge)
             .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
             .hasName("to merge")
-            .hasGeneratedSubreportsAndEntries(5, 10)
-            .hasNumberOfSubreports(10)
+            .hasGeneratedSubReportsAndEntries(5, 10)
+            .hasNumberOfSubReports(10)
             .hasNumberOfEntries(5);
 
         // verify that the main report should contain all information
         assertThatReport(mainFailureReport)
-            .hassSubReportsContaining(firstFailure.stream().toArray(FailureReport[]::new))
+            .hasSubReportsContaining(firstFailure.stream().toArray(FailureReport[]::new))
             .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
             .hasName(FAILURE_REPORT_NAME)
-            .hasGeneratedSubreportsAndEntries(1, 10)
-            .hasNumberOfSubreports(19)
+            .hasGeneratedSubReportsAndEntries(1, 10)
+            .hasNumberOfSubReports(19)
             .hasNumberOfEntries(9);
     }
 }

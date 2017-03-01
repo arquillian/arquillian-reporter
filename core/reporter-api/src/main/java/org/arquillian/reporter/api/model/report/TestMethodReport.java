@@ -30,7 +30,8 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_MET
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder> {
+public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder>
+    implements WithConfigurationReport {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;
@@ -62,20 +63,12 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
         super(new UnknownStringKey(name));
     }
 
-    /**
-     * Returns the {@link ConfigurationReport}
-     *
-     * @return The {@link ConfigurationReport}
-     */
+    @Override
     public ConfigurationReport getConfiguration() {
         return configuration;
     }
 
-    /**
-     * Sets the given {@link ConfigurationReport}
-     *
-     * @param configuration A {@link ConfigurationReport} to be set
-     */
+    @Override
     public void setConfiguration(ConfigurationReport configuration) {
         this.configuration = configuration;
     }

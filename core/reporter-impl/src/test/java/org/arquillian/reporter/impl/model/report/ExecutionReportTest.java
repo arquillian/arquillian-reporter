@@ -2,21 +2,19 @@ package org.arquillian.reporter.impl.model.report;
 
 import java.util.List;
 
-import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.ExecutionReport.EXECUTION_REPORT_NAME;
 import static org.arquillian.reporter.impl.ExecutionSection.EXECUTION_SECTION_ID;
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.SectionAssert.assertThatSection;
 import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -46,18 +44,15 @@ public class ExecutionReportTest {
         executionReport.addNewReport(firstTestSuiteReportToAdd);
 
         // verify
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(executionReport)
-                .hasName(EXECUTION_REPORT_NAME)
-                .hasNumberOfSubreports(5)
-                .hasSubReportsEndingWith(basicReport)
-                .hasSubReportsWithout(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd)
-                .hasGeneratedSubreportsAndEntries(1, 5)
-                .hasNumberOfEntries(4);
-
-            assertThat(executionReport.getTestSuiteReports())
-                .containsExactly(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd, firstTestSuiteReportToAdd);
-        });
+        assertThatExecutionReport(executionReport)
+            .hasName(EXECUTION_REPORT_NAME)
+            .hasTestSuiteReportsExactly(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd,
+                                        firstTestSuiteReportToAdd)
+            .hasNumberOfSubReports(5)
+            .hasSubReportsEndingWith(basicReport)
+            .hasSubReportsWithout(firstTestSuiteReportToAdd, secondTestSuiteReportToAdd)
+            .hasGeneratedSubReportsAndEntries(1, 5)
+            .hasNumberOfEntries(4);
     }
 
     @Test
@@ -99,25 +94,20 @@ public class ExecutionReportTest {
         mainExecutionReport.merge(executionReportToMerge);
 
         // the report that has been merged is still same
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(executionReportToMerge)
-                .hasName("to merge")
-                .hasGeneratedSubreportsAndEntries(5, 10)
-                .hasNumberOfSubreportsAndEntries(5);
-
-            assertThat(executionReportToMerge.getTestSuiteReports()).isEqualTo(secondTestSuites);
-        });
+        assertThatExecutionReport(executionReportToMerge)
+            .hasName("to merge")
+            .hasTestSuiteReportListEqualTo(secondTestSuites)
+            .hasGeneratedSubReportsAndEntries(5, 10)
+            .hasNumberOfSubReportsAndEntries(5);
 
         // the main report should contain all information
         firstTestSuites.addAll(secondTestSuites);
-        // verify
-        SoftAssertions.assertSoftly(softly -> {
-            assertThatReport(mainExecutionReport)
-                .hasName(EXECUTION_REPORT_NAME)
-                .hasGeneratedSubreportsAndEntries(1, 10)
-                .hasNumberOfSubreportsAndEntries(9);
 
-            assertThat(mainExecutionReport.getTestSuiteReports()).isEqualTo(firstTestSuites);
-        });
+        // verify
+        assertThatExecutionReport(mainExecutionReport)
+            .hasName(EXECUTION_REPORT_NAME)
+            .hasTestSuiteReportListEqualTo(firstTestSuites)
+            .hasGeneratedSubReportsAndEntries(1, 10)
+            .hasNumberOfSubReportsAndEntries(9);
     }
 }

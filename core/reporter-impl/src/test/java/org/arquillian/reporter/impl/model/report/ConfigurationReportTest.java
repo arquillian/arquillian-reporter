@@ -27,7 +27,7 @@ public class ConfigurationReportTest {
         // verify
         assertThatReport(configurationReport)
             .hasSubReportsEndingWith(basicReport)
-            .hasNumberOfSubreports(5);
+            .hasNumberOfSubReports(5);
 
         // add configuration report - should be added into List of subReports
         ConfigurationReport configToAdd = ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "config", 5, 10);
@@ -37,9 +37,9 @@ public class ConfigurationReportTest {
         assertThatReport(configurationReport)
             .hasSubReportsEndingWith(configToAdd)
             .hasName("any config")
-            .hasNumberOfSubreports(6)
+            .hasNumberOfSubReports(6)
             .hasNumberOfEntries(4)
-            .hasGeneratedSubreportsAndEntries(1, 5);
+            .hasGeneratedSubReportsAndEntries(1, 5);
     }
 
     @Test
@@ -63,17 +63,17 @@ public class ConfigurationReportTest {
         assertThatReport(configToMerge)
             .hasSubReportsEndingWith(secondConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasName("to merge")
-            .hasNumberOfSubreports(10)
+            .hasNumberOfSubReports(10)
             .hasNumberOfEntries(5)
-            .hasGeneratedSubreportsAndEntries(5,10);
+            .hasGeneratedSubReportsAndEntries(5, 10);
 
         // the main report should contain all information
         assertThatReport(mainConfigReport)
-            .hassSubReportsContaining(firstConfigs.stream().toArray(ConfigurationReport[]::new))
+            .hasSubReportsContaining(firstConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasSubReportsEndingWith(secondConfigs.stream().toArray(ConfigurationReport[]::new))
             .hasName(CONFIG_NAME)
-            .hasNumberOfSubreports(19)
+            .hasNumberOfSubReports(19)
             .hasNumberOfEntries(9)
-            .hasGeneratedSubreportsAndEntries(1,10);
+            .hasGeneratedSubReportsAndEntries(1, 10);
     }
 }

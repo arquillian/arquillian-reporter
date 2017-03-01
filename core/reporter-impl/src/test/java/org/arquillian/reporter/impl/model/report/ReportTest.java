@@ -25,9 +25,9 @@ public class ReportTest {
         assertThatReport(report)
             .hasSubReportsEndingWith(basicReport)
             .hasName("report name")
-            .hasGeneratedSubreportsAndEntries(1, 5)
+            .hasGeneratedSubReportsAndEntries(1, 5)
             .hasNumberOfEntries(4)
-            .hasNumberOfSubreports(5);
+            .hasNumberOfSubReports(5);
 
     }
 
@@ -49,17 +49,17 @@ public class ReportTest {
         assertThatReport(reportToMerge)
             .hasSubReportsEndingWith(secondReports.stream().toArray(BasicReport[]::new))
             .hasName("to merge")
-            .hasGeneratedSubreportsAndEntries(5, 10)
-            .hasNumberOfSubreports(10)
+            .hasGeneratedSubReportsAndEntries(5, 10)
+            .hasNumberOfSubReports(10)
             .hasNumberOfEntries(5);
 
         // the main report should contain all information
         assertThatReport(mainReport)
-            .hassSubReportsContaining(firstReports.stream().toArray(BasicReport[]::new))
+            .hasSubReportsContaining(firstReports.stream().toArray(BasicReport[]::new))
             .hasSubReportsEndingWith(secondReports.stream().toArray(BasicReport[]::new))
             .hasName("report")
-            .hasGeneratedSubreportsAndEntries(1, 10)
-            .hasNumberOfSubreports(19)
+            .hasGeneratedSubReportsAndEntries(1, 10)
+            .hasNumberOfSubReports(19)
             .hasNumberOfEntries(9);
     }
 }

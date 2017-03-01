@@ -12,9 +12,10 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.SectionEventManager;
 import org.arquillian.reporter.impl.SectionTree;
+import org.assertj.core.api.SoftAssertions;
 
+import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
-import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.prepareReport;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.prepareSectionTreeWithReporterCoreSectionsAndReports;
@@ -94,18 +95,21 @@ public abstract class AbstractMergeTest {
 
         ArrayList<Report> mergedReports = new ArrayList<>(Arrays.asList(merged.get().getAssociatedReport()));
 
-        assertThat(merged).isPresent();
-        assertThat(sections).hasSize(PARENT_COUNT_OF_COMPLEX_PREPARED_TREE);
-        assertThatSectionTree(executionReport.getSectionTree())
-            .wholeTreeConsistOfCouplesMathing(sections)
-            .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE)
-            .associatedReport()
-            .wholeExecutionReportTreeConsistOfAllGeneratedReports(mergedReports);
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(merged).isPresent();
+            assertThat(sections).hasSize(PARENT_COUNT_OF_COMPLEX_PREPARED_TREE);
 
-        assertThat(mergedReports).isEmpty();
+            assertThatExecutionReport(executionReport)
+                .reportSubtreeConsistOfGeneratedReports(mergedReports)
+                .sectionTree()
+                .wholeTreeConsistOfCouplesMatching(sections)
+                .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE);
 
-        assertThatReport(merged.get().getAssociatedReport())
-            .hasGeneratedSubreportsAndEntries(reportIndex + 1, reportIndex + 20)
-            .hasNumberOfSubreportsAndEntries(numberOfEntriesAndReports);
+            assertThat(mergedReports).isEmpty();
+
+            assertThatReport(merged.get().getAssociatedReport())
+                .hasGeneratedSubReportsAndEntries(reportIndex + 1, reportIndex + 20)
+                .hasNumberOfSubReportsAndEntries(numberOfEntriesAndReports);
+        });
     }
 }

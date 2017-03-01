@@ -15,7 +15,7 @@ import org.arquillian.reporter.impl.utils.dummy.DummyTestClass;
 import org.arquillian.reporter.impl.utils.dummy.SecondDummyTestClass;
 import org.junit.Test;
 
-import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.TestClassReportAssert.assertThatTestClassReport;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.prepareSectionTreeWithReporterCoreSectionsAndReports;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorVerificationHelper.TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE;
@@ -133,10 +133,9 @@ public class TestClassNonExistingTreeSectionTest extends AbstractNonExistingTree
         assertThat(classReports).hasSize(1);
         TestClassReport testClassReport = classReports.get(0);
 
-        assertThatReport(testClassReport)
+        assertThatTestClassReport(testClassReport)
             .hasName(REPORT_NAME_IN_NON_EXISTING_SECTION)
-            .hasGeneratedSubreportsAndEntriesWithDefaults();
-
-        assertThatReport(testClassReport.getConfiguration()).hasNumberOfSubreportsAndEntries(0);
+            .hasConfigWithNumberOfSubreportsAndEntries(0)
+            .hasGeneratedSubReportsAndEntriesWithDefaults();
     }
 }
