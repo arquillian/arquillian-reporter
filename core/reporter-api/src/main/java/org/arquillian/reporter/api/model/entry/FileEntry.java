@@ -10,14 +10,14 @@ import java.nio.file.Path;
  */
 public class FileEntry implements Entry {
 
-    private String path;
+    private String filePath;
 
     /**
      * Build object by setting file path to Path.toString().
      * @param path file.
      */
     public FileEntry(Path path) {
-        this.path = path.toString();
+        this.filePath = path.toString();
     }
 
     /**
@@ -25,7 +25,7 @@ public class FileEntry implements Entry {
      * @param path file.
      */
     public FileEntry(String path) {
-        this.path = path;
+        this.filePath = path;
     }
 
     /**
@@ -33,15 +33,15 @@ public class FileEntry implements Entry {
      * @param path file.
      */
     public FileEntry(File path) {
-        this.path = path.getPath();
+        this.filePath = path.getPath();
     }
 
     public String getPath() {
-        return path;
+        return filePath;
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.filePath = path;
     }
 
     @Override
@@ -51,11 +51,11 @@ public class FileEntry implements Entry {
 
         FileEntry fileEntry = (FileEntry) o;
 
-        return path != null ? path.equals(fileEntry.path) : fileEntry.path == null;
+        return filePath != null ? filePath.equals(fileEntry.filePath) : fileEntry.filePath == null;
     }
 
     @Override
     public int hashCode() {
-        return path != null ? path.hashCode() : 0;
+        return filePath != null ? filePath.hashCode() : 0;
     }
 }
