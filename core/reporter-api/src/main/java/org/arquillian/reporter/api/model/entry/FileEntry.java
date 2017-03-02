@@ -1,5 +1,6 @@
 package org.arquillian.reporter.api.model.entry;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -9,17 +10,37 @@ import java.nio.file.Path;
  */
 public class FileEntry implements Entry {
 
-    private Path path;
+    private String path;
 
+    /**
+     * Build object by setting file path to Path.toString().
+     * @param path file.
+     */
     public FileEntry(Path path) {
+        this.path = path.toString();
+    }
+
+    /**
+     * Build object by setting file path.
+     * @param path file.
+     */
+    public FileEntry(String path) {
         this.path = path;
     }
 
-    public Path getPath() {
+    /**
+     * Build object by setting file path to File.getPath().
+     * @param path file.
+     */
+    public FileEntry(File path) {
+        this.path = path.getPath();
+    }
+
+    public String getPath() {
         return path;
     }
 
-    public void setPath(Path path) {
+    public void setPath(String path) {
         this.path = path;
     }
 
