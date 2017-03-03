@@ -29,19 +29,19 @@ public class ExecutionReportTest {
         // add test suite report - should be added into List of test suite reports
         TestSuiteReport firstTestSuiteReportToAdd = ReportGeneratorUtils
             .prepareReport(TestSuiteReport.class, "first", 5, 10);
-        executionReport.addNewReport(firstTestSuiteReportToAdd);
+        executionReport.addNewReport(firstTestSuiteReportToAdd, TestSuiteReport.class);
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        executionReport.addNewReport(basicReport);
+        executionReport.addNewReport(basicReport, BasicReport.class);
 
         // add another test suite report - should be added into List of test suite reports
         TestSuiteReport secondTestSuiteReportToAdd = ReportGeneratorUtils
             .prepareReport(TestSuiteReport.class, "second", 5, 10);
-        executionReport.addNewReport(secondTestSuiteReportToAdd);
+        executionReport.addNewReport(secondTestSuiteReportToAdd, TestSuiteReport.class);
 
         // add first test suite report for the second time - should be added into List of test suite reports
-        executionReport.addNewReport(firstTestSuiteReportToAdd);
+        executionReport.addNewReport(firstTestSuiteReportToAdd, TestSuiteReport.class);
 
         // verify
         assertThatExecutionReport(executionReport)

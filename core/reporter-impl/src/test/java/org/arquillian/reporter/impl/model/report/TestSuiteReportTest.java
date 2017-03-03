@@ -30,24 +30,24 @@ public class TestSuiteReportTest {
         // add test class report - should be added into List of test class reports
         TestClassReport testClassReportToAdd =
             ReportGeneratorUtils.prepareReport(TestClassReport.class, TEST_CLASS_NAME, 3, 8);
-        testSuiteReport.addNewReport(testClassReportToAdd);
+        testSuiteReport.addNewReport(testClassReportToAdd, TestClassReport.class);
 
         // add configuration report - should be added into list of configs
         ConfigurationReport configurationReportToAdd =
             ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "test suite config", 1, 5);
-        testSuiteReport.addNewReport(configurationReportToAdd);
+        testSuiteReport.addNewReport(configurationReportToAdd, ConfigurationReport.class);
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        testSuiteReport.addNewReport(basicReport);
+        testSuiteReport.addNewReport(basicReport, BasicReport.class);
 
         // add another test class report - should be added into List of test class reports
         TestClassReport secondTestClassReportToAdd =
             ReportGeneratorUtils.prepareReport(TestClassReport.class, "second test class", 3, 8);
-        testSuiteReport.addNewReport(secondTestClassReportToAdd);
+        testSuiteReport.addNewReport(secondTestClassReportToAdd, TestClassReport.class);
 
         // add first test class report for the second time - should be added into List of test class reports
-        testSuiteReport.addNewReport(testClassReportToAdd);
+        testSuiteReport.addNewReport(testClassReportToAdd, TestClassReport.class);
 
         // verify
         assertThatTestSuiteReport(testSuiteReport)

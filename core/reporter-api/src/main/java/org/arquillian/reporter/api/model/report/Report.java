@@ -77,11 +77,13 @@ public interface Report<TYPE extends Report, BUILDERTYPE extends ReportBuilder> 
     TYPE merge(TYPE newReport);
 
     /**
-     * Takes the given {@link Report} and adds the whole report into some list of sub-reports contained in this report instance.
+     * Takes the given {@link Report} and based on its type and the type of the given expectedReportTypeClass, it adds
+     * the whole report into some list of sub-reports contained in this report instance.
      *
      * @param newReport A {@link Report} to be added
+     * @param expectedReportTypeClass A {@link Report} class of a type that is expected as the default one of the given report
      * @return The same instance of {@link Report} that has been added into some list of sub-reports.
      */
-    Report addNewReport(Report newReport);
+    Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass);
 
 }

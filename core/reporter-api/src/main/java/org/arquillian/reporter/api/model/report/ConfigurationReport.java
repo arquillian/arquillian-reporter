@@ -58,10 +58,16 @@ public class ConfigurationReport extends AbstractReport<ConfigurationReport, Con
      * Takes the given {@link Report} and adds it into the list of sub-reports.
      *
      * @param newReport A {@link Report} to be added
-     * @return The same instance of {@link Report} that has been added
+     * @param expectedReportTypeClass A {@link Report} class of a type that is expected as the default one of the given report
+     * @return If the given report's type is {@link ConfigurationReport} then it returns the same instance of {@link Report} that has been added; otherwise null.
      */
-    public Report addNewReport(Report newReport) {
+    public Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass) {
         getSubReports().add(newReport);
-        return newReport;
+
+        Class<? extends Report> newReportClass = newReport.getClass();
+        if (ConfigurationReport.class.isAssignableFrom(newReportClass)){
+            return newReport;
+        }
+        return null;
     }
 }

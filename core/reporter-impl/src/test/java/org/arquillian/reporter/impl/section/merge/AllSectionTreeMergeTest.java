@@ -82,10 +82,10 @@ public class AllSectionTreeMergeTest {
             .prepareReport(reportClass, reportClass.getCanonicalName(), 5, 10);
 
         // create execution section tree that should consume another tree
-        SectionTree originalExecutionTree = new SectionTree<>(executionSectionId, firstExecutionReport);
+        SectionTree originalExecutionTree = new SectionTree<>(executionSectionId, firstExecutionReport, reportClass);
 
         // create execution section tree that should be merged
-        SectionTree executionTreeToMerge = new SectionTree<>(executionSectionId, secondExecutionReport);
+        SectionTree executionTreeToMerge = new SectionTree<>(executionSectionId, secondExecutionReport, reportClass);
 
         // merge
         originalExecutionTree.mergeSectionTree(executionTreeToMerge);

@@ -53,9 +53,10 @@ public class BasicReport extends AbstractReport<BasicReport, BasicReportBuilder>
      * Takes the given {@link Report} and adds it into the list of sub-reports.
      *
      * @param newReport A {@link Report} to be added
+     * @param expectedReportTypeClass A {@link Report} class of a type that is expected as the default one of the given report
      * @return The same instance of {@link Report} that has been added
      */
-    public Report addNewReport(Report newReport) {
+    public Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass) {
         getSubReports().add(newReport);
         return newReport;
     }

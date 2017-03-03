@@ -19,7 +19,7 @@ public class ReportTest {
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        report.addNewReport(basicReport);
+        report.addNewReport(basicReport, BasicReport.class);
 
         // verify
         assertThatReport(report)

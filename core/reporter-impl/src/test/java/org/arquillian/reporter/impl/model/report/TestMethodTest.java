@@ -30,16 +30,16 @@ public class TestMethodTest {
         // add configuration report - should be added into list of configs
         ConfigurationReport configurationReportToAdd =
             ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "method config", 5, 10);
-        testMethodReport.addNewReport(configurationReportToAdd);
+        testMethodReport.addNewReport(configurationReportToAdd, ConfigurationReport.class);
 
         // add failur method report - should be added into list of failures
         FailureReport failureReportToAdd = ReportGeneratorUtils
             .prepareReport(FailureReport.class, "test method failure", 3, 8);
-        testMethodReport.addNewReport(failureReportToAdd);
+        testMethodReport.addNewReport(failureReportToAdd, FailureReport.class);
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        testMethodReport.addNewReport(basicReport);
+        testMethodReport.addNewReport(basicReport, BasicReport.class);
 
         // verify
         SoftAssertions.assertSoftly(softly -> {
