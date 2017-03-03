@@ -22,7 +22,7 @@ public class ConfigurationReportTest {
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        configurationReport.addNewReport(basicReport);
+        configurationReport.addNewReport(basicReport, BasicReport.class);
 
         // verify
         assertThatReport(configurationReport)
@@ -31,7 +31,7 @@ public class ConfigurationReportTest {
 
         // add configuration report - should be added into List of subReports
         ConfigurationReport configToAdd = ReportGeneratorUtils.prepareReport(ConfigurationReport.class, "config", 5, 10);
-        configurationReport.addNewReport(configToAdd);
+        configurationReport.addNewReport(configToAdd, ConfigurationReport.class);
 
         // verify
         assertThatReport(configurationReport)

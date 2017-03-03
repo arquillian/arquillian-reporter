@@ -31,24 +31,24 @@ public class TestClassReportTest {
         ConfigurationReport configurationReportToAdd =
             ReportGeneratorUtils
                 .prepareReport(ConfigurationReport.class, DummyStringKeys.TEST_CLASS_CONFIG_NAME, 5, 10);
-        testClassReport.addNewReport(configurationReportToAdd);
+        testClassReport.addNewReport(configurationReportToAdd, ConfigurationReport.class);
 
         // add test method report - should be added into list of set method reports
         TestMethodReport testMethodReportToAdd = ReportGeneratorUtils
             .prepareReport(TestMethodReport.class, "test method name", 3, 8);
-        testClassReport.addNewReport(testMethodReportToAdd);
+        testClassReport.addNewReport(testMethodReportToAdd, TestMethodReport.class);
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        testClassReport.addNewReport(basicReport);
+        testClassReport.addNewReport(basicReport, BasicReport.class);
 
         // add test method report - should be added into list of set method reports
         TestMethodReport secondTestMethodReportToAdd =
             ReportGeneratorUtils.prepareReport(TestMethodReport.class, "test method name", 3, 8);
-        testClassReport.addNewReport(secondTestMethodReportToAdd);
+        testClassReport.addNewReport(secondTestMethodReportToAdd, TestMethodReport.class);
 
         // add test method report - should be added into list of set method reports
-        testClassReport.addNewReport(testMethodReportToAdd);
+        testClassReport.addNewReport(testMethodReportToAdd, TestMethodReport.class);
 
         // verify
         assertThatTestClassReport(testClassReport)

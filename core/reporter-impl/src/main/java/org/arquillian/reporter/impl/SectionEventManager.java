@@ -1,6 +1,7 @@
 package org.arquillian.reporter.impl;
 
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.event.Standalone;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 
@@ -14,10 +15,13 @@ public class SectionEventManager {
 
         // check if the expected payload type is same as the actual one
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
-        if (!expectedPayload.isAssignableFrom(event.getReport().getClass())){
+        Class<? extends AbstractReport> actualReportClass = event.getReport().getClass();
+        if (!expectedPayload.isAssignableFrom(actualReportClass)
+            && (!Standalone.getStandaloneId().equals(event.getSectionId()) || !Standalone.class
+            .isAssignableFrom(event.getClass()))) {
             // if not, then create a report class that will be a wrapper of the actual report
             REPORT_TYPE wrapper = SecurityActions.newInstance(expectedPayload, new Class[] {}, new Object[] {});
-            wrapper.addNewReport(event.getReport());
+            wrapper.addNewReport(event.getReport(), actualReportClass);
             event.setReport((REPORT_TYPE) wrapper);
         }
 
@@ -37,7 +41,8 @@ public class SectionEventManager {
         }
 
         SectionTree<SECTIONTYPE, REPORT_TYPE> sectionTree =
-            new SectionTree<>(sectionEvent.identifyYourself(), sectionEvent.getReport());
+            new SectionTree<>(sectionEvent.identifyYourself(), sectionEvent.getReport(),
+                              sectionEvent.getReportTypeClass());
         if (subtree != null) {
             sectionTree.getSubtrees().add(subtree);
         }
