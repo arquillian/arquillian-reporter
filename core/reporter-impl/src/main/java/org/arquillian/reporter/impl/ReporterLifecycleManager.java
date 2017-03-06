@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.arquillian.reporter.api.builder.BuilderLoader;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.config.ReporterConfiguration;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -54,15 +55,15 @@ public class ReporterLifecycleManager {
         processEvent(event, report.get());
     }
 
-    public void afterSuite(@Observes ManagerStopping event) throws IOException {
-        printJson();
+    public void afterSuite(@Observes ManagerStopping event, ReporterConfiguration reporterConfiguration) throws IOException {
+        printJson(reporterConfiguration);
     }
 
-    private void printJson() {
+    private void printJson(ReporterConfiguration reporterConfiguration) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(report.get().getTestSuiteReports());
         try {
-            FileUtils.writeStringToFile(new File("target/report.json"), json);
+            FileUtils.writeStringToFile(reporterConfiguration.getReportFile(), json);
         } catch (IOException e) {
             e.printStackTrace();
         }
