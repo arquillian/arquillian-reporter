@@ -1,8 +1,10 @@
 package org.arquillian.reporter.impl.base;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.config.ReporterConfiguration;
 import org.arquillian.reporter.impl.ReporterLifecycleManager;
 import org.jboss.arquillian.core.api.Injector;
 import org.jboss.arquillian.core.api.Instance;
@@ -42,6 +44,6 @@ public class ReporterLifecycleManagerInvoker {
     }
 
     public void observeAndInvokeLastEvent(@Observes ManagerStopping event) throws IOException {
-        reporterLifecycleManager.get().observeLastEvent(event);
+        reporterLifecycleManager.get().observeLastEvent(event, ReporterConfiguration.fromMap(new HashMap<>()));
     }
 }

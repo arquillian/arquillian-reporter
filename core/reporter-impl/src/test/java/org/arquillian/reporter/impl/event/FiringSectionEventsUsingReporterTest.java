@@ -24,6 +24,7 @@ import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.config.ReporterConfiguration;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
 import org.arquillian.reporter.impl.base.AbstractReporterTestBase;
@@ -95,7 +96,7 @@ public class FiringSectionEventsUsingReporterTest extends AbstractReporterTestBa
         assertEventFired(sectionClass, 1);
         verifyInReporterLifecycleManager().wasCalled(1).observeFirstEvent(any(ManagerStarted.class));
         verifyInReporterLifecycleManager().wasCalled(1).observeEventsForAllSections(any(sectionClass));
-        verifyInReporterLifecycleManager().wasCalled(0).observeLastEvent(any(ManagerStopping.class));
+        verifyInReporterLifecycleManager().wasCalled(0).observeLastEvent(any(ManagerStopping.class), any(ReporterConfiguration.class));
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.config.ReporterConfiguration;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.base.AbstractReporterTestBase;
 import org.jboss.arquillian.core.api.Instance;
@@ -15,7 +16,6 @@ import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.mockito.ArgumentMatchers.any;
-
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
@@ -38,7 +38,7 @@ public class ReporterLifecycleManagerTest extends AbstractReporterTestBase {
 
         verifyInReporterLifecycleManager().wasCalled(1).observeFirstEvent(any(ManagerStarted.class));
         verifyInReporterLifecycleManager().wasCalled(0).observeEventsForAllSections(any());
-        verifyInReporterLifecycleManager().wasCalled(0).observeLastEvent(any(ManagerStopping.class));
+        verifyInReporterLifecycleManager().wasCalled(0).observeLastEvent(any(ManagerStopping.class), any(ReporterConfiguration.class));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ReporterLifecycleManagerTest extends AbstractReporterTestBase {
 
         verifyInReporterLifecycleManager().wasCalled(1).observeFirstEvent(any(ManagerStarted.class));
         verifyInReporterLifecycleManager().wasCalled(0).observeEventsForAllSections(any());
-        verifyInReporterLifecycleManager().wasCalled(1).observeLastEvent(any(ManagerStopping.class));
+        verifyInReporterLifecycleManager().wasCalled(1).observeLastEvent(any(ManagerStopping.class), any(ReporterConfiguration.class));
     }
 
 
