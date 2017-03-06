@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
+import org.arquillian.reporter.api.event.Standalone;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.Report;
@@ -23,10 +24,13 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
     private Identifier<SECTIONTYPE> rootIdentifier;
     private List<SectionTree> subtrees = new ArrayList<>();
     private PAYLOAD_TYPE associatedReport;
+    private Class<PAYLOAD_TYPE> reportTypeClass;
 
-    public SectionTree(Identifier<SECTIONTYPE> rootIdentifier, PAYLOAD_TYPE associatedReport) {
+    public SectionTree(Identifier<SECTIONTYPE> rootIdentifier, PAYLOAD_TYPE associatedReport,
+        Class<PAYLOAD_TYPE> reportTypeClass) {
         this.rootIdentifier = rootIdentifier;
         this.associatedReport = associatedReport;
+        this.reportTypeClass = reportTypeClass;
     }
 
     public Identifier<SECTIONTYPE> getRootIdentifier() {
@@ -53,8 +57,16 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         this.associatedReport = associatedReport;
     }
 
+    public Class<PAYLOAD_TYPE> getReportTypeClass() {
+        return reportTypeClass;
+    }
+
+    public void setReportTypeClass(Class<PAYLOAD_TYPE> reportTypeClass) {
+        this.reportTypeClass = reportTypeClass;
+    }
+
     public SectionTree<SECTIONTYPE, PAYLOAD_TYPE> getCloneWithoutSubtrees() {
-        return new SectionTree<>(getRootIdentifier(), associatedReport);
+        return new SectionTree<>(getRootIdentifier(), associatedReport, reportTypeClass);
     }
 
     public void mergeSectionTree(SectionTree<SECTIONTYPE, PAYLOAD_TYPE> treeToMerge) {
@@ -76,18 +88,33 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
 
             // have I find any matching subtree?
             if (matchedSubtree == null) {
+                Report associatedReport = subtreeToMerge.getAssociatedReport();
 
                 // if not check if there is any associated report in the subtree to be merged
-                if (subtreeToMerge.getAssociatedReport() == null) {
+                if (associatedReport == null) {
                     // if not it means that there was expected that this tree should already exist, so the tree has to be created
                     createMissingSubtreeAndMergeIt(rootIdentifierSubtreeToMerge, subtreeToMerge);
 
                 } else {
                     // if yes then the associated report is the one that has been reported, so please add it into the report associated with this tree
                     Report reportToAssociate =
-                        getAssociatedReport().addNewReport(subtreeToMerge.getAssociatedReport());
-                    subtreeToMerge.setAssociatedReport(reportToAssociate);
-                    getSubtrees().add(subtreeToMerge);
+                        getAssociatedReport().addNewReport(associatedReport, subtreeToMerge.getReportTypeClass());
+
+                    // if the returned report that should be associated with a new tree node is not null, then check if
+                    // the section id is not empty
+                    String sectionToAddId = rootIdentifierSubtreeToMerge.getSectionId();
+                    if (reportToAssociate != null && Validate.isNotEmpty(sectionToAddId)) {
+
+                        // if the previous conditions are true,then if the section id is equal to the standalone identifier
+                        // and the section-event implements Standalone interface, then don't add the section in the section tree
+                        Class sectionToAddEventClass = rootIdentifierSubtreeToMerge.getSectionEventClass();
+                        if (!Standalone.getStandaloneId().equals(sectionToAddId)
+                            || !Standalone.class.isAssignableFrom(sectionToAddEventClass)) {
+
+                            subtreeToMerge.setAssociatedReport(reportToAssociate);
+                            getSubtrees().add(subtreeToMerge);
+                        }
+                    }
                 }
             } else {
                 //if there is matching subtree then merge it
@@ -137,7 +164,7 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
         // set dummy report as an associated report
         subtreeToMerge.setAssociatedReport(dummyReport);
         // and also into the current report structure
-        getAssociatedReport().addNewReport(dummyReport);
+        getAssociatedReport().addNewReport(dummyReport, dummySection.getReportTypeClass());
         // crated a clone of the missing tree without any subtree
         SectionTree dummyTree = subtreeToMerge.getCloneWithoutSubtrees();
         // add the dummy tree

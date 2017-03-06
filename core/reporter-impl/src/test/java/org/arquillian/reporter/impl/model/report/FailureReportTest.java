@@ -21,7 +21,7 @@ public class FailureReportTest {
 
         // add a normal report - should be added into List of subReports
         BasicReport basicReport = ReportGeneratorUtils.prepareReport(BasicReport.class, "report", 5, 10);
-        failureReport.addNewReport(basicReport);
+        failureReport.addNewReport(basicReport, BasicReport.class);
 
         // verify
         assertThatReport(failureReport)
@@ -30,7 +30,7 @@ public class FailureReportTest {
 
         // add failure report - should be added into List of subReports
         FailureReport failureToAdd = ReportGeneratorUtils.prepareReport(FailureReport.class, FAILURE_REPORT_NAME, 5, 10);
-        failureReport.addNewReport(failureToAdd);
+        failureReport.addNewReport(failureToAdd, FailureReport.class);
 
         // verify
         assertThatReport(failureReport)

@@ -24,7 +24,7 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     public ExecutionReport() {
         super(new UnknownStringKey(EXECUTION_REPORT_NAME));
         this.executionSection = new ExecutionSection(this);
-        sectionTree = new SectionTree(executionSection.identifyYourself(), this);
+        sectionTree = new SectionTree(executionSection.identifyYourself(), this, ExecutionReport.class);
     }
 
     public List<TestSuiteReport> getTestSuiteReports() {
@@ -50,9 +50,8 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
     }
 
     @Override
-    public Report addNewReport(Report newReport) {
-        Class<? extends Report> newReportClass = newReport.getClass();
-        if (TestSuiteReport.class.isAssignableFrom(newReportClass)) {
+    public Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass) {
+        if (expectedReportTypeClass == TestSuiteReport.class) {
             getTestSuiteReports().add((TestSuiteReport) newReport);
         } else {
             getSubReports().add(newReport);

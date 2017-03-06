@@ -33,7 +33,7 @@ public class ReporterExtension implements LoadableExtension {
         builder.service(StringKey.class, ReporterCoreKey.class);
 
         // builders
-        // todo: which of the next four builders do we need? or all of them?
+        // todo: which of the next four builders do we need? only ReportBuilderImpl or all of them?
         builder.service(ReportBuilder.class, ReportBuilderImpl.class);
         builder.service(BasicReportBuilder.class, BasicReportBuilderImpl.class);
         builder.service(ConfigurationReportBuilder.class, ConfigurationReportBuilderImpl.class);

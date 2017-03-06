@@ -20,6 +20,6 @@ public class SectionUnderTestMethodConfigSection extends SectionEvent<SectionUnd
 
     @Override
     public Class<BasicReport> getReportTypeClass() {
-        return null;
+        return BasicReport.class;
     }
 }

@@ -10,7 +10,8 @@ import org.arquillian.reporter.api.model.report.TestMethodReport;
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSection, FailureReport, TestMethodSection> {
+public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSection, FailureReport, TestMethodSection>
+    implements Standalone {
 
     private Method testMethod;
     private String testSuiteId;
@@ -105,6 +106,81 @@ public class TestMethodFailureSection extends SectionEvent<TestMethodFailureSect
         super(failureReport, failureId);
         this.testMethod = testMethod;
         this.testSuiteId = testSuiteId;
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     * The given.
+     */
+    public static TestMethodFailureSection standalone() {
+        return new TestMethodFailureSection(Standalone.getStandaloneId());
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection} with the given test method that is stored to identify a parental section.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     * The given.
+     *
+     * @param testMethod    A test method the {@link FailureReport} belongs to.
+     */
+    public static TestMethodFailureSection standalone(Method testMethod) {
+        return new TestMethodFailureSection(Standalone.getStandaloneId(), testMethod);
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection} with the given test method and test suite id that are stored
+     * to identify a parental section.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     * The given .
+     *
+     * @param testMethod    A test method the {@link FailureReport} belongs to.
+     * @param testSuiteId   An id of a test suite the {@link FailureReport} belongs to.
+     */
+    public static TestMethodFailureSection standalone(Method testMethod, String testSuiteId) {
+        return new TestMethodFailureSection(Standalone.getStandaloneId(), testMethod, testSuiteId);
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     *
+     * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
+     */
+    public static TestMethodFailureSection standalone(FailureReport failureReport) {
+        return new TestMethodFailureSection(failureReport, Standalone.getStandaloneId());
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     * The given test method is stored to identify a parental section.
+     *
+     * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
+     * @param testMethod    A test method the {@link FailureReport} belongs to.
+     */
+    public static TestMethodFailureSection standalone(FailureReport failureReport, Method testMethod) {
+        return new TestMethodFailureSection(failureReport, Standalone.getStandaloneId(), testMethod);
+    }
+
+    /**
+     * Creates an instance of {@link TestMethodFailureSection} with the given {@link FailureReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of failure reports no matter what type it is.
+     * The given test method and test suite id are stored to identify a parental section.
+     *
+     * @param failureReport A {@link FailureReport} that should be contained as the payload of this {@link TestMethodFailureSection}
+     * @param testMethod    A test method the {@link FailureReport} belongs to.
+     * @param testSuiteId   An id of a test suite the {@link FailureReport} belongs to.
+     */
+    public static TestMethodFailureSection standalone(FailureReport failureReport, Method testMethod,
+        String testSuiteId) {
+        return new TestMethodFailureSection(failureReport, Standalone.getStandaloneId(), testMethod, testSuiteId);
     }
 
     @Override

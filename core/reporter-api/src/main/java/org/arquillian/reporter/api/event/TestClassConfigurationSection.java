@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.report.TestClassReport;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestClassConfigurationSection
-    extends SectionEvent<TestClassConfigurationSection, ConfigurationReport, TestClassSection> {
+    extends SectionEvent<TestClassConfigurationSection, ConfigurationReport, TestClassSection> implements Standalone {
 
     private Class<?> testClass;
     private String testSuiteId;
@@ -102,6 +102,78 @@ public class TestClassConfigurationSection
         super(configuration, configurationId);
         this.testClass = testClass;
         this.testSuiteId = testSuiteId;
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     */
+    public static TestClassConfigurationSection standalone() {
+        return new TestClassConfigurationSection(Standalone.getStandaloneId());
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection} with the given test class that is stored to identify a parental section.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     *
+     * @param testClass A test class the {@link ConfigurationReport} belongs to.
+     */
+    public static TestClassConfigurationSection standalone(Class<?> testClass) {
+        return new TestClassConfigurationSection(Standalone.getStandaloneId(), testClass);
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection} with the given test class and test suite that are stored
+     * to identify a parental section.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     *
+     * @param testClass   A test class the {@link ConfigurationReport} belongs to.
+     * @param testSuiteId An id of a test suite the {@link ConfigurationReport} belongs to.
+     */
+    public static TestClassConfigurationSection standalone(Class<?> testClass, String testSuiteId) {
+        return new TestClassConfigurationSection(Standalone.getStandaloneId(), testClass, testSuiteId);
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection} with the given {@link ConfigurationReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     *
+     * @param configuration A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
+     */
+    public static TestClassConfigurationSection standalone(ConfigurationReport configuration) {
+        return new TestClassConfigurationSection(configuration, Standalone.getStandaloneId());
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection} with the given {@link ConfigurationReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     * The given test class is stored to identify a parental section.
+     *
+     * @param configuration A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
+     * @param testClass     A test class the {@link ConfigurationReport} belongs to.
+     */
+    public static TestClassConfigurationSection standalone(ConfigurationReport configuration, Class<?> testClass) {
+        return new TestClassConfigurationSection(configuration, Standalone.getStandaloneId(), testClass);
+    }
+
+    /**
+     * Creates an instance of {@link TestClassConfigurationSection} with the given {@link ConfigurationReport}.
+     * This section is treated as a standalone one which means that it won't be registered in the section tree and the report
+     * won't be merged with any existing one, so it will be added in the list of configuration reports no matter what type it is.
+     * The given test class and test suite are stored to identify a parental section.
+     *
+     * @param configuration A {@link ConfigurationReport} that should be contained within this {@link TestClassConfigurationSection}
+     * @param testClass     A test class the {@link ConfigurationReport} belongs to.
+     * @param testSuiteId   An id of a test suite the {@link ConfigurationReport} belongs to.
+     */
+    public static TestClassConfigurationSection standalone(ConfigurationReport configuration, Class<?> testClass,
+        String testSuiteId) {
+        return new TestClassConfigurationSection(configuration, Standalone.getStandaloneId(), testClass, testSuiteId);
     }
 
     @Override

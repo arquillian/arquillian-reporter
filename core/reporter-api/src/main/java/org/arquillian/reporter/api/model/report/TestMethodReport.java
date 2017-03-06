@@ -168,26 +168,25 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
     }
 
     /**
-     * Takes the given {@link Report} and:
+     * Takes the given {@link Report} and if the given expectedReportTypeClass:
      * <ul>
-     * <li>if it is a {@link ConfigurationReport} then it adds it into the list of
+     * <li>is a {@link ConfigurationReport} class then it adds it into the list of
      * sub-reports contained in this report's configuration-report</li>
-     * <li>if it is a {@link FailureReport} then it adds it into the list of
+     * <li>is a {@link FailureReport} class then it adds it into the list of
      * sub-reports contained in this report's failure-report</li>
-     * <li>if it is any other type of {@link Report} then it adds it into the list of sub-reports</li>
+     * <li>is any other type of {@link Report} class then it adds it into the list of sub-reports</li>
      * </ul>
      *
      * @param newReport A {@link Report} to be added
-     * @return The same instance of {@link Report} that has been added
+     * @param expectedReportTypeClass A {@link Report} class of a type that is expected as the default one of the given report
+     * @return If the report can be tied with section node then, the same instance of {@link Report} that has been added, null otherwise
      */
-    public Report addNewReport(Report newReport) {
-        Class<? extends Report> newReportClass = newReport.getClass();
+    public Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass) {
+        if (expectedReportTypeClass == ConfigurationReport.class) {
+            return getConfiguration().addNewReport(newReport, expectedReportTypeClass);
 
-        if (ConfigurationReport.class.isAssignableFrom(newReportClass)) {
-            return getConfiguration().addNewReport((ConfigurationReport) newReport);
-
-        } else if (FailureReport.class.isAssignableFrom(newReportClass)) {
-            return getFailureReport().addNewReport((FailureReport) newReport);
+        } else if (expectedReportTypeClass == FailureReport.class) {
+            return getFailureReport().addNewReport(newReport, expectedReportTypeClass);
 
         } else {
             getSubReports().add(newReport);
