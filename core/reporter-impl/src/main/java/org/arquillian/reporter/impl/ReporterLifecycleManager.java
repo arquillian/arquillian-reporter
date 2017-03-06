@@ -54,7 +54,7 @@ public class ReporterLifecycleManager {
         processEvent(event, report.get());
     }
 
-    public void afterSuite(@Observes ManagerStopping event) throws IOException {
+    public void observeLastEvent(@Observes ManagerStopping event) throws IOException {
         printJson();
     }
 
