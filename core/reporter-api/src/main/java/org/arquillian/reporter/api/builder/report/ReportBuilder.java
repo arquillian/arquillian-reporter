@@ -1,15 +1,16 @@
 package org.arquillian.reporter.api.builder.report;
 
-import java.util.Map;
-
 import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.StringKey;
-import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.Entry;
+import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.entry.StringEntry;
+import org.arquillian.reporter.api.model.report.Report;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * A {@link Builder} providing an API that helps you to build a {@link Report}
@@ -43,6 +44,14 @@ public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE ext
      * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
      */
     BUILDERTYPE addEntry(String entry);
+
+    /**
+     * Adds the given list of String or Entry as a {@link StringEntry} OR {@link Entry} into the list of entries in the associated {@link Report} instance
+     *
+     * @param entries A List of String or Entry to be added as a {@link StringEntry} OR {@link Entry}
+     * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
+     */
+    BUILDERTYPE addEntries(List<?> entries);
 
     /**
      * Takes the given map of Strings and each pair stores as a {@link KeyValueEntry} in the list of entries in the associated {@link Report} instance.

@@ -1,9 +1,5 @@
 package org.arquillian.reporter.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
@@ -20,8 +16,10 @@ import org.jboss.arquillian.core.api.event.ManagerStarted;
 import org.jboss.arquillian.core.api.event.ManagerStopping;
 import org.jboss.arquillian.core.spi.ServiceLoader;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import static org.arquillian.reporter.impl.SectionEventManager.processEvent;
-import static org.arquillian.reporter.impl.StringKeysBuilder.buildStringKey;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -46,7 +44,7 @@ public class ReporterLifecycleManager {
             BuilderLoader.load();
 
             Collection<StringKey> allStringKeys = serviceLoader.get().all(StringKey.class);
-            allStringKeys.stream().forEach(stringKey -> buildStringKey(stringKey));
+            allStringKeys.forEach(StringKeysBuilder::buildStringKey);
         }
     }
 
