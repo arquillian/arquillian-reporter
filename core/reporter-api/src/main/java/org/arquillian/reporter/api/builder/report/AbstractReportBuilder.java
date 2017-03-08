@@ -1,6 +1,8 @@
 package org.arquillian.reporter.api.builder.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.entry.StringEntry;
 import org.arquillian.reporter.api.model.report.Report;
 
+
 /**
  * Abstract class providing a basic implementation of {@link ReportBuilder}
  *
@@ -22,7 +25,7 @@ import org.arquillian.reporter.api.model.report.Report;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BUILDERTYPE, REPORTTYPE>, REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>>
-    implements ReportBuilder<BUILDERTYPE, REPORTTYPE> {
+        implements ReportBuilder<BUILDERTYPE, REPORTTYPE> {
 
     private final REPORTTYPE report;
     private List<ReportBuilder> reportBuilders = new ArrayList<>();
@@ -52,6 +55,25 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
     @Override
     public BUILDERTYPE addEntry(String entry) {
         report.getEntries().add(new StringEntry(entry));
+        return (BUILDERTYPE) this;
+    }
+
+
+    @Override
+    public BUILDERTYPE addEntries(Collection<? extends Entry> entries) {
+        report.getEntries().addAll(entries);
+        return (BUILDERTYPE) this;
+    }
+
+    @Override
+    public BUILDERTYPE addEntries(String... entries) {
+        Arrays.stream(entries).forEach(s -> report.getEntries().add(new StringEntry(s)));
+        return (BUILDERTYPE) this;
+    }
+
+    @Override
+    public BUILDERTYPE addEntries(Entry... entries) {
+        Arrays.stream(entries).forEach(entry -> report.getEntries().add(entry));
         return (BUILDERTYPE) this;
     }
 
@@ -99,7 +121,7 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
 
     @Override
     public <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
-        SECTIONTYPE event) {
+            SECTIONTYPE event) {
         return Reporter.usingBuilder(ReportInSectionBuilder.class, build(), event);
     }
 

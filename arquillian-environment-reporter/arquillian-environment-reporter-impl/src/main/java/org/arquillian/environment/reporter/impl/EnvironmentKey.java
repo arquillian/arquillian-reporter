@@ -5,7 +5,7 @@ import org.arquillian.reporter.api.model.StringKey;
 
 public class EnvironmentKey extends AbstractStringKey {
 
-    //section nme
+    //section name
     public static final StringKey ENVIRONMENT_SECTION_NAME = new EnvironmentKey();
 
     //elements
