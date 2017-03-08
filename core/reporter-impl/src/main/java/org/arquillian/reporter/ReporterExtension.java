@@ -11,6 +11,7 @@ import org.arquillian.reporter.api.builder.report.TestMethodReportBuilder;
 import org.arquillian.reporter.api.builder.report.TestSuiteReportBuilder;
 import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.config.ReporterConfigurator;
 import org.arquillian.reporter.impl.ReporterLifecycleManager;
 import org.arquillian.reporter.impl.builder.entry.TableBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.BasicReportBuilderImpl;
@@ -30,6 +31,7 @@ public class ReporterExtension implements LoadableExtension {
 
     public void register(ExtensionBuilder builder) {
         builder.observer(ReporterLifecycleManager.class);
+        builder.observer(ReporterConfigurator.class);
         builder.service(StringKey.class, ReporterCoreKey.class);
 
         // builders
