@@ -10,9 +10,12 @@ import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.entry.StringEntry;
 import org.arquillian.reporter.api.model.report.Report;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+
 
 /**
  * Abstract class providing a basic implementation of {@link ReportBuilder}
@@ -57,15 +60,20 @@ public abstract class AbstractReportBuilder<BUILDERTYPE extends ReportBuilder<BU
 
 
     @Override
-    public BUILDERTYPE addEntries(List<?> entries) {
-        for (Object entry : entries) {
-            if (entry instanceof Entry) {
-                addEntry((Entry) entry);
-            } else if (entry instanceof String) {
-                addEntry((String) entry);
-            }
-        }
+    public BUILDERTYPE addEntries(Collection<? extends Entry> entries) {
+        report.getEntries().addAll(entries);
+        return (BUILDERTYPE) this;
+    }
 
+    @Override
+    public BUILDERTYPE addEntries(String... entries) {
+        Arrays.stream(entries).forEach(s -> report.getEntries().add(new StringEntry(s)));
+        return (BUILDERTYPE) this;
+    }
+
+    @Override
+    public BUILDERTYPE addEntries(Entry... entries) {
+        Arrays.stream(entries).forEach(s -> report.getEntries().add(s));
         return (BUILDERTYPE) this;
     }
 

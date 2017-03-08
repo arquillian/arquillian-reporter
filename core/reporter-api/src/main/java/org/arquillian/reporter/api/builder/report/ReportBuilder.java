@@ -9,7 +9,7 @@ import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.entry.StringEntry;
 import org.arquillian.reporter.api.model.report.Report;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ import java.util.Map;
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE extends Report<REPORTTYPE, ? extends ReportBuilder>>
-    extends Builder {
+        extends Builder {
 
     /**
      * Finishes all necessary building actions and returns the resulting instance of {@link Report}.
@@ -46,12 +46,28 @@ public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE ext
     BUILDERTYPE addEntry(String entry);
 
     /**
-     * Adds the given list of String or Entry as a {@link StringEntry} OR {@link Entry} into the list of entries in the associated {@link Report} instance
+     * Adds the given collection of entry as a {@link Entry} into the list of entries in the associated {@link Report} instance
      *
-     * @param entries A List of String or Entry to be added as a {@link StringEntry} OR {@link Entry}
+     * @param entries A collection of entry to be added as {@link Entry}
      * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
      */
-    BUILDERTYPE addEntries(List<?> entries);
+    BUILDERTYPE addEntries(Collection<? extends Entry> entries);
+
+    /**
+     * Adds the given array of entry as a {@link Entry} into the list of entries in the associated {@link Report} instance
+     *
+     * @param entries An array of entries to be added as {@link Entry}
+     * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
+     */
+    BUILDERTYPE addEntries(Entry... entries);
+
+    /**
+     * Adds the given collection of string as a {@link StringEntry} into the list of entries in the associated {@link Report} instance
+     *
+     * @param entries An array of entries to be added as {@link StringEntry}
+     * @return The same instance of {@link ReportBuilder} with modified {@link Report} instance
+     */
+    BUILDERTYPE addEntries(String... entries);
 
     /**
      * Takes the given map of Strings and each pair stores as a {@link KeyValueEntry} in the list of entries in the associated {@link Report} instance.
@@ -132,5 +148,5 @@ public interface ReportBuilder<BUILDERTYPE extends ReportBuilder, REPORTTYPE ext
      * @return An instance of {@link ReportInSectionBuilder} with the given {@link SectionEvent} containing the built {@link Report}.
      */
     <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORTTYPE, ? extends SectionEvent>> ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> inSection(
-        SECTIONTYPE event);
+            SECTIONTYPE event);
 }
