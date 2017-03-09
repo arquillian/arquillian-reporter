@@ -234,25 +234,27 @@ Reporter
 ----
 Reporter uses the corresponding instance of report, builds it, sets it into the provided section event and fires the event.
 
-==== Type of the payload
+==== Type of the payload & add as sub-reports
 
 As you might have already noticed, every section event has some type of `Report` defined as its default payload type. For example `TestMethodSection` has `TestMethodReport` and `TestMethodConfigurationSection` has `ConfigurationReport` etc... These types are also defined in the constructors of the section event classes. However, using the ReportBuilder API you can make the section carrying any other `Report` type. You can do for example this:
 [source,java]
 ----
 Reporter
-    .createReport("my report")
+    .createReport("my sub-report")
     .inSection(new TestClassSection(TestClass.class))
     .fire(injectedSectionEvent);
 ----
-This creates an instance of `BasicReport` and sets it into the `TestClassSection` event. Since the default `Report` type of the section-event is `TestClassReport` then Arquillian Reporter finds the report related to `TestClass.class` and instead of merging it it adds the attached report into the list of sub-reports. Similar example:
+This creates an instance of `BasicReport` and sets it into the `TestClassSection` event. Since the default `Report` type of the section-event is `TestClassReport` then Arquillian Reporter finds the report related to `TestClass.class` and instead of merging it it adds the attached report into the list of sub-reports.
+
+But what if the default payload is `BasicReport` and I want to add a new instance of `BasicReport` into the list of sub-report. Then, you need to use the method `asSubReport()`:
 [source,java]
 ----
 Reporter
-    .createReport(new ConfigurationReport("my config report"))
-    .inSection(new TestClassSection(TestClass.class))
+    .createReport("my sub-report")
+    .inSection(new TestSuiteConfigurationContainerSection("containerId"))
+    .asSubReport()
     .fire(injectedSectionEvent);
 ----
-In this use case, an instance of `ConfigurationReport` is used. Because it is a configuration report, then it is added into the list of configuration sub-reports in the `TestClassReport`.
 
 === Entry builders
 
@@ -520,7 +522,7 @@ Reporter
 ====
 *II.*
 
-Add an additional sub-report to the configuration report that we created in the previous step - there are two ways of doing so - first one: +
+Add an additional sub-report to the configuration report that we created in the previous step - there are three ways of doing so - first one: +
 [source,java]
 ----
 Reporter
@@ -552,6 +554,19 @@ Reporter
 <3> this is same as the previous one - set it into the section `TestSuiteConfigurationSection` with an appropriate id `"my-config-id"`; id of the test suite is not necessary - the latest one is used.
 
 As the payload is a `BasicReport` and not a `ConfigurationReport` then Arquillian Reporter automatically takes this basic one and wraps into an instance of `ConfigurationReport`. The result is same but using less code.
+
+The third way is just defining that the `Report` should be added as a sub-report:
+[source,java]
+----
+Reporter
+    .createReport("My config sub-report name")
+    .add...
+    ...
+    .inSection(new TestSuiteConfigurationSection("my-config-id"))
+    .asSubReport() // <1>
+    .fire(injectedSectionEvent);
+----
+<1> Specify that the report should be attached into the list of sub-reports
 ====
 
 {empty} +

@@ -14,7 +14,7 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
 
     private REPORTTYPE report;
     private String sectionId;
-    private boolean processed = false;
+    private boolean containsSubReport = false;
 
     /**
      * Creates an instance of {@link SectionEvent}
@@ -88,6 +88,28 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
     }
 
     /**
+     * Returns whether the attached {@link Report} will be added into the list of sub-reports of a report that is associated
+     * with this section + id
+     *
+     * @return whether the attached {@link Report} will be added into the list of sub-reports of a report that is associated
+     * with this section + id
+     */
+    public boolean isContainsSubReport() {
+        return containsSubReport;
+    }
+
+    /**
+     * Sets whether the attached {@link Report} will be added into the list of sub-reports of a report that is associated
+     * with this section + id
+     *
+     * @param containsSubReport Whether the attached {@link Report} will be added into the list of sub-reports of a report
+     *                          that is associated with this section + id
+     */
+    public void setContainsSubReport(boolean containsSubReport) {
+        this.containsSubReport = containsSubReport;
+    }
+
+    /**
      * Based on information that are set, creates and returns an instance of {@link SectionEvent} implementation
      * that represents a parent section this section belongs to
      *
@@ -110,5 +132,4 @@ public abstract class SectionEvent<SECTIONTYPE extends SectionEvent<SECTIONTYPE,
     public Identifier<SECTIONTYPE> identifyYourself() {
         return new Identifier<SECTIONTYPE>((Class<SECTIONTYPE>) this.getClass(), getSectionId());
     }
-
 }

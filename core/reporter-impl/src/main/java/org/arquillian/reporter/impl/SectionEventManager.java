@@ -13,22 +13,35 @@ public class SectionEventManager {
     public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
     void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionReport executionReport) {
 
-        // check if the expected payload type is same as the actual one
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
         Class<? extends AbstractReport> actualReportClass = event.getReport().getClass();
-        if (!expectedPayload.isAssignableFrom(actualReportClass)
+
+        // check if the report should be added as basic sub-report (into the list of sub-reports)
+        if (event.isContainsSubReport()) {
+            // if yes, then wrap it so it is merged and report attached in the list
+            wrapReport(expectedPayload, event, actualReportClass);
+
+            // if not, then do another check - if the expected payload type is different then the actual one and also that
+            // the report should not be treated as a standalone report
+        } else if (!expectedPayload.isAssignableFrom(actualReportClass)
             && (!Standalone.getStandaloneId().equals(event.getSectionId()) || !Standalone.class
             .isAssignableFrom(event.getClass()))) {
-            // if not, then create a report class that will be a wrapper of the actual report
-            REPORT_TYPE wrapper = SecurityActions.newInstance(expectedPayload, new Class[] {}, new Object[] {});
-            wrapper.addNewReport(event.getReport(), actualReportClass);
-            event.setReport((REPORT_TYPE) wrapper);
+            // then wrap it
+            wrapReport(expectedPayload, event, actualReportClass);
         }
 
         // create an expected path in the section tree to the report
         SectionTree eventTree = createTreeRecursively(event, null);
-        // and merge the expcted path with the current state of section tree
+        // and merge the expected path with the current state of section tree
         executionReport.getSectionTree().mergeSectionTree(eventTree);
+    }
+
+    private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
+    void wrapReport(Class<REPORT_TYPE> expectedPayload, SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event,
+        Class<? extends AbstractReport> actualReportClass) {
+        REPORT_TYPE wrapper = SecurityActions.newInstance(expectedPayload, new Class[] {}, new Object[] {});
+        wrapper.addNewReport(event.getReport(), actualReportClass);
+        event.setReport((REPORT_TYPE) wrapper);
     }
 
     private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, ? extends SectionEvent>, REPORT_TYPE extends AbstractReport>

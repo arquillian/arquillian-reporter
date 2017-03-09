@@ -22,6 +22,12 @@ public class ReportInSectionBuilderImpl<REPORTTYPE extends AbstractReport, SECTI
     }
 
     @Override
+    public ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> asSubReport() {
+        sectionEvent.setContainsSubReport(true);
+        return this;
+    }
+
+    @Override
     public SECTIONTYPE fire(Event<SectionEvent> injectedSectionEvent) {
         sectionEvent.setReport(report);
         injectedSectionEvent.fire(sectionEvent);

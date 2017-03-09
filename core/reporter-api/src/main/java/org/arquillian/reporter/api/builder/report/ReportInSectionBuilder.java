@@ -17,6 +17,14 @@ public interface ReportInSectionBuilder<REPORTTYPE extends Report, SECTIONTYPE e
     Builder {
 
     /**
+     * If you call this method then the attached {@link Report} will be added into the list of sub-reports of a report
+     * that is associated with the given {@link SectionEvent}
+     *
+     * @return Same instance of ReportInSectionBuilder with the marker that the report should be added as sub-report
+     */
+    ReportInSectionBuilder<REPORTTYPE, SECTIONTYPE> asSubReport();
+
+    /**
      * Fire an arquillian {@link SectionEvent} that was set in previous step
      *
      * @param injectedSectionEvent A {@link Event<SectionEvent>} to be used for firing
