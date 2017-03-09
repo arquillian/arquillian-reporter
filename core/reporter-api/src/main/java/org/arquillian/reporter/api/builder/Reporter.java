@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import org.arquillian.reporter.api.builder.entry.DataCollectionBuilder;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
@@ -112,6 +113,14 @@ public class Reporter {
      */
     public static TableBuilder createTable(StringKey name) {
         return usingBuilder(TableBuilder.class, name);
+    }
+
+    public static DataCollectionBuilder createDataCollection(String name) {
+        return usingBuilder(DataCollectionBuilder.class, name);
+    }
+
+    public static DataCollectionBuilder createDataCollection(StringKey name) {
+        return usingBuilder(DataCollectionBuilder.class, name);
     }
 
     // security actions
