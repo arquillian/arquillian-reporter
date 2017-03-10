@@ -22,7 +22,25 @@ into your pom.xml file.
 
 == Configuration
 
-There isn't any parameter supported so far.
+Please put this extension definition into arquillian.xml in order to bootstrap the configuration:
+
+<extension qualifier="reporter">
+    <property ... />
+</extension>
+
+
+|===
+|Configuration property | Description | Default value
+|+rootDir+
+|root directory which prepends +file+
+|target
+|+file+
+|export report in given file
+|report.json
+|===
+
+Note: If don't want to override above mentioned configuration property, then there is no need to add extension in arquillian.xml.
+Reporter will take default values for properties rootDir(target) & file(report.json)
 
 = For developers of an Arquillian extension
 
