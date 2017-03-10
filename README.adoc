@@ -24,10 +24,12 @@ into your pom.xml file.
 
 Please put this extension definition into arquillian.xml in order to bootstrap the configuration:
 
+[source,xml]
+----
 <extension qualifier="reporter">
     <property ... />
 </extension>
-
+----
 
 |===
 |Configuration property | Description | Default value
