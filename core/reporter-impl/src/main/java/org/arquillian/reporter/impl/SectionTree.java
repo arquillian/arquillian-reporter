@@ -100,6 +100,10 @@ public class SectionTree<SECTIONTYPE extends SectionEvent<SECTIONTYPE, PAYLOAD_T
                     Report reportToAssociate =
                         getAssociatedReport().addNewReport(associatedReport, subtreeToMerge.getReportTypeClass());
 
+                    // todo do we need this?
+                    //                    boolean reportTypeIsSame =
+                    //                        subtreeToMerge.getReportTypeClass().isAssignableFrom(associatedReport.getClass());
+
                     // if the returned report that should be associated with a new tree node is not null, then check if
                     // the section id is not empty
                     String sectionToAddId = rootIdentifierSubtreeToMerge.getSectionId();
