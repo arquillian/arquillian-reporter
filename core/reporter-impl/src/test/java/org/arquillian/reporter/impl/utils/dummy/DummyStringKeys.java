@@ -7,10 +7,22 @@ import org.arquillian.reporter.api.model.AbstractStringKey;
  */
 public class DummyStringKeys extends AbstractStringKey {
 
-    public static DummyStringKeys TEST_SUITE_NAME = new DummyStringKeys();
-    public static DummyStringKeys CONFIG_NAME = new DummyStringKeys();
-    public static DummyStringKeys TEST_CLASS_NAME = new DummyStringKeys();
-    public static DummyStringKeys TEST_CLASS_CONFIG_NAME = new DummyStringKeys();
-    public static DummyStringKeys TEST_METHOD_NAME = new DummyStringKeys();
-    public static DummyStringKeys FAILURE_REPORT_NAME = new DummyStringKeys();
+    public static DummyStringKeys TEST_SUITE_NAME = new DummyStringKeys() {{
+        setValue("test suite name");
+    }};
+    public static DummyStringKeys CONFIG_NAME = new DummyStringKeys() {{
+        setValue("config name");
+    }};
+    public static DummyStringKeys TEST_CLASS_NAME = new DummyStringKeys() {{
+        setValue("test class name");
+    }};
+    public static DummyStringKeys TEST_CLASS_CONFIG_NAME = new DummyStringKeys() {{
+        setValue("test class config name");
+    }};
+    public static DummyStringKeys TEST_METHOD_NAME = new DummyStringKeys() {{
+        setValue("test method name");
+    }};
+    public static DummyStringKeys FAILURE_REPORT_NAME = new DummyStringKeys() {{
+        setValue("failure report name");
+    }};
 }

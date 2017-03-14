@@ -7,6 +7,7 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
+import org.arquillian.reporter.api.utils.Validate;
 
 /**
  * An abstract class providing a basic implementation of {@link Report} interface.
@@ -88,6 +89,9 @@ public abstract class AbstractReport<TYPE extends AbstractReport, BUILDERTYPE ex
     public void defaultMerge(TYPE newReport) {
         if (newReport == null) {
             return;
+        }
+        if (getName() == null || Validate.isEmpty(getName().getValue())){
+            setName(newReport.getName());
         }
         getEntries().addAll(newReport.getEntries());
         getSubReports().addAll(newReport.getSubReports());
