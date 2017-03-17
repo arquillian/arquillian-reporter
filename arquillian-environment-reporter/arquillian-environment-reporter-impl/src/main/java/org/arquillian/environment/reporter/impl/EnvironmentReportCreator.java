@@ -1,5 +1,8 @@
 package org.arquillian.environment.reporter.impl;
 
+import java.nio.charset.Charset;
+import java.util.TimeZone;
+
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
@@ -8,9 +11,6 @@ import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
-
-import java.nio.charset.Charset;
-import java.util.TimeZone;
 
 import static org.arquillian.environment.reporter.impl.EnvironmentKey.CHARSET;
 import static org.arquillian.environment.reporter.impl.EnvironmentKey.DOCKER;
@@ -25,7 +25,7 @@ import static org.arquillian.environment.reporter.impl.EnvironmentKey.TIMEZONE;
 public class EnvironmentReportCreator {
 
     @Inject
-    Event<SectionEvent> reportEvent;
+    Event<SectionEvent> sectionEvent;
 
     public void startTestSuite(@Observes BeforeSuite managerProcessing) {
         Reporter.createReport(new ConfigurationReport(ENVIRONMENT_SECTION_NAME))
@@ -38,7 +38,7 @@ public class EnvironmentReportCreator {
                 .addKeyValueEntry(OPERATIVE_SYSTEM_ARCH, getOperativeSystemArchitecture())
                 .addKeyValueEntry(OPERATIVE_SYSTEM_VERSION,getOperativeSystemVersion())
                 .inSection(new TestSuiteConfigurationSection("environment"))
-                .fire(reportEvent);
+                .fire(sectionEvent);
     }
 
     private String getJavaVersion() {

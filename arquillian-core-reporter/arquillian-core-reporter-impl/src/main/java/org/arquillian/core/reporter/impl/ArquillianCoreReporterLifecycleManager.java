@@ -59,7 +59,7 @@ public class ArquillianCoreReporterLifecycleManager {
     public final static String DEFAULT_TEST_SUITE_ID = "arquillian-default-test-suite";
 
     @Inject
-    private Event<SectionEvent> reportEvent;
+    private Event<SectionEvent> sectionEvent;
 
     @Inject
     private Instance<TestClass> testClass;
@@ -74,7 +74,7 @@ public class ArquillianCoreReporterLifecycleManager {
         Reporter
             .createReport(new TestSuiteReport(TEST_SUITE_NAME))
             .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
-            .fire(reportEvent);
+            .fire(sectionEvent);
 
         // todo differentiate between loaded extensions and configs that are in arquillian.xml
         //        ReportBuilder extensionsReport = Reporter.createReport(new ConfigurationReport("Loaded extensions"));
@@ -86,7 +86,7 @@ public class ArquillianCoreReporterLifecycleManager {
         //        }
         //        extensionsReport
         //            .inSection(new TestSuiteConfigurationSection("loaded-extension"))
-        //            .fire(reportEvent);
+        //            .fire(sectionEvent);
     }
 
     public void reportContainer(@Observes Container event) {
@@ -100,7 +100,7 @@ public class ArquillianCoreReporterLifecycleManager {
                 Reporter.createReport(CONTAINER_CONFIGURATION_REPORT)
                     .feedKeyValueListFromMap(containerProperties))
             .inSection(new TestSuiteConfigurationContainerSection(containerId, DEFAULT_TEST_SUITE_ID))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     public void reportDeployment(@Observes BeforeDeploy event) {
@@ -114,7 +114,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .addKeyValueEntry(ORDER_OF_DEPLOYMENT, description.getOrder())
             .addKeyValueEntry(PROTOCOL_USED_FOR_DEPLOYMENT, description.getProtocol().getName())
             .inSection(new TestClassConfigurationDeploymentSection(description.getName()))
-            .fire(reportEvent);
+            .fire(sectionEvent);
 
         // todo add info into container report - optimally keep oll deployments in a table - to do so we need to have functionality of merging tables. Or is there any better way?
     }
@@ -134,7 +134,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .addKeyValueEntry(TEST_CLASS_REPORT_MESSAGE, reportMessage)
 
             .inSection(new TestClassSection(testClass.getJavaClass(), DEFAULT_TEST_SUITE_ID))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     public void startTestMethod(@Observes(precedence = Integer.MAX_VALUE) Before event) {
@@ -151,7 +151,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .addKeyValueEntry(TEST_METHOD_OPERATES_ON_DEPLOYMENT, deploymentName)
             .addKeyValueEntry(TEST_METHOD_RUNS_AS_CLIENT, runAsClient)
             .inSection(new TestMethodSection(testMethod))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     public void stopTestMethod(@Observes(precedence = Integer.MIN_VALUE) After event, TestResult result) {
@@ -165,7 +165,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .setResult(result)
             .addKeyValueEntry(TEST_METHOD_REPORT_MESSAGE, reportMessage)
             .inSection(new TestMethodSection(testMethod))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     public void stopTestClass(@Observes(precedence = Integer.MIN_VALUE) AfterClass event) {
@@ -174,7 +174,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .createReport(new TestClassReport(event.getTestClass().getName()))
             .stop()
             .inSection(new TestClassSection(event.getTestClass().getJavaClass(), DEFAULT_TEST_SUITE_ID))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     public void stopTestSuite(@Observes(precedence = Integer.MIN_VALUE) AfterSuite event) {
@@ -183,7 +183,7 @@ public class ArquillianCoreReporterLifecycleManager {
             .createReport(new TestSuiteReport(TEST_SUITE_NAME))
             .stop()
             .inSection(new TestSuiteSection(DEFAULT_TEST_SUITE_ID))
-            .fire(reportEvent);
+            .fire(sectionEvent);
     }
 
     private static final class ReportMessageParser {
