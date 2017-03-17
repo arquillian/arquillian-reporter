@@ -13,7 +13,7 @@ import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.impl.ExecutionReport;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.SectionEventManager;
 import org.arquillian.reporter.impl.SectionTree;
 import org.arquillian.reporter.impl.utils.dummy.SecondDummyTestClass;
@@ -33,14 +33,14 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddMethodToNonExistingSectionInEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
         TestMethodSection methodSection = createTestMethodSectionInNonExistingSection();
 
-        SectionEventManager.processEvent(methodSection, executionReport);
+        SectionEventManager.processEvent(methodSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          1, 4);
 
@@ -56,15 +56,15 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddTestMethodToNonExistingSectionInNonEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
-        prepareSectionTreeWithReporterCoreSectionsAndReports(executionReport);
+        prepareSectionTreeWithReporterCoreSectionsAndReports(executionStore);
 
         TestMethodSection methodSection = createTestMethodSectionInNonExistingSection();
-        SectionEventManager.processEvent(methodSection, executionReport);
+        SectionEventManager.processEvent(methodSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          EXPECTED_NUMBER_OF_SECTIONS + 1,
                                                          TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE + 3);
@@ -80,14 +80,14 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddTestMethodConfigurationToNonExistingSectionInEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
         TestMethodConfigurationSection methodConfigSection = createTestMethodConfigSectionInNonExistingSection();
 
-        SectionEventManager.processEvent(methodConfigSection, executionReport);
+        SectionEventManager.processEvent(methodConfigSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          1, 5);
 
@@ -107,14 +107,14 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddTestMethodConfigurationToNonExistingSectionInNonEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
-        prepareSectionTreeWithReporterCoreSectionsAndReports(executionReport);
+        ExecutionStore executionStore = new ExecutionStore();
+        prepareSectionTreeWithReporterCoreSectionsAndReports(executionStore);
 
         TestMethodConfigurationSection methodConfigSection = createTestMethodConfigSectionInNonExistingSection();
-        SectionEventManager.processEvent(methodConfigSection, executionReport);
+        SectionEventManager.processEvent(methodConfigSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          EXPECTED_NUMBER_OF_SECTIONS + 1,
                                                          TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE + 4);
@@ -135,14 +135,14 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddTestMethodFailureToNonExistingSectionInEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
         TestMethodFailureSection methodFailureSection = createTestMethodFailureSectionInNonExistingSection();
 
-        SectionEventManager.processEvent(methodFailureSection, executionReport);
+        SectionEventManager.processEvent(methodFailureSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          1, 5);
 
@@ -162,14 +162,14 @@ public class TestMethodNonExistingTreeSectionTest extends AbstractNonExistingTre
 
     @Test
     public void testAddTestMethodFailureToNonExistingSectionInNonEmptyTreeUsingEventManager() throws Exception {
-        ExecutionReport executionReport = new ExecutionReport();
-        prepareSectionTreeWithReporterCoreSectionsAndReports(executionReport);
+        ExecutionStore executionStore = new ExecutionStore();
+        prepareSectionTreeWithReporterCoreSectionsAndReports(executionStore);
 
         TestMethodFailureSection methodFailureSection = createTestMethodFailureSectionInNonExistingSection();
-        SectionEventManager.processEvent(methodFailureSection, executionReport);
+        SectionEventManager.processEvent(methodFailureSection, executionStore);
 
         SectionTree<TestSuiteSection, TestSuiteReport> suiteTree =
-            verifyNonExistingSuiteSectionAddedAndGetTree(executionReport.getSectionTree(),
+            verifyNonExistingSuiteSectionAddedAndGetTree(executionStore.getSectionTree(),
                                                          new TestClassSection(SecondDummyTestClass.class),
                                                          EXPECTED_NUMBER_OF_SECTIONS + 1,
                                                          TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE + 4);

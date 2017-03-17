@@ -22,8 +22,8 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.SectionEventManager;
 import org.arquillian.reporter.impl.utils.dummy.DummyTestClass;
 
@@ -115,7 +115,7 @@ public class SectionGeneratorUtils {
     // methods for feeding execution report
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestSuiteSections(
-        ExecutionReport executionReport) {
+        ExecutionStore executionStore) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
         List<TestSuiteSection> testSuiteSections =
@@ -128,14 +128,14 @@ public class SectionGeneratorUtils {
                                       index + 10),
                         getTestSuiteSectionName(index));
                 }
-            }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
+            }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore);
 
-        sections.put(executionReport.getExecutionSection(), testSuiteSections);
+        sections.put(executionStore.getExecutionSection(), testSuiteSections);
         return sections;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestSuiteConfigurationSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestSuiteSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestSuiteSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -153,7 +153,7 @@ public class SectionGeneratorUtils {
                             getTestSuiteConfigSectionName(index),
                             suiteId);
                     }
-                }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
+                }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore);
             sections.put((TestSuiteSection) suite, testSuiteConfigSections);
         });
 
@@ -161,7 +161,7 @@ public class SectionGeneratorUtils {
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestClassSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestSuiteSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestSuiteSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -181,7 +181,7 @@ public class SectionGeneratorUtils {
                             DummyTestClass.class,
                             suiteId);
                     }
-                }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport);
+                }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore);
             // add only one test-class section as it is processed using same class, all of them should be merged info one report
             sections.put((TestSuiteSection) suite, testClassSections.subList(0, 1));
         });
@@ -190,7 +190,7 @@ public class SectionGeneratorUtils {
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestClassConfigurationSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestClassSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestClassSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -214,14 +214,14 @@ public class SectionGeneratorUtils {
                              testClassConfigurationSection.setTestSuiteId(testSuiteId);
                              return testClassConfigurationSection;
                          }
-                     }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport));
+                     }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore));
         });
 
         return sections;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestClassSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestClassSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -241,14 +241,14 @@ public class SectionGeneratorUtils {
                                  testMethodSection.setTestSuiteId(testSuiteId);
                                  return testMethodSection;
                              }
-                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport));
+                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore));
         });
 
         return sections;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodConfigurationSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestMethodSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestMethodSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -272,14 +272,14 @@ public class SectionGeneratorUtils {
                                  testMethodConfigSection.setTestSuiteId(testSuiteId);
                                  return testMethodConfigSection;
                              }
-                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport));
+                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore));
         });
 
         return sections;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> feedWithTestMethodFailureSections(
-        ExecutionReport executionReport, List<SectionEvent> parentTestMethodSections) {
+        ExecutionStore executionStore, List<SectionEvent> parentTestMethodSections) {
 
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
 
@@ -303,36 +303,36 @@ public class SectionGeneratorUtils {
                                  testMethodFailureSection.setTestSuiteId(testSuiteId);
                                  return testMethodFailureSection;
                              }
-                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionReport));
+                         }.generateSetOfSections(EXPECTED_NUMBER_OF_SECTIONS, executionStore));
         });
 
         return sections;
     }
 
     public static Map<SectionEvent, List<? extends SectionEvent>> prepareSectionTreeWithReporterCoreSectionsAndReports(
-        ExecutionReport executionReport) {
+        ExecutionStore executionStore) {
         // add test suite sections
-        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
+        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionStore);
         List<SectionEvent> testSuiteSubsections = getSubsectionsOfSomeSection(ExecutionSection.class, sections);
 
         // add test class sections
-        sections.putAll(feedWithTestClassSections(executionReport, testSuiteSubsections));
+        sections.putAll(feedWithTestClassSections(executionStore, testSuiteSubsections));
         List<SectionEvent> testClassSubsections = getSubsectionsOfSomeSection(TestSuiteSection.class, sections);
 
         // add test method sections
-        sections.putAll(feedWithTestMethodSections(executionReport, testClassSubsections));
+        sections.putAll(feedWithTestMethodSections(executionStore, testClassSubsections));
         List<SectionEvent> testMethodSubsections = getSubsectionsOfSomeSection(TestClassSection.class, sections);
 
         // add test class config sections
-        mergeMapOfSections(sections, feedWithTestClassConfigurationSections(executionReport, testClassSubsections));
+        mergeMapOfSections(sections, feedWithTestClassConfigurationSections(executionStore, testClassSubsections));
 
         // add test suite config sections
-        mergeMapOfSections(sections, feedWithTestSuiteConfigurationSections(executionReport, testSuiteSubsections));
+        mergeMapOfSections(sections, feedWithTestSuiteConfigurationSections(executionStore, testSuiteSubsections));
 
         // add test method failure sections
-        mergeMapOfSections(sections, feedWithTestMethodFailureSections(executionReport, testMethodSubsections));
+        mergeMapOfSections(sections, feedWithTestMethodFailureSections(executionStore, testMethodSubsections));
         // add test method config sections
-        mergeMapOfSections(sections, feedWithTestMethodConfigurationSections(executionReport, testMethodSubsections));
+        mergeMapOfSections(sections, feedWithTestMethodConfigurationSections(executionStore, testMethodSubsections));
 
         return sections;
     }
@@ -362,13 +362,13 @@ public class SectionGeneratorUtils {
 
     abstract static class SectionGeneratorAndProcessor<T extends SectionEvent> {
 
-        List<T> generateSetOfSections(int number, ExecutionReport executionReport) {
+        List<T> generateSetOfSections(int number, ExecutionStore executionStore) {
             return IntStream
                 .range(0, number)
                 .mapToObj(index -> {
                               try {
                                   T sectionInstance = createNewInstance(index);
-                                  SectionEventManager.processEvent(sectionInstance, executionReport);
+                                  SectionEventManager.processEvent(sectionInstance, executionStore);
                                   return sectionInstance;
                               } catch (Exception e) {
                                   throw new RuntimeException(e);

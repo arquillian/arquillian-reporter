@@ -6,7 +6,7 @@ import java.util.List;
 import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.config.ReporterConfiguration;
-import org.arquillian.reporter.impl.ExecutionReport;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.base.AbstractReporterTestBase;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -15,6 +15,7 @@ import org.jboss.arquillian.core.api.event.ManagerStopping;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
+import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
 import static org.mockito.ArgumentMatchers.any;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -22,16 +23,17 @@ import static org.mockito.ArgumentMatchers.any;
 public class ReporterLifecycleManagerTest extends AbstractReporterTestBase {
 
     @Inject
-    private Instance<ExecutionReport> executionReport;
+    private Instance<ExecutionStore> executionStore;
 
     @Test
     public void testWhenManagerIsStartedExecutionReportShouldBeInstantiatedAndFirstObserverInvoked()
         throws IOException {
 
-        assertThatExecutionReport(executionReport.get())
+        assertThatExecutionReport(executionStore.get().getExecutionReport())
             .as("The execution report should be already instantiated")
-            .isNotNull()
-            .sectionTree()
+            .isNotNull();
+
+        assertThatSectionTree(executionStore.get().getSectionTree())
             .as("The execution report should contain instantiated section tree")
             .isNotNull()
             .hasNumberOfSubTrees(0);

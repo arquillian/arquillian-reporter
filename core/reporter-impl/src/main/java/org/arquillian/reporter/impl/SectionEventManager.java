@@ -11,7 +11,7 @@ import org.arquillian.reporter.api.model.report.AbstractReport;
 public class SectionEventManager {
 
     public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
-    void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionReport executionReport) {
+    void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionStore executionStore) {
 
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
         Class<? extends AbstractReport> actualReportClass = event.getReport().getClass();
@@ -33,7 +33,7 @@ public class SectionEventManager {
         // create an expected path in the section tree to the report
         SectionTree eventTree = createTreeRecursively(event, null);
         // and merge the expected path with the current state of section tree
-        executionReport.getSectionTree().mergeSectionTree(eventTree);
+        executionStore.getSectionTree().mergeSectionTree(eventTree);
     }
 
     private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>

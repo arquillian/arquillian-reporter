@@ -7,6 +7,7 @@ import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.junit.Test;
 
@@ -57,22 +58,22 @@ public class ExecutionReportTest {
 
     @Test
     public void testNewExecutionReportShouldContainSectionWithTheSameReportItself() {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
-        assertThatSection(executionReport.getExecutionSection())
+        assertThatSection(executionStore.getExecutionSection())
             .hasSectionId(EXECUTION_SECTION_ID)
             .hasReportOfTypeThatIsAssignableFrom(ExecutionReport.class)
-            .hasReportEqualTo(executionReport);
+            .hasReportEqualTo(executionStore.getExecutionReport());
     }
 
     @Test
     public void testNewExecutionReportShouldContainExecutionSectionTree() {
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
         Identifier identifier = new Identifier<>(ExecutionSection.class, EXECUTION_SECTION_ID);
 
-        assertThatSectionTree(executionReport.getSectionTree())
+        assertThatSectionTree(executionStore.getSectionTree())
             .hasRootIdentifier(identifier)
-            .hasAssociatedReport(executionReport);
+            .hasAssociatedReport(executionStore.getExecutionReport());
 
     }
 

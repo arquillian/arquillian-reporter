@@ -8,11 +8,12 @@ import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.impl.ExecutionSection;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.junit.Test;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
+import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestClassConfigurationSections;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.feedWithTestClassSections;
@@ -27,18 +28,19 @@ public class TestClassSectionTreeEventManagerTest {
 
     @Test
     public void testAddingTestClassSectionsWithReportsUsingEventManager() {
-        ExecutionReport executionReport = new ExecutionReport();
-        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
+        ExecutionStore executionStore = new ExecutionStore();
+        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionStore);
         sections.putAll(
-            feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
+            feedWithTestClassSections(executionStore, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
 
         int parentCount = 1 + EXPECTED_NUMBER_OF_SECTIONS;
         int treeNodesCount = parentCount + EXPECTED_NUMBER_OF_SECTIONS;
         assertThat(sections).hasSize(parentCount);
 
-        assertThatExecutionReport(executionReport)
-            .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class)
-            .sectionTree()
+        assertThatExecutionReport(executionStore.getExecutionReport())
+            .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class);
+
+        assertThatSectionTree(executionStore.getSectionTree())
             .wholeTreeConsistOfCouplesMatching(sections)
             .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
             .associatedReport();
@@ -46,22 +48,23 @@ public class TestClassSectionTreeEventManagerTest {
 
     @Test
     public void testAddTestClassConfigurationSectionsWithReportsUsingEventManager() {
-        ExecutionReport executionReport = new ExecutionReport();
-        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionReport);
+        ExecutionStore executionStore = new ExecutionStore();
+        Map<SectionEvent, List<? extends SectionEvent>> sections = feedWithTestSuiteSections(executionStore);
         sections.putAll(
-            feedWithTestClassSections(executionReport, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
+            feedWithTestClassSections(executionStore, getSubsectionsOfSomeSection(ExecutionSection.class, sections)));
         sections.putAll(
-            feedWithTestClassConfigurationSections(executionReport,
+            feedWithTestClassConfigurationSections(executionStore,
                                                    getSubsectionsOfSomeSection(TestSuiteSection.class, sections)));
 
         int parentCount = 1 + EXPECTED_NUMBER_OF_SECTIONS * 2;
         int treeNodesCount = (int) (parentCount + Math.pow(EXPECTED_NUMBER_OF_SECTIONS, 2));
         assertThat(sections).hasSize(parentCount);
 
-        assertThatExecutionReport(executionReport)
+        assertThatExecutionReport(executionStore.getExecutionReport())
             .reportSubtreeConsistOfGeneratedReports(TestSuiteReport.class, TestClassReport.class,
-                                                    ConfigurationReport.class)
-            .sectionTree()
+                                                    ConfigurationReport.class);
+
+        assertThatSectionTree(executionStore.getSectionTree())
             .wholeTreeConsistOfCouplesMatching(sections)
             .wholeTreeHasNumberOfTreeNodes(treeNodesCount)
             .associatedReport();

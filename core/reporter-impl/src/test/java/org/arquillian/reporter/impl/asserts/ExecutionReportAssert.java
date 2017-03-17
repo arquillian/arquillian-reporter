@@ -127,8 +127,4 @@ public class ExecutionReportAssert extends ReportAssert<ExecutionReportAssert, E
                 actual.getName()).isEqualTo(testSuiteReportList);
         return this;
     }
-
-    public SectionTreeAssert sectionTree() {
-        return new SectionTreeAssert(actual.getSectionTree());
-    }
 }
