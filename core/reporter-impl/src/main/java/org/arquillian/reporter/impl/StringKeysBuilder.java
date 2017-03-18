@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.arquillian.reporter.api.model.AbstractStringKey;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.utils.Validate;
 
 /**
  * Responsible for loading string-key properties files and setting the values to corresponding classes
@@ -55,6 +56,9 @@ class StringKeysBuilder {
                 key.setValue((String) properties.get(name.concat(".value")));
                 key.setDescription((String) properties.get(name.concat(".description")));
                 key.setIcon((String) properties.get(name.concat(".icon")));
+                if (Validate.isEmpty(key.getValue())) {
+                    key.setValue(name.toLowerCase());
+                }
 
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(String.format(
