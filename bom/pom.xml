@@ -4,7 +4,7 @@
 
     <groupId>org.arquillian.reporter</groupId>
     <artifactId>arquillian-reporter-bom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.0.3</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Reporter BOM</name>
@@ -24,7 +24,7 @@
         <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
         <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
         <url>git://github.com/arquillian/arquillian-reporter.git</url>
-        <tag>HEAD</tag>
+        <tag>0.0.3</tag>
     </scm>
 
     <!-- Developers -->
