@@ -58,4 +58,8 @@ public class FileEntry implements Entry {
     public int hashCode() {
         return filePath != null ? filePath.hashCode() : 0;
     }
+
+    public Entry outputEntry(){
+        return this;
+    }
 }

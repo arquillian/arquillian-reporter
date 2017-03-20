@@ -48,6 +48,10 @@ public class StringEntry implements Entry {
         this.content = content;
     }
 
+    public Entry outputEntry(){
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

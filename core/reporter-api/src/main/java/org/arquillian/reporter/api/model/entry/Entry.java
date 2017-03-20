@@ -9,4 +9,14 @@ import org.arquillian.reporter.api.model.report.Report;
  */
 public interface Entry {
 
+    /**
+     * Returns an instance of an {@link Entry} implementation that will be added as final form of this entry into the
+     * resulting report tree. This is a opportunity to process/modify data included in this entry or to change the
+     * whole structure.
+     *
+     * @return An instance of an {@link Entry} implementation that will be added as final form of this entry into the
+     * resulting report tree
+     */
+    Entry outputEntry();
+
 }

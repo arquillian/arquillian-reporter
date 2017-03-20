@@ -64,4 +64,8 @@ public class KeyValueEntry implements Entry {
             ", value=" + value +
             '}';
     }
+
+    public Entry outputEntry(){
+        return this;
+    }
 }

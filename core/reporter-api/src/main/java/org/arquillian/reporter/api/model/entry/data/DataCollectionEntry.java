@@ -39,4 +39,8 @@ public class DataCollectionEntry implements Entry {
     public void setDataList(List<DataItem> dataList) {
         this.dataList = dataList;
     }
+
+    public Entry outputEntry(){
+        return this;
+    }
 }

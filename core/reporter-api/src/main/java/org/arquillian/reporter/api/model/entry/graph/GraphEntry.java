@@ -36,4 +36,8 @@ public class GraphEntry implements Entry {
     public void setName(StringKey name) {
         this.name = name;
     }
+
+    public Entry outputEntry(){
+        return this;
+    }
 }
