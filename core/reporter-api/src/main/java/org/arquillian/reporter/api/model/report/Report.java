@@ -86,4 +86,7 @@ public interface Report<TYPE extends Report, BUILDERTYPE extends ReportBuilder> 
      */
     Report addNewReport(Report newReport, Class<? extends Report> expectedReportTypeClass);
 
+
+    void processEntries();
+
 }

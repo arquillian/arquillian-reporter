@@ -65,7 +65,7 @@ public class Label {
      */
     public Label parent(Label parentLabel){
         Label newLabel = new Label(name);
-        newLabel.setParentLabel(parentLabel);
+        newLabel.setParentLabel(new Label(parentLabel));
         return newLabel;
     }
 }
