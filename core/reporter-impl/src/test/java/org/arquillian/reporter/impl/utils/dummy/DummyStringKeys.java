@@ -25,4 +25,16 @@ public class DummyStringKeys extends AbstractStringKey {
     public static DummyStringKeys FAILURE_REPORT_NAME = new DummyStringKeys() {{
         setValue("failure report name");
     }};
+
+    public static DummyStringKeys DUMMY_1_NAME = new DummyStringKeys() {{
+        setValue("dummy name 1");
+    }};
+
+    public static DummyStringKeys DUMMY_2_NAME = new DummyStringKeys() {{
+        setValue("dummy name 2");
+    }};
+
+    public static DummyStringKeys DUMMY_3_NAME = new DummyStringKeys() {{
+        setValue("dummy name 3");
+    }};
 }

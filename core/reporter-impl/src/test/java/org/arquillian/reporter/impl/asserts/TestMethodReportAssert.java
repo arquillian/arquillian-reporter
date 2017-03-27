@@ -1,14 +1,15 @@
 package org.arquillian.reporter.impl.asserts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
-
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.jboss.arquillian.test.spi.TestResult;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.getFailureReportName;
@@ -62,6 +63,14 @@ public class TestMethodReportAssert extends WithConfigReportAssert<TestMethodRep
         return this;
     }
 
+    public TestMethodReportAssert hasFailureReportsContainingExactly(FailureReport failureReports) {
+        assertThat(actual.getFailureReport().getName())
+                .as("The test method report with name <%s> should contain exactly the given failure reports",
+                        actual.getName())
+                .isEqualTo(failureReports.getName());
+        return this;
+    }
+
     public TestMethodReportAssert hasFailureSubReportsContainingExactly(FailureReport... failureReports) {
         assertThat(actual.getFailureReport().getSubReports())
             .as("The test method report with name <%s> should contain exactly the given failure sub-reports",
@@ -83,6 +92,16 @@ public class TestMethodReportAssert extends WithConfigReportAssert<TestMethodRep
             .as("The failure report stored in the test method report with name <%s> should contain the given number of sub-reports and entries: <%s>",
                 actual.getName(), number)
             .hasNumberOfSubReportsAndEntries(number);
+        return this;
+    }
+
+    public TestMethodReportAssert hasStatus(TestResult.Status status) {
+        isNotNull();
+
+        assertThat(actual.getStatus())
+                .as("The result of the test method should be: " + status)
+                .isEqualTo(status);
+
         return this;
     }
 
