@@ -9,13 +9,14 @@ import java.util.Optional;
 import org.arquillian.reporter.api.event.Identifier;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.impl.ExecutionReport;
+import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.SectionEventManager;
 import org.arquillian.reporter.impl.SectionTree;
 import org.assertj.core.api.SoftAssertions;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
+import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.prepareReport;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.EXPECTED_NUMBER_OF_SECTIONS;
 import static org.arquillian.reporter.impl.utils.SectionGeneratorUtils.prepareSectionTreeWithReporterCoreSectionsAndReports;
@@ -71,12 +72,12 @@ public abstract class AbstractMergeTest {
     protected void verifyMergeSectionUsingIdInComplexTreeUsingEventManager(SectionEvent sectionToMerge,
         String idOfLatestSection, String reportName, int numberOfEntriesAndReports) throws Exception {
 
-        ExecutionReport executionReport = new ExecutionReport();
+        ExecutionStore executionStore = new ExecutionStore();
 
         Map<SectionEvent, List<? extends SectionEvent>> sections =
-            prepareSectionTreeWithReporterCoreSectionsAndReports(executionReport);
+            prepareSectionTreeWithReporterCoreSectionsAndReports(executionStore);
 
-        SectionEventManager.processEvent(sectionToMerge, executionReport);
+        SectionEventManager.processEvent(sectionToMerge, executionStore);
 
         Identifier identifier = null;
         int reportIndex;
@@ -89,7 +90,7 @@ public abstract class AbstractMergeTest {
         }
 
         Optional<SectionTree> merged =
-            getTreeWithIdAndReportNameFromWholeTree(executionReport.getSectionTree(), identifier, reportName);
+            getTreeWithIdAndReportNameFromWholeTree(executionStore.getSectionTree(), identifier, reportName);
 
         assertThat(merged).as("The section-tree-node with identifier: <%s> should be present.", identifier).isPresent();
 
@@ -99,9 +100,10 @@ public abstract class AbstractMergeTest {
             assertThat(merged).isPresent();
             assertThat(sections).hasSize(PARENT_COUNT_OF_COMPLEX_PREPARED_TREE);
 
-            assertThatExecutionReport(executionReport)
-                .reportSubtreeConsistOfGeneratedReports(mergedReports)
-                .sectionTree()
+            assertThatExecutionReport(executionStore.getExecutionReport())
+                .reportSubtreeConsistOfGeneratedReports(mergedReports);
+
+            assertThatSectionTree(executionStore.getSectionTree())
                 .wholeTreeConsistOfCouplesMatching(sections)
                 .wholeTreeHasNumberOfTreeNodes(TREE_NODES_COUNT_OF_COMPLEX_PREPARED_TREE);
 

@@ -10,30 +10,23 @@ import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 
 /**
- * Report containing all information about the whole test execution
+ * Report containing all reports related to the whole test execution
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuilder> {
 
     private final List<TestSuiteReport> testSuiteReports = new ArrayList<>();
-    private final ExecutionSection executionSection;
-    private final SectionTree sectionTree;
     public static final String EXECUTION_REPORT_NAME = "execution";
 
     public ExecutionReport() {
         super(new UnknownStringKey(EXECUTION_REPORT_NAME));
-        this.executionSection = new ExecutionSection(this);
-        sectionTree = new SectionTree(executionSection.identifyYourself(), this, ExecutionReport.class);
     }
 
     public List<TestSuiteReport> getTestSuiteReports() {
         return testSuiteReports;
     }
 
-    public SectionTree getSectionTree() {
-        return sectionTree;
-    }
 
     @Override
     public Class<ReportBuilder> getReportBuilderClass() {
@@ -57,9 +50,5 @@ public class ExecutionReport extends AbstractReport<ExecutionReport, ReportBuild
             getSubReports().add(newReport);
         }
         return newReport;
-    }
-
-    public ExecutionSection getExecutionSection() {
-        return executionSection;
     }
 }
