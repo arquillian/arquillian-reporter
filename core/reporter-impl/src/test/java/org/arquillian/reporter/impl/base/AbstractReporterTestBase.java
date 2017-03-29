@@ -1,8 +1,5 @@
 package org.arquillian.reporter.impl.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
@@ -33,6 +30,9 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -40,6 +40,15 @@ import static org.mockito.MockitoAnnotations.initMocks;
  * An abstract base class for reporter tests. Initializes/registers StringKeys, Builders, a serviceLoader in an ApplicationScope,
  * and {@link ReporterLifecycleManager} that is spied, so it can be verified using method {@link #verifyInReporterLifecycleManager()}
  * if the have been the observers invoked.
+ *
+ * <p>
+ *     In case you want to register any additional class/service/observer, override any of the following methods:
+ *     <ul>
+ *         <li>{@link #addReporterStringKeys(List)} to register additional StringKey implementation (except for the core ones - they are already registered)</li>
+ *         <li>{@link #registerBuilders(BuilderRegistryDelegate)} to register builder interface and its implementation (except for the core ones - they are already registered)</li>
+ *         <li>{@link #addAdditionalExtensions(List)} for any other arquillian extension services (observer, enricher, ...)</li>
+ *     </ul>
+ * </p>
  *
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
@@ -104,7 +113,8 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
      *
      * @param extensions Set of extensions
      */
-    protected abstract void addAdditionalExtensions(List<Class<?>> extensions);
+    protected void addAdditionalExtensions(List<Class<?>> extensions){
+    }
 
     /**
      * Add your implementation of {@link StringKey} you want to register. You don't have to add {@link ReporterCoreKey}
@@ -112,7 +122,8 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
      *
      * @param stringKeys List of {@link StringKey} implementations
      */
-    protected abstract void addReporterStringKeys(List<StringKey> stringKeys);
+    protected void addReporterStringKeys(List<StringKey> stringKeys){
+    }
 
     /**
      * Register pair of {@link Builder} interfaces and its implementations. You don't have to add any builder from the
@@ -120,6 +131,7 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
      *
      * @param builderRegistry Builder registry
      */
-    protected abstract void registerBuilders(BuilderRegistryDelegate builderRegistry);
+    protected void registerBuilders(BuilderRegistryDelegate builderRegistry){
+    }
 
 }
