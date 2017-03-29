@@ -30,6 +30,24 @@ public class ReporterUtils {
     }
 
     /**
+     *  Gets the {@link Throwable} and returns the stack trace in human readable form
+     *
+     * @return The stack trace in human readable form
+     */
+    public static String getHumanReadableStackTrace(Throwable aThrowable) {
+        StringBuilder sb = new StringBuilder();
+        String newLine = System.getProperty("line.separator");
+        sb.append(aThrowable.toString());
+        sb.append(newLine);
+
+        for (StackTraceElement element : aThrowable.getStackTrace()) {
+            sb.append(element);
+            sb.append(newLine);
+        }
+        return sb.toString();
+    }
+
+    /**
      * Takes the given {@link Class}, and creates an id using the fully qualified name of the test class
      *
      * @param method A {@link Class} to be used for creating an id
