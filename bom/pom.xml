@@ -1,106 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.arquillian.reporter</groupId>
-    <artifactId>arquillian-reporter-bom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <groupId>org.arquillian.reporter</groupId>
+  <artifactId>arquillian-reporter-bom</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <name>Arquillian Reporter BOM</name>
-    <description>Arquillian Reporter extension that brings neat and comprehensive reports into Arquillian Universe</description>
-    <url>http://arquillian.org</url>
+  <name>Arquillian Reporter BOM</name>
+  <description>Arquillian Reporter extension that brings neat and comprehensive reports into Arquillian Universe
+  </description>
+  <url>http://arquillian.org</url>
 
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+  <!-- Licenses -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
-    <!-- SCM -->
-    <scm>
-        <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
-        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
-        <url>git://github.com/arquillian/arquillian-reporter.git</url>
-        <tag>HEAD</tag>
-    </scm>
+  <!-- SCM -->
+  <scm>
+    <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
+    <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
+    <url>git://github.com/arquillian/arquillian-reporter.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <name>Matous Jobanek</name>
-            <email>mjobanek@redhat.com</email>
-        </developer>
-    </developers>
+  <!-- Developers -->
+  <developers>
+    <developer>
+      <name>Matous Jobanek</name>
+      <email>mjobanek@redhat.com</email>
+    </developer>
+  </developers>
 
-    <properties>
-        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-    </properties>
+  <properties>
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/
+    </jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
+    </jboss.snapshots.repo.url>
+  </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-reporter-impl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-reporter-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-core-reporter-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-core-reporter-impl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-environment-reporter-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.arquillian.reporter</groupId>
-                <artifactId>arquillian-environment-reporter-impl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-reporter-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-reporter-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-core-reporter-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-core-reporter-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-environment-reporter-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-environment-reporter-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <pushChanges>false</pushChanges>
-                        <localCheckout>true</localCheckout>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 
-    <distributionManagement>
-        <repository>
-            <id>jboss-releases-repository</id>
-            <name>JBoss Releases Repository</name>
-            <url>${jboss.releases.repo.url}</url>
-        </repository>
-        <snapshotRepository>
-            <id>jboss-snapshots-repository</id>
-            <name>JBoss Snapshots Repository</name>
-            <url>${jboss.snapshots.repo.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>${jboss.releases.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>${jboss.snapshots.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
