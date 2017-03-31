@@ -48,6 +48,12 @@
     <dependencies>
       <dependency>
         <groupId>org.arquillian.reporter</groupId>
+        <artifactId>arquillian-reporter-depchain</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.reporter</groupId>
         <artifactId>arquillian-reporter-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
