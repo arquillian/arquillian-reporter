@@ -1,6 +1,7 @@
 package org.arquillian.reporter;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -17,8 +18,8 @@ public class GreeterTest {
     @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
-                .addClass(Greeter.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+            .addClass(Greeter.class)
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject
@@ -27,9 +28,16 @@ public class GreeterTest {
     @Test
     public void should_create_greeting() {
         Assert.assertEquals("Hello, Earthling!",
-                greeter.createGreeting("Earthling"));
+                            greeter.createGreeting("Earthling"));
         greeter.greet(System.out, "Earthling");
     }
+
+    @Test
+    @RunAsClient
+    public void run_client_test() {
+
+    }
+
 }
 
 
