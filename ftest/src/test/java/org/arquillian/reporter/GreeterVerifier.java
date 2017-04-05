@@ -31,11 +31,26 @@ public class GreeterVerifier {
         Assertions.assertThat(file).exists();
         ExecutionReport executionReport = ReportJsonParser.parse("target/report.json");
 
-        /*ExecutionReportAssert.assertThatExecutionReport(executionReport)
+        //TestSuiteReport testSuiteReport = executionReport.getTestSuiteReports().get(0);
+
+        /*TestSuiteReport testSuiteReport =
+            Reporter.createReport(new TestSuiteReport(ReporterCoreKey.GENERAL_TEST_SUITE_CONFIGURATION_REPORT))
+                .addReport(
+                    Reporter
+                        .createReport(new ConfigurationReport(ReporterCoreKey.GENERAL_TEST_METHOD_CONFIGURATION_REPORT))
+                        .addReport(Reporter.createReport(ArquillianCoreKey.CONTAINER_REPORT))
+                        .addReport(Reporter.createReport(ArquillianCoreKey.CONTAINER_NAME)))
+
+                .build();
+*/
+
+        /*executionReport.getTestSuiteReports().get(0).
+        ExecutionReportAssert.assertThatExecutionReport(executionReport)
+            .hasName("execution")
             .hasNumberOfEntries(0)
             .hasNumberOfSubReports(0)
-            .hasTestSuiteReportsExactly(report);*/
+            .hasTestSuiteReportsExactly(new TestSuiteReport(ReporterCoreKey.GENERAL_TEST_SUITE_CONFIGURATION_REPORT));*/
 
-        System.out.println(executionReport);
+        System.out.println(executionReport.getTestSuiteReports().get(0).getConfiguration().getName());
     }
 }
