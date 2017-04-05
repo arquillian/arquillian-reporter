@@ -1,12 +1,12 @@
 package org.arquillian.reporter.api.model.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.arquillian.reporter.api.builder.report.TestClassReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.utils.ReporterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT;
 
@@ -31,7 +31,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_CLA
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestClassReport extends AbstractReport<TestClassReport, TestClassReportBuilder>
-    implements WithConfigurationReport {
+    implements WithConfigurationReport, WithStartAndStop {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;
@@ -70,6 +70,15 @@ public class TestClassReport extends AbstractReport<TestClassReport, TestClassRe
     @Override
     public void setConfiguration(ConfigurationReport configuration) {
         this.configuration = configuration;
+    }
+
+    /**
+     * Sets the given time as time when an associated test class started
+     *
+     * @param start Start time to be set
+     */
+    public void setStart(String start) {
+        this.start = start;
     }
 
     /**

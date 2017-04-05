@@ -2,12 +2,17 @@ package org.arquillian.reporter.parser;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.arquillian.reporter.api.model.AbstractStringKey;
 import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.entry.Entry;
+import org.arquillian.reporter.api.model.entry.KeyValueEntry;
+import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 
 import java.io.FileNotFoundException;
@@ -31,12 +36,17 @@ public class ReportJsonParser {
         if (gson == null) {
             gson = new GsonBuilder()
                 .registerTypeAdapter(StringKey.class, new StringKeyJsonDeserializer())
+                .registerTypeAdapter(Entry.class, new EntryJsonDeserializer())
+                .registerTypeAdapter(KeyValueEntry.class, new EntryJsonDeserializer())
+                .registerTypeAdapter(AbstractStringKey.class, new StringKeyJsonDeserializer())
                 .registerTypeAdapter(Report.class, new ReportJsonDeserializer())
                 .registerTypeAdapter(TestMethodReport.class, new ReportJsonDeserializer())
                 .registerTypeAdapter(ExecutionReport.class, new ReportJsonDeserializer())
                 .registerTypeAdapter(TestClassReport.class, new ReportJsonDeserializer())
                 .registerTypeAdapter(ConfigurationReport.class, new ReportJsonDeserializer())
                 .registerTypeAdapter(FailureReport.class, new ReportJsonDeserializer())
+                .registerTypeAdapter(TestSuiteReport.class, new ReportJsonDeserializer())
+                .registerTypeAdapter(AbstractReport.class,  new ReportJsonDeserializer())
                 .create();
         }
         return gson;

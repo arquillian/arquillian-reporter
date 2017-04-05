@@ -64,6 +64,7 @@
         <module>arquillian-environment-reporter/arquillian-environment-reporter-impl</module>
         <module>depchain</module>
         <module>bom</module>
+        <module>ftest</module>
     </modules>
 
     <dependencyManagement>

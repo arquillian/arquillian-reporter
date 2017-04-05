@@ -31,7 +31,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_MET
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder>
-    implements WithConfigurationReport {
+    implements WithConfigurationReport, WithStartAndStop {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;
@@ -107,6 +107,15 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
      */
     public void setFailureReport(FailureReport failureReport) {
         this.failureReport = failureReport;
+    }
+
+    /**
+     * Sets the given time as time when an associated test method started
+     *
+     * @param start Start time to be set
+     */
+    public void setStart(String start) {
+        this.start = start;
     }
 
     /**

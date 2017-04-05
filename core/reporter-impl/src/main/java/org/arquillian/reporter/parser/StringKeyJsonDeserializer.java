@@ -22,8 +22,8 @@ public class StringKeyJsonDeserializer implements JsonDeserializer<StringKey> {
         JsonElement value = jsonStringKey.get("value");
         JsonElement description = jsonStringKey.get("description");
         JsonElement icon = jsonStringKey.get("icon");
-        return new ParsedStringKey(value != null ? value.getAsString() : "",
-                                   description != null ? description.getAsString() : "",
-                                   icon != null ? icon.getAsString() : "");
+        return new ParsedStringKey(value != null ? value.getAsString() : null,
+                                   description != null ? description.getAsString() : null,
+                                   icon != null ? icon.getAsString() : null);
     }
 }

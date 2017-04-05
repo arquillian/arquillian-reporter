@@ -8,5 +8,8 @@ import org.arquillian.reporter.api.model.AbstractStringKey;
 public class ParsedStringKey extends AbstractStringKey {
 
     public ParsedStringKey(String value, String description, String icon) {
+        setValue(value);
+        setDescription(description);
+        setIcon(icon);
     }
 }
