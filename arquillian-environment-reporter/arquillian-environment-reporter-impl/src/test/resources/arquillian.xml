@@ -1,13 +1,13 @@
 <arquillian xmlns="http://jboss.org/schema/arquillian"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
         http://jboss.org/schema/arquillian
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <container qualifier="chameleon" default="true">
-        <configuration>
-            <property name="chameleonTarget">WildFly:10.0.0.Final:managed</property>
-        </configuration>
-    </container>
+  <container qualifier="chameleon" default="true">
+    <configuration>
+      <property name="chameleonTarget">WildFly:10.0.0.Final:managed</property>
+    </configuration>
+  </container>
 
 </arquillian>

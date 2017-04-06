@@ -1,129 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>22</version>
-        <relativePath />
-    </parent>
+  <!-- Parent -->
+  <parent>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>22</version>
+    <relativePath/>
+  </parent>
 
-    <groupId>org.arquillian.reporter</groupId>
-    <artifactId>arquillian-reporter-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+  <groupId>org.arquillian.reporter</groupId>
+  <artifactId>arquillian-reporter-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0-SNAPSHOT</version>
 
-    <name>Arquillian Reporter Parent</name>
-    <description>Arquillian Reporter extension that brings neat and comprehensive reports into Arquillian Universe</description>
-    <url>http://arquillian.org</url>
+  <name>Arquillian Reporter Parent</name>
+  <description>Arquillian Reporter extension that brings neat and comprehensive reports into Arquillian Universe
+  </description>
+  <url>http://arquillian.org</url>
 
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+  <!-- Licenses -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
-    <!-- SCM -->
-    <scm>
-        <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
-        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
-        <url>git://github.com/arquillian/arquillian-reporter.git</url>
-        <tag>HEAD</tag>
-    </scm>
+  <!-- SCM -->
+  <scm>
+    <connection>scm:git:git://git@github.com:arquillian/arquillian-reporter.git</connection>
+    <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-reporter.git</developerConnection>
+    <url>git://github.com/arquillian/arquillian-reporter.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <name>Matous Jobanek</name>
-            <email>mjobanek@redhat.com</email>
-        </developer>
-    </developers>
+  <!-- Developers -->
+  <developers>
+    <developer>
+      <name>Matous Jobanek</name>
+      <email>mjobanek@redhat.com</email>
+    </developer>
+  </developers>
 
-    <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
 
-        <version.arquillian.core>1.1.12.Final</version.arquillian.core>
-        <version.junit>4.12</version.junit>
-        <version.assertj-core>3.6.0</version.assertj-core>
-        <version.mockito>2.7.13</version.mockito>
+    <version.arquillian.core>1.1.12.Final</version.arquillian.core>
+    <version.junit>4.12</version.junit>
+    <version.assertj-core>3.6.0</version.assertj-core>
+    <version.mockito>2.7.13</version.mockito>
 
-        <additionalparam>-Xdoclint:none</additionalparam>
-    </properties>
-    <!-- Modules -->
-    <modules>
-        <module>core/reporter-impl</module>
-        <module>core/reporter-api</module>
-        <module>arquillian-core-reporter/arquillian-core-reporter-api</module>
-        <module>arquillian-core-reporter/arquillian-core-reporter-impl</module>
-        <module>arquillian-environment-reporter/arquillian-environment-reporter-api</module>
-        <module>arquillian-environment-reporter/arquillian-environment-reporter-impl</module>
-        <module>depchain</module>
-        <module>bom</module>
-        <module>ftest</module>
-    </modules>
+    <additionalparam>-Xdoclint:none</additionalparam>
+  </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.arquillian.core}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-container-impl-base</artifactId>
-                <version>${version.arquillian.core}</version>
-                <classifier>tests</classifier>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.core</groupId>
-                <artifactId>arquillian-core-impl-base</artifactId>
-                <version>${version.arquillian.core}</version>
-                <classifier>tests</classifier>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${version.assertj-core}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${version.mockito}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <!-- Modules -->
+  <modules>
+    <module>core/reporter-impl</module>
+    <module>core/reporter-api</module>
+    <module>arquillian-core-reporter/arquillian-core-reporter-api</module>
+    <module>arquillian-core-reporter/arquillian-core-reporter-impl</module>
+    <module>arquillian-environment-reporter/arquillian-environment-reporter-api</module>
+    <module>arquillian-environment-reporter/arquillian-environment-reporter-impl</module>
+    <module>depchain</module>
+    <module>bom</module>
+    <module>ftest</module>
+  </modules>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <pushChanges>false</pushChanges>
-                        <localCheckout>true</localCheckout>
-                        <tagNameFormat>@{project.version}</tagNameFormat>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.arquillian.core}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-container-impl-base</artifactId>
+        <version>${version.arquillian.core}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.core</groupId>
+        <artifactId>arquillian-core-impl-base</artifactId>
+        <version>${version.arquillian.core}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.assertj-core}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
