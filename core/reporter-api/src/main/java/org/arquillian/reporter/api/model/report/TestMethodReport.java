@@ -31,7 +31,7 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_MET
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder>
-    implements WithConfigurationReport, WithStartAndStop {
+    implements WithConfigurationReport, WithStartAndStopReport {
 
     private String start = ReporterUtils.getCurrentDate();
     private String stop;

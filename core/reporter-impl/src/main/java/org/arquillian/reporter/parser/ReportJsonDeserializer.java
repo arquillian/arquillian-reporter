@@ -17,7 +17,7 @@ import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.api.model.report.WithConfigurationReport;
-import org.arquillian.reporter.api.model.report.WithStartAndStop;
+import org.arquillian.reporter.api.model.report.WithStartAndStopReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 
 import static org.arquillian.reporter.parser.ReportJsonParser.prepareGsonParser;
@@ -120,7 +120,7 @@ public class ReportJsonDeserializer implements JsonDeserializer<Report> {
         }
     }
 
-    private void setStartAndStop(WithStartAndStop report, JsonObject jsonReport){
+    private void setStartAndStop(WithStartAndStopReport report, JsonObject jsonReport){
         JsonElement start = jsonReport.get("start");
         report.setStart(start.getAsString());
         JsonElement stop = jsonReport.get("stop");

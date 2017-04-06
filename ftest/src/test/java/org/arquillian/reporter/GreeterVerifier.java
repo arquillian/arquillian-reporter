@@ -1,6 +1,5 @@
 package org.arquillian.reporter;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.arquillian.reporter.parser.ReportJsonParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
@@ -32,21 +30,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class GreeterVerifier {
 
-    static File file;
-    static ExecutionReport executionReport;
+    private static File reportInJson;
+    private static ExecutionReport executionReport;
 
     @BeforeClass
     public static void setUp() throws FileNotFoundException {
-
-        Result result = JUnitCore.runClasses(GreeterTest.class);
-        Gson gson = new Gson();
-        file = new File("target/report.json");
+        JUnitCore.runClasses(GreeterTest.class);
+        reportInJson = new File("target/report.json");
         executionReport = ReportJsonParser.parse("target/report.json");
     }
 
     @Test
-    public void verify_test_report_creation() throws FileNotFoundException {
-        assertThat(file).exists();
+    public void verify_test_report_creation_in_json() throws FileNotFoundException {
+        assertThat(reportInJson).exists();
     }
 
     @Test
@@ -78,21 +74,23 @@ public class GreeterVerifier {
     public void verify_test_suite_configuration_report() {
         ConfigurationReport configuration = executionReport.getTestSuiteReports().get(0).getConfiguration();
         List<Report> subReports = configuration.getSubReports();
+        Report containerConfigurationSubReport = subReports.get(0);
+        Report environmentConfigurationSubReport = subReports.get(1);
 
         assertThatReport(configuration)
             .hasName(ReporterCoreKey.GENERAL_TEST_SUITE_CONFIGURATION_REPORT)
             .hasNumberOfEntries(0)
             .hasNumberOfSubReports(2);
 
-        assertThat(subReports.get(0).getName())
+        assertThat(containerConfigurationSubReport.getName())
             .isEqualTo(new UnknownStringKey("containers"));
-        assertThat(subReports.get(0).getEntries()).size().isEqualTo(0);
-        assertThat(subReports.get(0).getSubReports()).size().isEqualTo(1);
+        assertThat(containerConfigurationSubReport.getEntries()).size().isEqualTo(0);
+        assertThat(containerConfigurationSubReport.getSubReports()).size().isEqualTo(1);
 
-        assertThat(subReports.get(1).getName())
+        assertThat(environmentConfigurationSubReport.getName())
             .isEqualTo(EnvironmentKey.ENVIRONMENT_SECTION_NAME);
-        assertThat(subReports.get(1).getEntries()).size().isEqualTo(8);
-        assertThat(subReports.get(1).getSubReports()).size().isEqualTo(0);
+        assertThat(environmentConfigurationSubReport.getEntries()).size().isEqualTo(8);
+        assertThat(environmentConfigurationSubReport.getSubReports()).size().isEqualTo(0);
     }
 
     @Test
@@ -138,11 +136,15 @@ public class GreeterVerifier {
         List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
         TestClassReport testClassReport = testClassReports.get(0);
         List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
+        TestMethodReport firstTestMethodReport = testMethodReports.get(0);
+        TestMethodReport secondTestMethodReport = testMethodReports.get(1);
 
-        assertThat(testMethodReports.get(0).getName())
+        assertThat(testMethodReports).size().isEqualTo(2);
+
+        assertThat(firstTestMethodReport.getName())
             .isEqualTo(new UnknownStringKey("run_client_test"));
 
-        assertThat(testMethodReports.get(1).getName())
+        assertThat(secondTestMethodReport.getName())
             .isEqualTo(new UnknownStringKey("should_create_greeting"));
 
         for (TestMethodReport testMethodReport : testMethodReports) {

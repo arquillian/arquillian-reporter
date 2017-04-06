@@ -3,8 +3,8 @@ package org.arquillian.reporter.api.model.report;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public interface WithStartAndStop {
 
+public interface WithStartAndStopReport {
 
     /**
      * Sets the given time as time when an associated execution started
