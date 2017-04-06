@@ -74,7 +74,9 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <includes>**/*Test*.java</includes>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
           <excludes>
             <exclude>**/FailingTest.java</exclude>
           </excludes>
@@ -91,7 +93,9 @@
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <includes>**/FailingTest.java</includes>
+              <includes>
+                <include>**/FailingTest.java</include>
+              </includes>
             </configuration>
           </plugin>
         </plugins>
@@ -104,7 +108,9 @@
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <includes>**/*Verifier.java</includes>
+              <includes>
+                <include>**/*Verifier.java</include>
+              </includes>
             </configuration>
           </plugin>
         </plugins>
