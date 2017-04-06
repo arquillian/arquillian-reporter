@@ -23,21 +23,21 @@ public class EntryJsonDeserializer implements JsonDeserializer<Entry> {
         throws JsonParseException {
         JsonObject jsonEntry = (JsonObject) json;
 
-        if (jsonEntry.get("key") != null) {
-            JsonElement key = jsonEntry.get("key");
-            StringKey stringKey = prepareGsonParser().fromJson(key, StringKey.class);
-            if (jsonEntry.get("value") != null) {
-                JsonElement content = jsonEntry.get("value");
-                 return new KeyValueEntry(stringKey, prepareGsonParser().fromJson(content, Entry.class));
+        JsonElement key = jsonEntry.get("key");
+
+        if (key != null) {
+            StringKey keyEntry = prepareGsonParser().fromJson(key, StringKey.class);
+            JsonElement value = jsonEntry.get("value");
+            if (value != null) {
+                return new KeyValueEntry(keyEntry, prepareGsonParser().fromJson(value, Entry.class));
             }
-        } else if (jsonEntry.get("content") != null) {
+        } else {
             JsonElement content = jsonEntry.get("content");
-            StringKey stringKey1 = prepareGsonParser().fromJson(content, StringKey.class);
-
-            return new StringEntry(stringKey1);
+            if (content != null) {
+                StringKey valueEntry = prepareGsonParser().fromJson(content, StringKey.class);
+                return new StringEntry(valueEntry);
+            }
         }
-
         return new StringEntry("");
-
     }
 }
