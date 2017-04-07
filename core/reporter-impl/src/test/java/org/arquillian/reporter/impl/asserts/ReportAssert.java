@@ -1,25 +1,25 @@
 package org.arquillian.reporter.impl.asserts;
 
-import org.arquillian.reporter.api.model.StringKey;
-import org.arquillian.reporter.api.model.UnknownStringKey;
-import org.arquillian.reporter.api.model.entry.Entry;
-import org.arquillian.reporter.api.model.entry.KeyValueEntry;
-import org.arquillian.reporter.api.model.report.Report;
-import org.arquillian.reporter.api.model.report.TestClassReport;
-import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.api.model.report.BasicReport;
-import org.arquillian.reporter.api.model.report.AbstractReport;
-import org.arquillian.reporter.impl.ExecutionReport;
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.ListAssert;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.arquillian.reporter.api.model.StringKey;
+import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.Entry;
+import org.arquillian.reporter.api.model.entry.KeyValueEntry;
+import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.Report;
+import org.arquillian.reporter.api.model.report.TestClassReport;
+import org.arquillian.reporter.api.model.report.TestMethodReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.impl.ExecutionReport;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.ListAssert;
 
+import static java.util.stream.Collectors.toList;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.getKeyValueEntryWitIndex;
@@ -62,7 +62,6 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
 
     public ListAssert<Entry> entries() {
         return new ListAssert<>(actual.getEntries());
-
     }
 
     public REPORTASSERTTYPE hasName(StringKey name) {
@@ -151,6 +150,35 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
         return (REPORTASSERTTYPE) this;
     }
 
+    public REPORTASSERTTYPE hasEntryContainingKeys(StringKey... expectedStringKey) {
+        return hasEntryContainingKeys(Arrays.asList(expectedStringKey));
+    }
+
+    public REPORTASSERTTYPE hasEntryContainingKeys(List<StringKey> expectedStringKeys) {
+        isNotNull();
+
+        expectedStringKeys.parallelStream().forEach(expectedStringKey -> {
+            assertThat(getReportKeys(actual))
+                .usingRecursiveFieldByFieldElementComparator()
+                .as("The report with name <%s> and of the type <%s> should contain entry (with key <%s>) "
+                        + "- the used comparator strategy: usingRecursiveFieldByFieldElementComparator",
+                    actual.getName(), actual.getClass(), expectedStringKey)
+                .contains(expectedStringKey);
+        });
+        return (REPORTASSERTTYPE) this;
+    }
+
+    private List<StringKey> getReportKeys(REPORTTYPE actual) {
+            List<Entry> actualEntries = actual.getEntries();
+
+            List<StringKey> keys = actualEntries.stream()
+                .filter(entry -> entry instanceof KeyValueEntry)
+                .map(KeyValueEntry.class::cast)
+                .map(keyValueEntry -> keyValueEntry.getKey())
+                .collect(Collectors.toList());
+        return keys;
+    }
+
     public REPORTASSERTTYPE hasGeneratedSubReportsAndEntriesWithDefaults() {
         return hasGeneratedSubReportsAndEntries(DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD,
                                                 DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD);
@@ -229,7 +257,6 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
             assertThatReport(reportOnIndex)
                 .hasGeneratedSubReportsAndEntries(index + 1, index + 10)
                 .hasNumberOfSubReportsAndEntries(9);
-
         }
     }
 }

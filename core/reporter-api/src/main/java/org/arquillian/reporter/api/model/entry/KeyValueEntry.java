@@ -13,6 +13,10 @@ public class KeyValueEntry implements Entry {
     private StringKey key;
     private Entry value;
 
+    public StringKey getKey() {
+        return key;
+    }
+
     /**
      * Creates an instance of {@link KeyValueEntry} with the given key and value
      *

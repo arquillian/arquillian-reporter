@@ -11,7 +11,7 @@ import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian.reporter.api.model.report.TestSuiteReport;
+import org.arquillian. reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.parser.ReportJsonParser;
 import org.junit.BeforeClass;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class GreeterVerifier {
+public class GreeterTestReportVerifier {
 
     private static File reportInJson;
     private static ExecutionReport executionReport;
@@ -41,12 +41,12 @@ public class GreeterVerifier {
     }
 
     @Test
-    public void verify_test_report_creation_in_json() throws FileNotFoundException {
+    public void verify_report_in_json_exists() throws FileNotFoundException {
         assertThat(reportInJson).exists();
     }
 
     @Test
-    public void verify_execution_report() {
+    public void verify_execution_report_exists_with_contents() {
         assertThatExecutionReport(executionReport)
             .hasName("execution")
             .hasNumberOfEntries(0)
@@ -54,7 +54,7 @@ public class GreeterVerifier {
     }
 
     @Test
-    public void verify_test_suite_report() {
+    public void verify_test_suite_report_exists_with_contents() {
         List<TestSuiteReport> testSuiteReports = executionReport.getTestSuiteReports();
         TestSuiteReport testSuiteReport = testSuiteReports.get(0);
 
@@ -71,7 +71,7 @@ public class GreeterVerifier {
     }
 
     @Test
-    public void verify_test_suite_configuration_report() {
+    public void verify_test_suite_configuration_report_exists_with_contents() {
         ConfigurationReport configuration = executionReport.getTestSuiteReports().get(0).getConfiguration();
         List<Report> subReports = configuration.getSubReports();
         Report containerConfigurationSubReport = subReports.get(0);
@@ -90,11 +90,21 @@ public class GreeterVerifier {
         assertThat(environmentConfigurationSubReport.getName())
             .isEqualTo(EnvironmentKey.ENVIRONMENT_SECTION_NAME);
         assertThat(environmentConfigurationSubReport.getEntries()).size().isEqualTo(8);
+        assertThatReport(environmentConfigurationSubReport)
+            .hasEntryContainingKeys(EnvironmentKey.JAVA_VERSION,
+                EnvironmentKey.TEST_RUNNER,
+                EnvironmentKey.TIMEZONE,
+                EnvironmentKey.CHARSET,
+                EnvironmentKey.DOCKER,
+                EnvironmentKey.OPERATIVE_SYSTEM,
+                EnvironmentKey.OPERATIVE_SYSTEM_ARCH,
+                EnvironmentKey.OPERATIVE_SYSTEM_VERSION);
+
         assertThat(environmentConfigurationSubReport.getSubReports()).size().isEqualTo(0);
     }
 
     @Test
-    public void verify_test_class_report() {
+    public void verify_test_class_report_exists_with_contents() {
         List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
         TestClassReport testClassReport = testClassReports.get(0);
         ConfigurationReport configurationReport = testClassReport.getConfiguration();
@@ -105,7 +115,8 @@ public class GreeterVerifier {
         assertThatTestClassReport(testClassReport)
             .hasName("org.arquillian.reporter.GreeterTest")
             .hasNumberOfEntries(1)
-            .hasNumberOfSubReports(0);
+            .hasNumberOfSubReports(0)
+            .hasEntryContainingKeys(ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE);
 
         assertThat(configurationReport.getName())
             .isEqualTo(ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT);
@@ -114,7 +125,7 @@ public class GreeterVerifier {
     }
 
     @Test
-    public void verify_test_class_configuration_report() {
+    public void verify_test_class_configuration_report_exists_with_contents() {
         List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
         TestClassReport testClassReport = testClassReports.get(0);
         ConfigurationReport configurationReport = testClassReport.getConfiguration();
@@ -132,7 +143,7 @@ public class GreeterVerifier {
     }
 
     @Test
-    public void verify_test_method_reports() {
+    public void verify_test_method_reports_exists_with_contents() {
         List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
         TestClassReport testClassReport = testClassReports.get(0);
         List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
