@@ -2,16 +2,18 @@ package org.arquillian.reporter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import org.arquillian.core.reporter.impl.ArquillianCoreKey;
 import org.arquillian.environment.reporter.impl.EnvironmentKey;
 import org.arquillian.reporter.api.model.ReporterCoreKey;
+import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
-import org.arquillian. reporter.api.model.report.TestSuiteReport;
+import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.parser.ReportJsonParser;
 import org.junit.BeforeClass;
@@ -74,23 +76,27 @@ public class GreeterTestReportVerifier {
     public void verify_test_suite_configuration_report_exists_with_contents() {
         ConfigurationReport configuration = executionReport.getTestSuiteReports().get(0).getConfiguration();
         List<Report> subReports = configuration.getSubReports();
-        Report containerConfigurationSubReport = subReports.get(0);
-        Report environmentConfigurationSubReport = subReports.get(1);
 
         assertThatReport(configuration)
             .hasName(ReporterCoreKey.GENERAL_TEST_SUITE_CONFIGURATION_REPORT)
             .hasNumberOfEntries(0)
             .hasNumberOfSubReports(2);
 
-        assertThat(containerConfigurationSubReport.getName())
-            .isEqualTo(new UnknownStringKey("containers"));
-        assertThat(containerConfigurationSubReport.getEntries()).size().isEqualTo(0);
-        assertThat(containerConfigurationSubReport.getSubReports()).size().isEqualTo(1);
+        for (Report subReport : subReports) {
+            if (isContainerConfigurationSubReport(subReport)) {
+                verify_container_configuration_sub_report(subReport);
+            }
+            if (isEnvironmentConfigurationSubReport(subReport)) {
+                verify_environment_configuration_sub_report(subReport);
+            }
+        }
+    }
 
-        assertThat(environmentConfigurationSubReport.getName())
+    private void verify_environment_configuration_sub_report(Report subReport) {
+        assertThat(subReport.getName())
             .isEqualTo(EnvironmentKey.ENVIRONMENT_SECTION_NAME);
-        assertThat(environmentConfigurationSubReport.getEntries()).size().isEqualTo(8);
-        assertThatReport(environmentConfigurationSubReport)
+        assertThat(subReport.getEntries()).size().isEqualTo(8);
+        assertThatReport(subReport)
             .hasEntryContainingKeys(EnvironmentKey.JAVA_VERSION,
                 EnvironmentKey.TEST_RUNNER,
                 EnvironmentKey.TIMEZONE,
@@ -100,7 +106,30 @@ public class GreeterTestReportVerifier {
                 EnvironmentKey.OPERATIVE_SYSTEM_ARCH,
                 EnvironmentKey.OPERATIVE_SYSTEM_VERSION);
 
-        assertThat(environmentConfigurationSubReport.getSubReports()).size().isEqualTo(0);
+        assertThat(subReport.getSubReports()).size().isEqualTo(0);
+    }
+
+    private void verify_container_configuration_sub_report(Report subReport) {
+        assertThat(subReport.getName())
+            .isEqualTo(new UnknownStringKey("containers"));
+        assertThat(subReport.getEntries()).size().isEqualTo(0);
+        assertThat(subReport.getSubReports()).size().isEqualTo(1);
+    }
+
+    private boolean isEnvironmentConfigurationSubReport(Report subReport) {
+        StringKey subReportName = EnvironmentKey.ENVIRONMENT_SECTION_NAME;
+        if (subReport.getName().equals(subReportName)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isContainerConfigurationSubReport(Report subReport) {
+        StringKey subReportName = new UnknownStringKey("containers");
+        if (subReport.getName().equals(subReportName)) {
+            return true;
+        }
+        return false;
     }
 
     @Test
@@ -115,8 +144,8 @@ public class GreeterTestReportVerifier {
         assertThatTestClassReport(testClassReport)
             .hasName("org.arquillian.reporter.GreeterTest")
             .hasNumberOfEntries(1)
-            .hasNumberOfSubReports(0)
-            .hasEntryContainingKeys(ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE);
+            .hasEntryContainingKeys(ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE)
+            .hasNumberOfSubReports(0);
 
         assertThat(configurationReport.getName())
             .isEqualTo(ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT);
@@ -136,6 +165,10 @@ public class GreeterTestReportVerifier {
             .hasNumberOfEntries(0)
             .hasNumberOfSubReports(1);
 
+        verify_deployment_configuration_sub_report(deploymentReport);
+    }
+
+    private void verify_deployment_configuration_sub_report(Report deploymentReport) {
         assertThat(deploymentReport.getName())
             .isEqualTo(new UnknownStringKey("deployments"));
         assertThat(deploymentReport.getEntries()).size().isEqualTo(0);
@@ -147,18 +180,14 @@ public class GreeterTestReportVerifier {
         List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
         TestClassReport testClassReport = testClassReports.get(0);
         List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
-        TestMethodReport firstTestMethodReport = testMethodReports.get(0);
-        TestMethodReport secondTestMethodReport = testMethodReports.get(1);
 
         assertThat(testMethodReports).size().isEqualTo(2);
 
-        assertThat(firstTestMethodReport.getName())
-            .isEqualTo(new UnknownStringKey("run_client_test"));
-
-        assertThat(secondTestMethodReport.getName())
-            .isEqualTo(new UnknownStringKey("should_create_greeting"));
+        List<StringKey> testMethodReportNameList = Arrays.asList(new UnknownStringKey("run_client_test"),
+            new UnknownStringKey("should_create_greeting"));
 
         for (TestMethodReport testMethodReport : testMethodReports) {
+            assertThat(testMethodReport.getName()).isIn(testMethodReportNameList);
             assertThatTestMethodReport(testMethodReport)
                 .hasNumberOfEntries(3)
                 .hasNumberOfSubReports(0);

@@ -19,7 +19,6 @@ import org.arquillian.reporter.impl.ExecutionReport;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.ListAssert;
 
-import static java.util.stream.Collectors.toList;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD;
 import static org.arquillian.reporter.impl.utils.ReportGeneratorUtils.getKeyValueEntryWitIndex;
