@@ -42,7 +42,7 @@ public class ReportJsonDeserializer implements JsonDeserializer<Report> {
         } else if (jsonReport.get("testMethodReports") != null) {
             return parseTestClassReport(jsonReport);
 
-        } else if (jsonReport.get("start") != null) {
+        } else if (jsonReport.get("startTime") != null) {
             return parseTestMethodReport(jsonReport);
 
         } else {
@@ -121,10 +121,10 @@ public class ReportJsonDeserializer implements JsonDeserializer<Report> {
     }
 
     private void setStartAndStop(WithStartAndStopReport report, JsonObject jsonReport){
-        JsonElement start = jsonReport.get("start");
-        report.setStart(start.getAsString());
-        JsonElement stop = jsonReport.get("stop");
-        report.setStop(stop.getAsString());
+        JsonElement start = jsonReport.get("startTime");
+        report.setExecutionStartTime(start.getAsString());
+        JsonElement stop = jsonReport.get("stopTime");
+        report.setExecutionStopTime(stop.getAsString());
     }
 
     private Report setDefaultValues(Report report, JsonObject jsonReport) {

@@ -9,29 +9,29 @@ public interface WithStartAndStopReport {
     /**
      * Sets the given time as time when an associated execution started
      *
-     * @param start Start time to be set
+     * @param startTime Start time to be set
      */
-    void setStart(String start);
+    void setExecutionStartTime(String startTime);
 
     /**
      * Returns time when the execution started
      *
      * @return Time when the execution started
      */
-    String getStart();
+    String getExecutionStartTime();
 
     /**
      * Returns time when the execution stopped
      *
      * @return Time when the execution stopped
      */
-    String getStop();
+    String getExecutionStopTime();
 
     /**
      * Sets the given time as time when an associated execution stopped
      *
-     * @param stop Stop time to be set
+     * @param stopTime Stop time to be set
      */
-    void setStop(String stop);
+    void setExecutionStopTime(String stopTime);
 
 }

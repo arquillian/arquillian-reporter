@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
-public class GreeterTestReportVerifier {
+public class GreeterReportVerifier {
 
     private static File reportInJson;
     private static ExecutionReport executionReport;

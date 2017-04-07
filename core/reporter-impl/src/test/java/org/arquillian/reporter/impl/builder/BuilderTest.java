@@ -40,7 +40,7 @@ public class BuilderTest extends AbstractReporterTestBase {
             public String getDateFromReport() {
                 TestClassReport report = builder.stop().build();
                 verifyBasicContent(report);
-                return report.getStop();
+                return report.getExecutionStopTime();
             }
         }.assertThatDateWasCorrectlyCreated();
     }
@@ -56,7 +56,7 @@ public class BuilderTest extends AbstractReporterTestBase {
             public String getDateFromReport() {
                 TestSuiteReport report = builder.stop().build();
                 verifyBasicContent(report);
-                return report.getStop();
+                return report.getExecutionStopTime();
             }
         }.assertThatDateWasCorrectlyCreated();
     }
@@ -72,7 +72,7 @@ public class BuilderTest extends AbstractReporterTestBase {
             public String getDateFromReport() {
                 TestMethodReport report = builder.stop().build();
                 verifyBasicContent(report);
-                return report.getStop();
+                return report.getExecutionStopTime();
             }
         }.assertThatDateWasCorrectlyCreated();
     }

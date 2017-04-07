@@ -18,7 +18,7 @@ public class TestClassReportBuilderImpl extends AbstractReportBuilder<TestClassR
     }
 
     public TestClassReportBuilderImpl stop() {
-        getReport().setStop(ReporterUtils.getCurrentDate());
+        getReport().setExecutionStopTime(ReporterUtils.getCurrentDate());
         return this;
     }
 }

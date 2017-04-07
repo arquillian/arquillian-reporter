@@ -33,8 +33,8 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_MET
 public class TestMethodReport extends AbstractReport<TestMethodReport, TestMethodReportBuilder>
     implements WithConfigurationReport, WithStartAndStopReport {
 
-    private String start = ReporterUtils.getCurrentDate();
-    private String stop;
+    private String startTime = ReporterUtils.getCurrentDate();
+    private String stopTime;
     private TestResult.Status status;
     private FailureReport failureReport = new FailureReport(GENERAL_METHOD_FAILURE_REPORT);
     private ConfigurationReport configuration = new ConfigurationReport(GENERAL_TEST_METHOD_CONFIGURATION_REPORT);
@@ -110,42 +110,6 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
     }
 
     /**
-     * Sets the given time as time when an associated test method started
-     *
-     * @param start Start time to be set
-     */
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    /**
-     * Returns time when the test method execution stopped
-     *
-     * @return Time when the test method execution stopped
-     */
-    public String getStop() {
-        return stop;
-    }
-
-    /**
-     * Sets the given time as time when an associated test method execution stopped
-     *
-     * @param stop Stop time to be set
-     */
-    public void setStop(String stop) {
-        this.stop = stop;
-    }
-
-    /**
-     * Returns time when the test method execution started
-     *
-     * @return Time when the test method execution started
-     */
-    public String getStart() {
-        return start;
-    }
-
-    /**
      * Apart from the default functionality of merging ({@link AbstractReport#defaultMerge(AbstractReport)})
      * it also manages the additional types of information. The default just takes the entries and sub-reports contained
      * in the given {@link TestMethodReport} and adds them into the list of entries and sub-reports respectively withing this
@@ -163,8 +127,8 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
         }
         defaultMerge(newReport);
 
-        if (newReport.getStop() != null) {
-            setStop(newReport.getStop());
+        if (newReport.getExecutionStopTime() != null) {
+            setExecutionStopTime(newReport.getExecutionStopTime());
         }
 
         getConfiguration().merge(newReport.getConfiguration());
@@ -206,5 +170,21 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
     @Override
     public Class<TestMethodReportBuilder> getReportBuilderClass() {
         return TestMethodReportBuilder.class;
+    }
+
+    @Override public void setExecutionStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override public String getExecutionStartTime() {
+        return startTime;
+    }
+
+    @Override public void setExecutionStopTime(String stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    @Override public String getExecutionStopTime() {
+        return stopTime;
     }
 }
