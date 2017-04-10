@@ -9,6 +9,7 @@ import org.arquillian.environment.reporter.impl.EnvironmentKey;
 import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
@@ -16,6 +17,7 @@ import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.arquillian.reporter.parser.ReportJsonParser;
+import org.jboss.arquillian.test.spi.TestResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -110,10 +112,22 @@ public class GreeterReportVerifier {
     }
 
     private void verify_container_configuration_sub_report(Report subReport) {
+        Report nestedContainerReport = (Report) subReport.getSubReports().get(0);
+        Report nestedContainerConfigurationReport = (Report) nestedContainerReport.getSubReports().get(0);
+
         assertThat(subReport.getName())
             .isEqualTo(new UnknownStringKey("containers"));
         assertThat(subReport.getEntries()).size().isEqualTo(0);
         assertThat(subReport.getSubReports()).size().isEqualTo(1);
+        assertThatReport(nestedContainerReport)
+            .hasName(ArquillianCoreKey.CONTAINER_REPORT)
+            .hasNumberOfEntries(1)
+            .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.CONTAINER_NAME, "chameleon"))
+            .hasNumberOfSubReports(1);
+        assertThatReport(nestedContainerConfigurationReport)
+            .hasName(ArquillianCoreKey.CONTAINER_CONFIGURATION_REPORT)
+            .hasNumberOfEntries(2)
+            .hasNumberOfSubReports(0);
     }
 
     private boolean isEnvironmentConfigurationSubReport(Report subReport) {
@@ -169,10 +183,21 @@ public class GreeterReportVerifier {
     }
 
     private void verify_deployment_configuration_sub_report(Report deploymentReport) {
+        Report nestedDeploymentReport = (Report) deploymentReport.getSubReports().get(0);
+
         assertThat(deploymentReport.getName())
             .isEqualTo(new UnknownStringKey("deployments"));
         assertThat(deploymentReport.getEntries()).size().isEqualTo(0);
         assertThat(deploymentReport.getSubReports()).size().isEqualTo(1);
+
+        assertThatReport(nestedDeploymentReport)
+            .hasName(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_REPORT)
+            .hasNumberOfEntries(4)
+            .hasEntryContainingKeys(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME,
+                ArquillianCoreKey.ARCHIVE_NAME_OF_DEPLOYMENT,
+                ArquillianCoreKey.ORDER_OF_DEPLOYMENT,
+                ArquillianCoreKey.PROTOCOL_USED_FOR_DEPLOYMENT)
+            .hasNumberOfSubReports(0);
     }
 
     @Test
@@ -188,8 +213,12 @@ public class GreeterReportVerifier {
 
         for (TestMethodReport testMethodReport : testMethodReports) {
             assertThat(testMethodReport.getName()).isIn(testMethodReportNameList);
+            assertThat(testMethodReport.getStatus()).isEqualTo(TestResult.Status.PASSED);
             assertThatTestMethodReport(testMethodReport)
                 .hasNumberOfEntries(3)
+                .hasEntryContainingKeys(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,
+                    ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT,
+                    ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE)
                 .hasNumberOfSubReports(0);
             assertThat(testMethodReport.getFailureReport().getName())
                 .isEqualTo(ReporterCoreKey.GENERAL_METHOD_FAILURE_REPORT);
