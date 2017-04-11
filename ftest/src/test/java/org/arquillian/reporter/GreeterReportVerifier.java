@@ -103,24 +103,14 @@ public class GreeterReportVerifier {
             .isEqualTo(EnvironmentKey.ENVIRONMENT_SECTION_NAME);
         assertThat(subReport.getEntries()).size().isEqualTo(8);
         assertThatReport(subReport)
-            .hasEntriesContaining(
-                new KeyValueEntry(EnvironmentKey.JAVA_VERSION, System.getProperty("java.version")),
+            .hasEntriesContaining(new KeyValueEntry(EnvironmentKey.JAVA_VERSION, System.getProperty("java.version")),
                 new KeyValueEntry(EnvironmentKey.TEST_RUNNER, TestRunnerDetector.detect().name()),
                 new KeyValueEntry(EnvironmentKey.TIMEZONE, TimeZone.getDefault().getDisplayName()),
-                new KeyValueEntry(EnvironmentKey.CHARSET, Charset.defaultCharset().displayName() ),
+                new KeyValueEntry(EnvironmentKey.CHARSET, Charset.defaultCharset().displayName()),
                 new KeyValueEntry(EnvironmentKey.DOCKER, Boolean.toString(DockerDetector.detect())),
                 new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM, System.getProperty("os.name")),
                 new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM_ARCH, System.getProperty("os.arch")),
                 new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM_VERSION, System.getProperty("os.version")));
-            /*.hasKeyValueEntryContainingKeys(EnvironmentKey.JAVA_VERSION,
-                EnvironmentKey.TEST_RUNNER,
-                EnvironmentKey.TIMEZONE,
-                EnvironmentKey.CHARSET,
-                EnvironmentKey.DOCKER,
-                EnvironmentKey.OPERATIVE_SYSTEM,
-                EnvironmentKey.OPERATIVE_SYSTEM_ARCH,
-                EnvironmentKey.OPERATIVE_SYSTEM_VERSION);*/
-
         assertThat(subReport.getSubReports()).size().isEqualTo(0);
     }
 
@@ -206,10 +196,10 @@ public class GreeterReportVerifier {
         assertThatReport(nestedDeploymentReport)
             .hasName(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_REPORT)
             .hasNumberOfEntries(4)
-            .hasKeyValueEntryContainingKeys(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME,
-                ArquillianCoreKey.ARCHIVE_NAME_OF_DEPLOYMENT,
-                ArquillianCoreKey.ORDER_OF_DEPLOYMENT,
-                ArquillianCoreKey.PROTOCOL_USED_FOR_DEPLOYMENT)
+            .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.ARCHIVE_NAME_OF_DEPLOYMENT, "greeterArchive.jar"),
+                new KeyValueEntry(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME, "_DEFAULT_"),
+                new KeyValueEntry(ArquillianCoreKey.ORDER_OF_DEPLOYMENT, "-1"),
+                new KeyValueEntry(ArquillianCoreKey.PROTOCOL_USED_FOR_DEPLOYMENT, "_DEFAULT_"))
             .hasNumberOfSubReports(0);
     }
 
@@ -219,26 +209,35 @@ public class GreeterReportVerifier {
         TestClassReport testClassReport = testClassReports.get(0);
         List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
 
-        //boolean runAsClient = event.getTestMethod().isAnnotationPresent(RunAsClient.class);
         assertThat(testMethodReports).size().isEqualTo(2);
 
         List<StringKey> testMethodReportNameList = Arrays.asList(new UnknownStringKey("run_client_test"),
             new UnknownStringKey("should_create_greeting"));
 
         for (TestMethodReport testMethodReport : testMethodReports) {
-            assertThat(testMethodReport.getName()).isIn(testMethodReportNameList);
+
+            StringKey testMethodName = testMethodReport.getName();
+
+            assertThat(testMethodName).isIn(testMethodReportNameList);
             assertThat(testMethodReport.getStatus()).isEqualTo(TestResult.Status.PASSED);
             assertThatTestMethodReport(testMethodReport)
                 .hasNumberOfEntries(3)
-                //.hasKeyValueEntryContainingKeys(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,))
-                .hasKeyValueEntryContainingKeys(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,
-                    ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT,
-                    ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE)
+                .hasEntriesContaining(
+                    new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT, "_DEFAULT_"),
+                    new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE, (String)null))
                 .hasNumberOfSubReports(0);
             assertThat(testMethodReport.getFailureReport().getName())
                 .isEqualTo(ReporterCoreKey.GENERAL_METHOD_FAILURE_REPORT);
             assertThat(testMethodReport.getConfiguration().getName())
                 .isEqualTo(ReporterCoreKey.GENERAL_TEST_METHOD_CONFIGURATION_REPORT);
+
+            if (testMethodName.equals(new UnknownStringKey("run_client_test"))) {
+                assertThatReport(testMethodReport)
+                    .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "true"));
+            } else if (testMethodName.equals(new UnknownStringKey("should_create_greeting"))) {
+                assertThatReport(testMethodReport)
+                    .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "false"));
+            }
         }
     }
 }

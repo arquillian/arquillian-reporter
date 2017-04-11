@@ -4,6 +4,5 @@ jdk:
 install:
     - true
 script:
-    - mvn verify
     - mvn clean verify -Pfunctional-tests
 
