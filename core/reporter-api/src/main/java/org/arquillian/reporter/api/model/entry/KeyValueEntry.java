@@ -13,10 +13,6 @@ public class KeyValueEntry implements Entry {
     private StringKey key;
     private Entry value;
 
-    public StringKey getKey() {
-        return key;
-    }
-
     /**
      * Creates an instance of {@link KeyValueEntry} with the given key and value
      *
@@ -59,6 +55,26 @@ public class KeyValueEntry implements Entry {
     public KeyValueEntry(String key, String value) {
         this.key = new UnknownStringKey(key);
         this.value = new StringEntry(value);
+    }
+
+    /**
+     * Returns the actual key
+     *
+     * @return The actual key {@link StringKey}
+     */
+    public StringKey getKey() {
+
+        return key;
+    }
+
+    /**
+     * Returns the actual value
+     *
+     * @return The actual value {@link Entry}
+     */
+    public Entry getValue() {
+
+        return value;
     }
 
     @Override

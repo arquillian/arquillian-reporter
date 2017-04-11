@@ -2,10 +2,14 @@ package org.arquillian.reporter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 import org.arquillian.core.reporter.impl.ArquillianCoreKey;
+import org.arquillian.environment.reporter.impl.DockerDetector;
 import org.arquillian.environment.reporter.impl.EnvironmentKey;
+import org.arquillian.environment.reporter.impl.TestRunnerDetector;
 import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
@@ -99,14 +103,23 @@ public class GreeterReportVerifier {
             .isEqualTo(EnvironmentKey.ENVIRONMENT_SECTION_NAME);
         assertThat(subReport.getEntries()).size().isEqualTo(8);
         assertThatReport(subReport)
-            .hasEntryContainingKeys(EnvironmentKey.JAVA_VERSION,
+            .hasEntriesContaining(
+                new KeyValueEntry(EnvironmentKey.JAVA_VERSION, System.getProperty("java.version")),
+                new KeyValueEntry(EnvironmentKey.TEST_RUNNER, TestRunnerDetector.detect().name()),
+                new KeyValueEntry(EnvironmentKey.TIMEZONE, TimeZone.getDefault().getDisplayName()),
+                new KeyValueEntry(EnvironmentKey.CHARSET, Charset.defaultCharset().displayName() ),
+                new KeyValueEntry(EnvironmentKey.DOCKER, Boolean.toString(DockerDetector.detect())),
+                new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM, System.getProperty("os.name")),
+                new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM_ARCH, System.getProperty("os.arch")),
+                new KeyValueEntry(EnvironmentKey.OPERATIVE_SYSTEM_VERSION, System.getProperty("os.version")));
+            /*.hasKeyValueEntryContainingKeys(EnvironmentKey.JAVA_VERSION,
                 EnvironmentKey.TEST_RUNNER,
                 EnvironmentKey.TIMEZONE,
                 EnvironmentKey.CHARSET,
                 EnvironmentKey.DOCKER,
                 EnvironmentKey.OPERATIVE_SYSTEM,
                 EnvironmentKey.OPERATIVE_SYSTEM_ARCH,
-                EnvironmentKey.OPERATIVE_SYSTEM_VERSION);
+                EnvironmentKey.OPERATIVE_SYSTEM_VERSION);*/
 
         assertThat(subReport.getSubReports()).size().isEqualTo(0);
     }
@@ -158,7 +171,7 @@ public class GreeterReportVerifier {
         assertThatTestClassReport(testClassReport)
             .hasName("org.arquillian.reporter.GreeterTest")
             .hasNumberOfEntries(1)
-            .hasEntryContainingKeys(ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE)
+            .hasKeyValueEntryContainingKeys(ArquillianCoreKey.TEST_CLASS_REPORT_MESSAGE)
             .hasNumberOfSubReports(0);
 
         assertThat(configurationReport.getName())
@@ -193,7 +206,7 @@ public class GreeterReportVerifier {
         assertThatReport(nestedDeploymentReport)
             .hasName(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_REPORT)
             .hasNumberOfEntries(4)
-            .hasEntryContainingKeys(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME,
+            .hasKeyValueEntryContainingKeys(ArquillianCoreKey.DEPLOYMENT_IN_TEST_CLASS_NAME,
                 ArquillianCoreKey.ARCHIVE_NAME_OF_DEPLOYMENT,
                 ArquillianCoreKey.ORDER_OF_DEPLOYMENT,
                 ArquillianCoreKey.PROTOCOL_USED_FOR_DEPLOYMENT)
@@ -206,6 +219,7 @@ public class GreeterReportVerifier {
         TestClassReport testClassReport = testClassReports.get(0);
         List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
 
+        //boolean runAsClient = event.getTestMethod().isAnnotationPresent(RunAsClient.class);
         assertThat(testMethodReports).size().isEqualTo(2);
 
         List<StringKey> testMethodReportNameList = Arrays.asList(new UnknownStringKey("run_client_test"),
@@ -216,7 +230,8 @@ public class GreeterReportVerifier {
             assertThat(testMethodReport.getStatus()).isEqualTo(TestResult.Status.PASSED);
             assertThatTestMethodReport(testMethodReport)
                 .hasNumberOfEntries(3)
-                .hasEntryContainingKeys(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,
+                //.hasKeyValueEntryContainingKeys(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,))
+                .hasKeyValueEntryContainingKeys(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT,
                     ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT,
                     ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE)
                 .hasNumberOfSubReports(0);

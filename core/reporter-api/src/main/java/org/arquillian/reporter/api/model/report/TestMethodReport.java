@@ -172,19 +172,26 @@ public class TestMethodReport extends AbstractReport<TestMethodReport, TestMetho
         return TestMethodReportBuilder.class;
     }
 
-    @Override public void setExecutionStartTime(String startTime) {
+    @Override
+    public void setExecutionStartTime(String startTime) {
+
         this.startTime = startTime;
     }
 
-    @Override public String getExecutionStartTime() {
+    @Override
+    public String getExecutionStartTime() {
+
         return startTime;
     }
 
-    @Override public void setExecutionStopTime(String stopTime) {
+    @Override
+    public void setExecutionStopTime(String stopTime) {
+
         this.stopTime = stopTime;
     }
 
-    @Override public String getExecutionStopTime() {
+    @Override
+    public String getExecutionStopTime() {
         return stopTime;
     }
 }
