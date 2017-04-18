@@ -2,7 +2,6 @@ package org.arquillian.reporter.impl.base;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
 import org.arquillian.reporter.api.builder.entry.TableBuilder;
@@ -26,6 +25,7 @@ import org.arquillian.reporter.impl.builder.report.ReportInSectionBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestClassReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestMethodReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestSuiteReportBuilderImpl;
+import org.arquillian.reporter.impl.model.TestExtensionStringKey;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.spi.ServiceLoader;
 import org.jboss.arquillian.test.test.AbstractTestTestBase;
@@ -54,6 +54,7 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(ReporterLifecycleManagerInvoker.class);
+        //extensions.add(TestReporterExtension.class);
         addAdditionalExtensions(extensions);
 
     }
@@ -93,6 +94,7 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
     private void initiateStringKeys() {
         ArrayList<StringKey> stringKeys = new ArrayList<>();
         stringKeys.add(new ReporterCoreKey());
+        stringKeys.add(new TestExtensionStringKey());
         addReporterStringKeys(stringKeys);
         when(serviceLoader.all(StringKey.class)).thenReturn(stringKeys);
     }
