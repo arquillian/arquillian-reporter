@@ -10,10 +10,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class SecondSimpleTest {
 
-
-
     @Test
-    public void runTest(){
+    public void runTest() {
 
     }
 }

@@ -57,6 +57,26 @@ public class KeyValueEntry implements Entry {
         this.value = new StringEntry(value);
     }
 
+    /**
+     * Returns the actual key
+     *
+     * @return The actual key {@link StringKey}
+     */
+    public StringKey getKey() {
+
+        return key;
+    }
+
+    /**
+     * Returns the actual value
+     *
+     * @return The actual value {@link Entry}
+     */
+    public Entry getValue() {
+
+        return value;
+    }
+
     @Override
     public String toString() {
         return "KeyValueEntry{" +

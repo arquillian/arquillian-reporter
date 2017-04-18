@@ -1,12 +1,12 @@
 package org.arquillian.reporter.api.model.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.arquillian.reporter.api.builder.report.TestSuiteReportBuilder;
-import org.arquillian.reporter.api.utils.ReporterUtils;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
+import org.arquillian.reporter.api.utils.ReporterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_SUITE_CONFIGURATION_REPORT;
 
@@ -31,10 +31,10 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_SUI
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteReportBuilder>
-    implements WithConfigurationReport {
+    implements WithConfigurationReport, WithStartAndStopReport {
 
-    private String start = ReporterUtils.getCurrentDate();
-    private String stop;
+    private String startTime = ReporterUtils.getCurrentDate();
+    private String stopTime;
     private ConfigurationReport configuration = new ConfigurationReport(GENERAL_TEST_SUITE_CONFIGURATION_REPORT);
     private List<TestClassReport> testClassReports = new ArrayList<>();
 
@@ -82,33 +82,6 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteRe
     }
 
     /**
-     * Returns time when the test suite execution started
-     *
-     * @return Time when the test suite execution started
-     */
-    public String getStart() {
-        return start;
-    }
-
-    /**
-     * Returns time when the test suite execution stopped
-     *
-     * @return Time when the test suite execution stopped
-     */
-    public String getStop() {
-        return stop;
-    }
-
-    /**
-     * Sets the given time as time when an associated test suite execution stopped
-     *
-     * @param stop Stop time to be set
-     */
-    public void setStop(String stop) {
-        this.stop = stop;
-    }
-
-    /**
      * Apart from the default functionality of merging ({@link AbstractReport#defaultMerge(AbstractReport)})
      * it also manages the additional types of information. The default just takes the entries and sub-reports contained
      * in the given {@link TestSuiteReport} and adds them into the list of entries and sub-reports respectively withing this
@@ -127,8 +100,8 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteRe
 
         getTestClassReports().addAll(newReport.getTestClassReports());
 
-        if (newReport.getStop() != null) {
-            setStop(newReport.getStop());
+        if (newReport.getExecutionStopTime() != null) {
+            setExecutionStopTime(newReport.getExecutionStopTime());
         }
 
         getConfiguration().merge(newReport.getConfiguration());
@@ -166,5 +139,28 @@ public class TestSuiteReport extends AbstractReport<TestSuiteReport, TestSuiteRe
     @Override
     public Class<TestSuiteReportBuilder> getReportBuilderClass() {
         return TestSuiteReportBuilder.class;
+    }
+
+    @Override
+    public void setExecutionStartTime(String startTime) {
+
+        this.startTime = startTime;
+    }
+
+    @Override
+    public String getExecutionStartTime() {
+
+        return startTime;
+    }
+
+    @Override
+    public void setExecutionStopTime(String stopTime) {
+
+        this.stopTime = stopTime;
+    }
+
+    @Override
+    public String getExecutionStopTime() {
+        return stopTime;
     }
 }

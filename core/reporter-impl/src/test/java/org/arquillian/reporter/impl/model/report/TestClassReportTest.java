@@ -67,7 +67,7 @@ public class TestClassReportTest {
         new DateChecker() {
             @Override
             public String getDateFromReport() {
-                return new TestClassReport().getStart();
+                return new TestClassReport().getExecutionStartTime();
             }
         }.assertThatDateWasCorrectlyCreated();
     }
@@ -76,12 +76,12 @@ public class TestClassReportTest {
     public void testStopDateUsingTestClassBuilder() throws ParseException {
         BuilderLoader.load();
         TestClassReport testClassReport = new TestClassReport();
-        assertThat(testClassReport.getStop()).isNull();
+        assertThat(testClassReport.getExecutionStopTime()).isNull();
 
         new DateChecker() {
             @Override
             public String getDateFromReport() {
-                return Reporter.createReport(testClassReport).stop().build().getStop();
+                return Reporter.createReport(testClassReport).stop().build().getExecutionStopTime();
             }
         }.assertThatDateWasCorrectlyCreated();
     }

@@ -1,12 +1,12 @@
 package org.arquillian.reporter.api.model.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.arquillian.reporter.api.builder.report.TestClassReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.utils.ReporterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT;
 
@@ -31,10 +31,10 @@ import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_TEST_CLA
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
  */
 public class TestClassReport extends AbstractReport<TestClassReport, TestClassReportBuilder>
-    implements WithConfigurationReport {
+    implements WithConfigurationReport, WithStartAndStopReport {
 
-    private String start = ReporterUtils.getCurrentDate();
-    private String stop;
+    private String startTime = ReporterUtils.getCurrentDate();
+    private String stopTime;
     private ConfigurationReport configuration = new ConfigurationReport(GENERAL_TEST_CLASS_CONFIGURATION_REPORT);
     private List<TestMethodReport> testMethodReports = new ArrayList<>();
 
@@ -73,33 +73,6 @@ public class TestClassReport extends AbstractReport<TestClassReport, TestClassRe
     }
 
     /**
-     * Returns time when the test class execution stopped
-     *
-     * @return Time when the test class execution stopped
-     */
-    public String getStop() {
-        return stop;
-    }
-
-    /**
-     * Sets the given time as time when an associated test class execution stopped
-     *
-     * @param stop Stop time to be set
-     */
-    public void setStop(String stop) {
-        this.stop = stop;
-    }
-
-    /**
-     * Returns time when the test class execution started
-     *
-     * @return Time when the test class execution started
-     */
-    public String getStart() {
-        return start;
-    }
-
-    /**
      * Returns a list of {@link TestMethodReport}s that have been run and are declared in associated test class.
      *
      * @return A list of {@link TestMethodReport}s that have been run and are declared in associated test class.
@@ -127,8 +100,8 @@ public class TestClassReport extends AbstractReport<TestClassReport, TestClassRe
 
         getTestMethodReports().addAll(newReport.getTestMethodReports());
 
-        if (newReport.getStop() != null) {
-            setStop(newReport.getStop());
+        if (newReport.getExecutionStopTime() != null) {
+            setExecutionStopTime(newReport.getExecutionStopTime());
         }
 
         getConfiguration().merge(newReport.getConfiguration());
@@ -166,6 +139,26 @@ public class TestClassReport extends AbstractReport<TestClassReport, TestClassRe
     @Override
     public Class<TestClassReportBuilder> getReportBuilderClass() {
         return TestClassReportBuilder.class;
+    }
+
+    @Override
+    public void setExecutionStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public String getExecutionStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setExecutionStopTime(String stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    @Override
+    public String getExecutionStopTime() {
+        return stopTime;
     }
 
 }

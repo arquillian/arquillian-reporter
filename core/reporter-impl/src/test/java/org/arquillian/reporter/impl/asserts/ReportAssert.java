@@ -4,12 +4,12 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.Entry;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
+import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
 import org.arquillian.reporter.api.model.report.TestSuiteReport;
-import org.arquillian.reporter.api.model.report.BasicReport;
-import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.impl.ExecutionReport;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.ListAssert;
@@ -62,7 +62,6 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
 
     public ListAssert<Entry> entries() {
         return new ListAssert<>(actual.getEntries());
-
     }
 
     public REPORTASSERTTYPE hasName(StringKey name) {
@@ -151,6 +150,37 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
         return (REPORTASSERTTYPE) this;
     }
 
+    public REPORTASSERTTYPE hasKeyValueEntryContainingKeys(StringKey... expectedStringKey) {
+        return hasKeyValueEntryContainingKeys(Arrays.asList(expectedStringKey));
+    }
+
+    public REPORTASSERTTYPE hasKeyValueEntryContainingKeys(List<StringKey> expectedStringKeys) {
+        isNotNull();
+
+        List<StringKey> keyValueEntryKeys = getKeyValueEntryKeys(actual);
+
+        expectedStringKeys.stream().forEach(expectedStringKey -> {
+            assertThat(keyValueEntryKeys)
+                .usingRecursiveFieldByFieldElementComparator()
+                .as("The report with name <%s> and of the type <%s> should contain KeyValue entry (with key <%s>) "
+                        + "- the used comparator strategy: usingRecursiveFieldByFieldElementComparator",
+                    actual.getName(), actual.getClass(), expectedStringKey)
+                .contains(expectedStringKey);
+        });
+        return (REPORTASSERTTYPE) this;
+    }
+
+    private List<StringKey> getKeyValueEntryKeys(REPORTTYPE actual) {
+            List<Entry> actualEntries = actual.getEntries();
+
+            List<StringKey> keys = actualEntries.stream()
+                .filter(entry -> entry instanceof KeyValueEntry)
+                .map(KeyValueEntry.class::cast)
+                .map(keyValueEntry -> keyValueEntry.getKey())
+                .collect(Collectors.toList());
+        return keys;
+    }
+
     public REPORTASSERTTYPE hasGeneratedSubReportsAndEntriesWithDefaults() {
         return hasGeneratedSubReportsAndEntries(DEFAULT_START_INDEX_FOR_GENERATED_REPORT_PAYLOAD,
                                                 DEFAULT_END_INDEX_FOR_GENERATED_REPORT_PAYLOAD);
@@ -229,7 +259,6 @@ public class ReportAssert<REPORTASSERTTYPE extends ReportAssert<REPORTASSERTTYPE
             assertThatReport(reportOnIndex)
                 .hasGeneratedSubReportsAndEntries(index + 1, index + 10)
                 .hasNumberOfSubReportsAndEntries(9);
-
         }
     }
 }
