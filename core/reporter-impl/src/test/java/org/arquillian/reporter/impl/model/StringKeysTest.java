@@ -15,13 +15,11 @@ import static org.arquillian.reporter.impl.model.TestExtensionStringKey.DRONE_RE
 import static org.arquillian.reporter.impl.model.TestExtensionStringKey.DRONE_SCOPE_IN_GENERAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
- */
+
 public class StringKeysTest extends AbstractReporterTestBase {
 
     @Test
-    public void should_load_properties_file() {
+    public void verify_stringKey_properties_file_exists() {
 
         URL resource = getClass().getClassLoader()
             .getResource("org.arquillian.reporter.impl.model.TestExtensionStringKey.properties");

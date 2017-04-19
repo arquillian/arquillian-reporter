@@ -64,7 +64,6 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(ReporterLifecycleManagerInvoker.class);
-        //extensions.add(TestReporterExtension.class);
         addAdditionalExtensions(extensions);
 
     }
