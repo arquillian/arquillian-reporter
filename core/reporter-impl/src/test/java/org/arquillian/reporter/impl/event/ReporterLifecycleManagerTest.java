@@ -1,10 +1,5 @@
 package org.arquillian.reporter.impl.event;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
-import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.config.ReporterConfiguration;
 import org.arquillian.reporter.impl.ExecutionStore;
 import org.arquillian.reporter.impl.base.AbstractReporterTestBase;
@@ -13,6 +8,8 @@ import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.event.ManagerStarted;
 import org.jboss.arquillian.core.api.event.ManagerStopping;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.SectionTreeAssert.assertThatSectionTree;
@@ -50,18 +47,5 @@ public class ReporterLifecycleManagerTest extends AbstractReporterTestBase {
         verifyInReporterLifecycleManager().wasCalled(1).observeFirstEvent(any(ManagerStarted.class));
         verifyInReporterLifecycleManager().wasCalled(0).observeEventsForAllSections(any());
         verifyInReporterLifecycleManager().wasCalled(1).observeLastEvent(any(ManagerStopping.class), any(ReporterConfiguration.class));
-    }
-
-
-    @Override
-    protected void addAdditionalExtensions(List<Class<?>> extensions) {
-    }
-
-    @Override
-    protected void addReporterStringKeys(List<StringKey> stringKeys) {
-    }
-
-    @Override
-    protected void registerBuilders(BuilderRegistryDelegate builderRegistryDelegate) {
     }
 }

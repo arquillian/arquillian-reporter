@@ -1,11 +1,5 @@
 package org.arquillian.reporter.impl.event;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
 import org.arquillian.reporter.api.builder.Reporter;
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.TestClassConfigurationSection;
@@ -15,7 +9,6 @@ import org.arquillian.reporter.api.event.TestMethodFailureSection;
 import org.arquillian.reporter.api.event.TestMethodSection;
 import org.arquillian.reporter.api.event.TestSuiteConfigurationSection;
 import org.arquillian.reporter.api.event.TestSuiteSection;
-import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.report.AbstractReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
@@ -36,6 +29,10 @@ import org.jboss.arquillian.core.api.event.ManagerStopping;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -97,17 +94,5 @@ public class FiringSectionEventsUsingReporterTest extends AbstractReporterTestBa
         verifyInReporterLifecycleManager().wasCalled(1).observeFirstEvent(any(ManagerStarted.class));
         verifyInReporterLifecycleManager().wasCalled(1).observeEventsForAllSections(any(sectionClass));
         verifyInReporterLifecycleManager().wasCalled(0).observeLastEvent(any(ManagerStopping.class), any(ReporterConfiguration.class));
-    }
-
-    @Override
-    protected void addAdditionalExtensions(List<Class<?>> extensions) {
-    }
-
-    @Override
-    protected void addReporterStringKeys(List<StringKey> stringKeys) {
-    }
-
-    @Override
-    protected void registerBuilders(BuilderRegistryDelegate builderRegistry) {
     }
 }
