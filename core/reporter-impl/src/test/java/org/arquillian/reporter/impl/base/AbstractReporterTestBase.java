@@ -23,6 +23,7 @@ import org.arquillian.reporter.impl.builder.report.ReportInSectionBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestClassReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestMethodReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.TestSuiteReportBuilderImpl;
+import org.arquillian.reporter.impl.model.TestExtensionStringKey;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.spi.ServiceLoader;
 import org.jboss.arquillian.test.test.AbstractTestTestBase;
@@ -102,6 +103,7 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
     private void initiateStringKeys() {
         ArrayList<StringKey> stringKeys = new ArrayList<>();
         stringKeys.add(new ReporterCoreKey());
+        stringKeys.add(new TestExtensionStringKey());
         addReporterStringKeys(stringKeys);
         when(serviceLoader.all(StringKey.class)).thenReturn(stringKeys);
     }
