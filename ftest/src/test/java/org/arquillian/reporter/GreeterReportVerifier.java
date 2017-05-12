@@ -15,6 +15,7 @@ import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
 import org.arquillian.reporter.api.model.entry.KeyValueEntry;
 import org.arquillian.reporter.api.model.report.ConfigurationReport;
+import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.Report;
 import org.arquillian.reporter.api.model.report.TestClassReport;
 import org.arquillian.reporter.api.model.report.TestMethodReport;
@@ -26,6 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 
+import static org.arquillian.reporter.api.model.ReporterCoreKey.GENERAL_METHOD_FAILURE_REPORT;
+import static org.arquillian.reporter.api.model.ReporterCoreKey.METHOD_FAILURE_REPORT_STACKTRACE;
 import static org.arquillian.reporter.impl.asserts.ExecutionReportAssert.assertThatExecutionReport;
 import static org.arquillian.reporter.impl.asserts.ReportAssert.assertThatReport;
 import static org.arquillian.reporter.impl.asserts.TestClassReportAssert.assertThatTestClassReport;
@@ -167,7 +170,7 @@ public class GreeterReportVerifier {
         assertThat(configurationReport.getName())
             .isEqualTo(ReporterCoreKey.GENERAL_TEST_CLASS_CONFIGURATION_REPORT);
 
-        assertThat(testMethodReports).size().isEqualTo(2);
+        assertThat(testMethodReports).size().isEqualTo(4);
     }
 
     @Test
@@ -205,39 +208,86 @@ public class GreeterReportVerifier {
 
     @Test
     public void verify_test_method_reports_exists_with_contents() {
-        List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
-        TestClassReport testClassReport = testClassReports.get(0);
-        List<TestMethodReport> testMethodReports = testClassReport.getTestMethodReports();
+        final List<TestMethodReport> testMethodReports = getTestMethodReports();
+        final List<StringKey> testMethodReportNameList = Arrays.asList(new UnknownStringKey("run_client_test"),
+            new UnknownStringKey("should_create_greeting"), new UnknownStringKey("should_report_as_failed"),
+            new UnknownStringKey("should_report_as_skipped"));
 
-        assertThat(testMethodReports).size().isEqualTo(2);
-
-        List<StringKey> testMethodReportNameList = Arrays.asList(new UnknownStringKey("run_client_test"),
-            new UnknownStringKey("should_create_greeting"));
+        assertThat(testMethodReports).size().isEqualTo(4);
 
         for (TestMethodReport testMethodReport : testMethodReports) {
-
             StringKey testMethodName = testMethodReport.getName();
 
             assertThat(testMethodName).isIn(testMethodReportNameList);
-            assertThat(testMethodReport.getStatus()).isEqualTo(TestResult.Status.PASSED);
             assertThatTestMethodReport(testMethodReport)
                 .hasNumberOfEntries(3)
                 .hasEntriesContaining(
                     new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_OPERATES_ON_DEPLOYMENT, "_DEFAULT_"),
-                    new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE, (String)null))
+                    new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_REPORT_MESSAGE, (String) null))
                 .hasNumberOfSubReports(0);
             assertThat(testMethodReport.getFailureReport().getName())
-                .isEqualTo(ReporterCoreKey.GENERAL_METHOD_FAILURE_REPORT);
+                .isEqualTo(GENERAL_METHOD_FAILURE_REPORT);
             assertThat(testMethodReport.getConfiguration().getName())
                 .isEqualTo(ReporterCoreKey.GENERAL_TEST_METHOD_CONFIGURATION_REPORT);
-
-            if (testMethodName.equals(new UnknownStringKey("run_client_test"))) {
-                assertThatReport(testMethodReport)
-                    .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "true"));
-            } else if (testMethodName.equals(new UnknownStringKey("should_create_greeting"))) {
-                assertThatReport(testMethodReport)
-                    .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "false"));
-            }
         }
+    }
+
+    @Test
+    public void verify_method_report_for_run_as_client_test() {
+        final TestMethodReport run_client_test_report = getTestMethodReport("run_client_test");
+
+        assertThatTestMethodReport(run_client_test_report)
+            .hasStatus(TestResult.Status.PASSED)
+            .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "true"));
+    }
+
+    @Test
+    public void verify_method_report_for_run_as_client_false_test() {
+        final TestMethodReport run_client_test_report = getTestMethodReport("should_create_greeting");
+
+        assertThatTestMethodReport(run_client_test_report)
+            .hasStatus(TestResult.Status.PASSED)
+            .hasEntriesContaining(new KeyValueEntry(ArquillianCoreKey.TEST_METHOD_RUNS_AS_CLIENT, "false"));
+    }
+
+    @Test
+    public void verify_method_report_for_failed_test() {
+        final TestMethodReport should_report_as_failed = getTestMethodReport("should_report_as_failed");
+        final FailureReport failureReport = should_report_as_failed.getFailureReport();
+
+        assertThatTestMethodReport(should_report_as_failed)
+            .hasStatus(TestResult.Status.FAILED)
+            .hasNumberOfEntries(3);
+
+        assertThatReport(failureReport)
+            .hasName(GENERAL_METHOD_FAILURE_REPORT)
+            .hasNumberOfEntries(1)
+            .hasKeyValueEntryContainingKeys(METHOD_FAILURE_REPORT_STACKTRACE);
+    }
+
+    @Test
+    public void verify_method_report_for_skipped_test() {
+
+        final TestMethodReport should_report_as_skipped = getTestMethodReport("should_report_as_skipped");
+
+        assertThatTestMethodReport(should_report_as_skipped)
+            .hasStatus(TestResult.Status.SKIPPED)
+            .hasNumberOfEntries(3);
+    }
+
+    private List<TestMethodReport> getTestMethodReports() {
+        List<TestClassReport> testClassReports = executionReport.getTestSuiteReports().get(0).getTestClassReports();
+        TestClassReport testClassReport = testClassReports.get(0);
+
+        return testClassReport.getTestMethodReports();
+    }
+
+    private TestMethodReport getTestMethodReport(String methodName) {
+        final List<TestMethodReport> testMethodReports = getTestMethodReports();
+
+        return testMethodReports.stream()
+            .filter(testMethodReport -> testMethodReport.getName().getValue().equals(methodName))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("No method found with name: " + methodName));
     }
 }

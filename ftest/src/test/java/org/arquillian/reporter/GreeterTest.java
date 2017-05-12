@@ -7,6 +7,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +37,16 @@ public class GreeterTest {
     @RunAsClient
     public void run_client_test() {
         assertEquals(2, 2);
+    }
+
+    @Test
+    public void should_report_as_failed(){
+        Assert.assertFalse(true);
+    }
+
+    @Test
+    public void should_report_as_skipped(){
+        Assume.assumeFalse(true);
     }
 }
 

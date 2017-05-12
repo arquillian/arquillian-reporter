@@ -1,9 +1,8 @@
 package org.arquillian.reporter.impl.model.report;
 
 import java.util.List;
-
-import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.api.model.report.BasicReport;
+import org.arquillian.reporter.api.model.report.FailureReport;
 import org.arquillian.reporter.impl.utils.ReportGeneratorUtils;
 import org.junit.Test;
 
@@ -59,7 +58,7 @@ public class FailureReportTest {
 
         // the report that has been merged is still same
         assertThatReport(failureToMerge)
-            .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
+            .hasSubReportsEndingWith(secondFailure.toArray(new FailureReport[0]))
             .hasName("to merge")
             .hasGeneratedSubReportsAndEntries(5, 10)
             .hasNumberOfSubReports(10)
@@ -67,8 +66,8 @@ public class FailureReportTest {
 
         // verify that the main report should contain all information
         assertThatReport(mainFailureReport)
-            .hasSubReportsContaining(firstFailure.stream().toArray(FailureReport[]::new))
-            .hasSubReportsEndingWith(secondFailure.stream().toArray(FailureReport[]::new))
+            .hasSubReportsContaining(firstFailure.toArray(new FailureReport[0]))
+            .hasSubReportsEndingWith(secondFailure.toArray(new FailureReport[0]))
             .hasName(FAILURE_REPORT_NAME)
             .hasGeneratedSubReportsAndEntries(1, 10)
             .hasNumberOfSubReports(19)

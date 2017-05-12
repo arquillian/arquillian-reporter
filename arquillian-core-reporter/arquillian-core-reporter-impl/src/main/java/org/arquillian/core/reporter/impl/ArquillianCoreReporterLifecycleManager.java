@@ -3,7 +3,6 @@ package org.arquillian.core.reporter.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
-
 import org.arquillian.core.reporter.event.TestClassConfigurationDeploymentSection;
 import org.arquillian.core.reporter.event.TestSuiteConfigurationContainerSection;
 import org.arquillian.reporter.api.builder.Reporter;
@@ -31,6 +30,7 @@ import org.jboss.arquillian.test.spi.TestResult;
 import org.jboss.arquillian.test.spi.event.suite.After;
 import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
+import org.jboss.arquillian.test.spi.event.suite.AfterTestLifecycleEvent;
 import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
@@ -154,18 +154,20 @@ public class ArquillianCoreReporterLifecycleManager {
             .fire(sectionEvent);
     }
 
-    public void stopTestMethod(@Observes(precedence = Integer.MIN_VALUE) After event, TestResult result) {
+    public void stopTestMethod(@Observes(precedence = Integer.MIN_VALUE) AfterTestLifecycleEvent event,
+        TestResult result) {
+        if (!(event instanceof After)) {
+            Method testMethod = event.getTestMethod();
+            String reportMessage = ReportMessageParser.parseTestReportMessage(event.getTestMethod());
 
-        Method testMethod = event.getTestMethod();
-        String reportMessage = ReportMessageParser.parseTestReportMessage(event.getTestMethod());
-
-        Reporter
-            .createReport(new TestMethodReport(testMethod.getName()))
-            .stop()
-            .setResult(result)
-            .addKeyValueEntry(TEST_METHOD_REPORT_MESSAGE, reportMessage)
-            .inSection(new TestMethodSection(testMethod))
-            .fire(sectionEvent);
+            Reporter
+                .createReport(new TestMethodReport(testMethod.getName()))
+                .stop()
+                .setResult(result)
+                .addKeyValueEntry(TEST_METHOD_REPORT_MESSAGE, reportMessage)
+                .inSection(new TestMethodSection(testMethod))
+                .fire(sectionEvent);
+        }
     }
 
     public void stopTestClass(@Observes(precedence = Integer.MIN_VALUE) AfterClass event) {
@@ -212,5 +214,4 @@ public class ArquillianCoreReporterLifecycleManager {
             return null;
         }
     }
-
 }
