@@ -120,7 +120,8 @@ public class SectionGeneratorUtils {
         Map<SectionEvent, List<? extends SectionEvent>> sections = new HashMap<>();
         List<TestSuiteSection> testSuiteSections =
             new SectionGeneratorAndProcessor<TestSuiteSection>() {
-                @Override TestSuiteSection createNewInstance(int index) throws Exception {
+                @Override
+                public TestSuiteSection createNewInstance(int index) throws Exception {
                     return new TestSuiteSection(
                         prepareReport(TestSuiteReport.class,
                                       getTestSuiteReportName(index),
@@ -143,7 +144,7 @@ public class SectionGeneratorUtils {
             List<TestSuiteConfigurationSection> testSuiteConfigSections =
                 new SectionGeneratorAndProcessor<TestSuiteConfigurationSection>() {
                     @Override
-                    TestSuiteConfigurationSection createNewInstance(int index) throws Exception {
+                    public TestSuiteConfigurationSection createNewInstance(int index) throws Exception {
                         String suiteId = suite.getSectionId();
                         return new TestSuiteConfigurationSection(
                             prepareReport(ConfigurationReport.class,
@@ -169,7 +170,7 @@ public class SectionGeneratorUtils {
             List<TestClassSection> testClassSections =
                 new SectionGeneratorAndProcessor<TestClassSection>() {
                     @Override
-                    TestClassSection createNewInstance(int index) throws Exception {
+                    public TestClassSection createNewInstance(int index) throws Exception {
                         String suiteId = suite.getSectionId();
 
                         return new TestClassSection(
@@ -200,7 +201,7 @@ public class SectionGeneratorUtils {
                 .put((TestClassSection) tc,
                      new SectionGeneratorAndProcessor<TestClassConfigurationSection>() {
                          @Override
-                         TestClassConfigurationSection createNewInstance(int index) throws Exception {
+                         public TestClassConfigurationSection createNewInstance(int index) throws Exception {
                              TestClassConfigurationSection testClassConfigurationSection =
                                  new TestClassConfigurationSection(
                                      prepareReport(
@@ -230,7 +231,7 @@ public class SectionGeneratorUtils {
             sections.put((TestClassSection) tc,
                          new SectionGeneratorAndProcessor<TestMethodSection>() {
                              @Override
-                             TestMethodSection createNewInstance(int index) throws Exception {
+                             public TestMethodSection createNewInstance(int index) throws Exception {
                                  TestMethodSection testMethodSection = new TestMethodSection(
                                      prepareReport(
                                          TestMethodReport.class,
@@ -258,7 +259,7 @@ public class SectionGeneratorUtils {
             sections.put(testMethodSection,
                          new SectionGeneratorAndProcessor<TestMethodConfigurationSection>() {
                              @Override
-                             TestMethodConfigurationSection createNewInstance(int index) throws Exception {
+                             public TestMethodConfigurationSection createNewInstance(int index) throws Exception {
                                  TestMethodConfigurationSection testMethodConfigSection =
                                      new TestMethodConfigurationSection(
                                          prepareReport(
@@ -289,7 +290,7 @@ public class SectionGeneratorUtils {
             sections.put(testMethodSection,
                          new SectionGeneratorAndProcessor<TestMethodFailureSection>() {
                              @Override
-                             TestMethodFailureSection createNewInstance(int index) throws Exception {
+                             public TestMethodFailureSection createNewInstance(int index) throws Exception {
                                  TestMethodFailureSection testMethodFailureSection =
                                      new TestMethodFailureSection(
                                          prepareReport(
@@ -360,9 +361,9 @@ public class SectionGeneratorUtils {
 
     }
 
-    abstract static class SectionGeneratorAndProcessor<T extends SectionEvent> {
+    public abstract static class SectionGeneratorAndProcessor<T extends SectionEvent> {
 
-        List<T> generateSetOfSections(int number, ExecutionStore executionStore) {
+        public List<T> generateSetOfSections(int number, ExecutionStore executionStore) {
             return IntStream
                 .range(0, number)
                 .mapToObj(index -> {
@@ -377,7 +378,7 @@ public class SectionGeneratorUtils {
                 ).collect(Collectors.toList());
         }
 
-        abstract T createNewInstance(int index) throws Exception;
+        protected abstract T createNewInstance(int index) throws Exception;
     }
 
 }
