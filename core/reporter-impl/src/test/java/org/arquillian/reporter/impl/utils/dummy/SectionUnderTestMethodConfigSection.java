@@ -12,6 +12,9 @@ public class SectionUnderTestMethodConfigSection extends SectionEvent<SectionUnd
     public SectionUnderTestMethodConfigSection(){
     }
 
+    public SectionUnderTestMethodConfigSection(BasicReport sectionReport) {
+        super(sectionReport);
+    }
 
     @Override
     public TestMethodConfigurationSection getParentSectionThisSectionBelongsTo() {
