@@ -71,10 +71,7 @@
 
   <profiles>
     <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>greeter-test</id>
       <build>
         <plugins>
           <plugin>
@@ -93,6 +90,9 @@
     </profile>
     <profile>
       <id>functional-tests</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
