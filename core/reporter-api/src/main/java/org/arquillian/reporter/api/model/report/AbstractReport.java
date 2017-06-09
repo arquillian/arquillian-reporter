@@ -96,4 +96,8 @@ public abstract class AbstractReport<TYPE extends AbstractReport, BUILDERTYPE ex
         getEntries().addAll(newReport.getEntries());
         getSubReports().addAll(newReport.getSubReports());
     }
+
+    public void processEntries(){
+        entries.replaceAll(entry -> entry.outputEntry());
+    }
 }

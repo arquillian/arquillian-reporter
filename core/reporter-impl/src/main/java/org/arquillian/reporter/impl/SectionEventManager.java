@@ -1,9 +1,12 @@
 package org.arquillian.reporter.impl;
 
+import java.util.List;
+
 import org.arquillian.reporter.api.event.SectionEvent;
 import org.arquillian.reporter.api.event.Standalone;
 import org.arquillian.reporter.api.event.TestSuiteSection;
 import org.arquillian.reporter.api.model.report.AbstractReport;
+import org.arquillian.reporter.api.model.report.Report;
 
 /**
  * @author <a href="mailto:mjobanek@redhat.com">Matous Jobanek</a>
@@ -12,6 +15,9 @@ public class SectionEventManager {
 
     public static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>
     void processEvent(SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE> event, ExecutionStore executionStore) {
+
+        // process all entries (in this report and all sub-reports) and get output entry instances
+        processEntries(event.getReport());
 
         Class<REPORT_TYPE> expectedPayload = event.getReportTypeClass();
         Class<? extends AbstractReport> actualReportClass = event.getReport().getClass();
@@ -34,6 +40,12 @@ public class SectionEventManager {
         SectionTree eventTree = createTreeRecursively(event, null);
         // and merge the expected path with the current state of section tree
         executionStore.getSectionTree().mergeSectionTree(eventTree);
+    }
+
+    private static void processEntries(Report report){
+        report.processEntries();
+        List<Report> subReports = report.getSubReports();
+        subReports.forEach(SectionEventManager::processEntries);
     }
 
     private static <SECTIONTYPE extends SectionEvent<SECTIONTYPE, REPORT_TYPE, PARENT_TYPE>, REPORT_TYPE extends AbstractReport, PARENT_TYPE extends SectionEvent>

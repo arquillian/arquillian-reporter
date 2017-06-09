@@ -2,7 +2,7 @@ package org.arquillian.reporter.impl.base;
 
 import org.arquillian.reporter.api.builder.Builder;
 import org.arquillian.reporter.api.builder.BuilderRegistryDelegate;
-import org.arquillian.reporter.api.builder.entry.TableBuilder;
+import org.arquillian.reporter.api.builder.entry.DataCollectionBuilder;
 import org.arquillian.reporter.api.builder.report.BasicReportBuilder;
 import org.arquillian.reporter.api.builder.report.ConfigurationReportBuilder;
 import org.arquillian.reporter.api.builder.report.FailureReportBuilder;
@@ -14,7 +14,7 @@ import org.arquillian.reporter.api.builder.report.TestSuiteReportBuilder;
 import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.impl.ReporterLifecycleManager;
-import org.arquillian.reporter.impl.builder.entry.TableBuilderImpl;
+import org.arquillian.reporter.impl.builder.entry.DataCollectionBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.BasicReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.ConfigurationReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.FailureReportBuilderImpl;
@@ -91,10 +91,10 @@ public abstract class AbstractReporterTestBase extends AbstractTestTestBase {
         builderRegistry.addServiceToBuilderRegistry(FailureReportBuilder.class, FailureReportBuilderImpl.class);
 
         builderRegistry.addServiceToBuilderRegistry(ReportInSectionBuilder.class, ReportInSectionBuilderImpl.class);
-        builderRegistry.addServiceToBuilderRegistry(TableBuilder.class, TableBuilderImpl.class);
         builderRegistry.addServiceToBuilderRegistry(TestClassReportBuilder.class, TestClassReportBuilderImpl.class);
         builderRegistry.addServiceToBuilderRegistry(TestMethodReportBuilder.class, TestMethodReportBuilderImpl.class);
         builderRegistry.addServiceToBuilderRegistry(TestSuiteReportBuilder.class, TestSuiteReportBuilderImpl.class);
+        builderRegistry.addServiceToBuilderRegistry(DataCollectionBuilder.class, DataCollectionBuilderImpl.class);
 
         registerBuilders(builderRegistry);
     }

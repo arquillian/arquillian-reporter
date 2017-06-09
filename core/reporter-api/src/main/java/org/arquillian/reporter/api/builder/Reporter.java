@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import org.arquillian.reporter.api.builder.entry.TableBuilder;
+import org.arquillian.reporter.api.builder.entry.DataCollectionBuilder;
 import org.arquillian.reporter.api.builder.report.ReportBuilder;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.api.model.UnknownStringKey;
-import org.arquillian.reporter.api.model.entry.table.TableEntry;
+import org.arquillian.reporter.api.model.entry.data.DataCollectionEntry;
 import org.arquillian.reporter.api.model.report.BasicReport;
 import org.arquillian.reporter.api.model.report.Report;
 
@@ -93,25 +93,25 @@ public class Reporter {
     }
 
     /**
-     * Creates an instance of {@link TableEntry} class and sets it into a {@link TableBuilder} as an entry to be built.
-     * The {@link TableBuilder} instance will be then returned.
+     * Creates an instance of {@link DataCollectionEntry} class and sets it into a {@link DataCollectionBuilder}
+     * as an entry to be built. The {@link DataCollectionBuilder} instance will be then returned.
      *
-     * @param name A name of the {@link TableEntry} instance. The name will be stored as an {@link UnknownStringKey}
-     * @return An instance of {@link TableBuilder} with the given table entry set
+     * @param name A name of the {@link DataCollectionEntry} instance. The name will be stored as an {@link UnknownStringKey}
+     * @return An instance of {@link DataCollectionBuilder} with the given table entry set
      */
-    public static TableBuilder createTable(String name) {
-        return usingBuilder(TableBuilder.class, name);
+    public static DataCollectionBuilder createDataCollection(String name) {
+        return usingBuilder(DataCollectionBuilder.class, name);
     }
 
     /**
-     * Creates an instance of {@link TableEntry} class and sets it into a {@link TableBuilder} as an entry to be built.
-     * The {@link TableBuilder} instance will be then returned.
+     * Creates an instance of {@link DataCollectionEntry} class and sets it into a {@link DataCollectionBuilder}
+     * as an entry to be built. The {@link DataCollectionBuilder} instance will be then returned.
      *
-     * @param name A StringKey representing name of the {@link TableEntry} instance.
-     * @return An instance of {@link TableBuilder} with the given table entry set
+     * @param name A StringKey representing name of the {@link DataCollectionEntry} instance.
+     * @return An instance of {@link DataCollectionBuilder} with the given table entry set
      */
-    public static TableBuilder createTable(StringKey name) {
-        return usingBuilder(TableBuilder.class, name);
+    public static DataCollectionBuilder createDataCollection(StringKey name) {
+        return usingBuilder(DataCollectionBuilder.class, name);
     }
 
     // security actions

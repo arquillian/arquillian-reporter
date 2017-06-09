@@ -1,6 +1,6 @@
 package org.arquillian.reporter;
 
-import org.arquillian.reporter.api.builder.entry.TableBuilder;
+import org.arquillian.reporter.api.builder.entry.DataCollectionBuilder;
 import org.arquillian.reporter.api.builder.report.BasicReportBuilder;
 import org.arquillian.reporter.api.builder.report.ConfigurationReportBuilder;
 import org.arquillian.reporter.api.builder.report.FailureReportBuilder;
@@ -13,7 +13,7 @@ import org.arquillian.reporter.api.model.ReporterCoreKey;
 import org.arquillian.reporter.api.model.StringKey;
 import org.arquillian.reporter.config.ReporterConfigurator;
 import org.arquillian.reporter.impl.ReporterLifecycleManager;
-import org.arquillian.reporter.impl.builder.entry.TableBuilderImpl;
+import org.arquillian.reporter.impl.builder.entry.DataCollectionBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.BasicReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.ConfigurationReportBuilderImpl;
 import org.arquillian.reporter.impl.builder.report.FailureReportBuilderImpl;
@@ -42,9 +42,9 @@ public class ReporterExtension implements LoadableExtension {
         builder.service(FailureReportBuilder.class, FailureReportBuilderImpl.class);
 
         builder.service(ReportInSectionBuilder.class, ReportInSectionBuilderImpl.class);
-        builder.service(TableBuilder.class, TableBuilderImpl.class);
         builder.service(TestClassReportBuilder.class, TestClassReportBuilderImpl.class);
         builder.service(TestMethodReportBuilder.class, TestMethodReportBuilderImpl.class);
         builder.service(TestSuiteReportBuilder.class, TestSuiteReportBuilderImpl.class);
+        builder.service(DataCollectionBuilder.class, DataCollectionBuilderImpl.class);
     }
 }
