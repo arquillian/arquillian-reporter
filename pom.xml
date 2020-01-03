@@ -50,7 +50,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <version.arquillian.core>1.1.12.Final</version.arquillian.core>
-    <version.junit>4.12</version.junit>
+    <version.junit>4.13</version.junit>
     <version.assertj-core>3.6.0</version.assertj-core>
     <version.mockito>2.7.13</version.mockito>
 
