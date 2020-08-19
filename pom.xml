@@ -52,7 +52,7 @@
     <version.arquillian.core>1.1.12.Final</version.arquillian.core>
     <version.junit>4.12</version.junit>
     <version.assertj-core>3.6.0</version.assertj-core>
-    <version.mockito>2.7.13</version.mockito>
+    <version.mockito>3.5.2</version.mockito>
 
     <additionalparam>-Xdoclint:none</additionalparam>
   </properties>
